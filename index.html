@@ -385,7 +385,7 @@ canvas{width:100%!important;}
       <span>📋 Trade Log</span>
       <div style="display:flex;gap:8px;">
         <button class="btn btn-sm" onclick="exportCSV()">⬇ CSV</button>
-        <button class="btn btn-sm" onclick="clearTrades()" style="color:var(--danger);border-color:var(--danger);">Clear</button>
+        <button id="clear-btn" class="btn btn-sm" onclick="clearTrades()" style="color:var(--danger);border-color:var(--danger);" data-confirming="0">Clear</button>
       </div>
     </div>
     <div id="trade-log"></div>
@@ -803,6 +803,20 @@ async function renderAIHistory(){
 }
 
 // ── CSV EXPORT ─────────────────────────────────────────────────
+function clearTrades(){
+  const btn=document.getElementById('clear-btn');
+  if(btn.dataset.confirming==='1'){
+    trades=[];saveTrades();renderLog();updateStats();renderGuardrailBanner();
+    document.getElementById('journal-stats').style.display='none';
+    document.getElementById('trade-log-card').style.display='none';
+    btn.textContent='Clear';btn.style.color='var(--danger)';btn.dataset.confirming='0';
+    showToast('All trades cleared.',true);
+  } else {
+    btn.textContent='Confirm?';btn.style.color='var(--warn)';btn.dataset.confirming='1';
+    setTimeout(()=>{btn.textContent='Clear';btn.style.color='var(--danger)';btn.dataset.confirming='0';},3000);
+  }
+}
+
 function exportCSV(){
   if(!trades.length){showToast('No trades to export',true);return;}
   const h='Date,Type,Result,Entry Time,Exit Time,Entry Price,Exit Price,Qty,SL,P&L (₹),Rules,Note';
