@@ -14,8 +14,12 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
 .logo-title{font-size:22px;font-weight:800;letter-spacing:-0.5px;}.logo-title span{color:var(--accent);}
 .logo-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
-#clock{font-family:'Space Mono',monospace;font-size:26px;font-weight:700;color:var(--accent);letter-spacing:2px;}
+#clock{font-size:26px;font-weight:700;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:2px;}
 #session-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:2px;font-family:'Space Mono',monospace;text-align:right;}
+#db-status{display:inline-flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);margin-top:4px;cursor:default;}
+#db-status.connected{border-color:rgba(0,229,160,0.3);color:var(--accent);background:rgba(0,229,160,0.05);}
+#db-status.error{border-color:rgba(255,49,92,0.3);color:var(--danger);background:rgba(255,49,92,0.05);}
+.db-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
 .tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--panel);padding:4px;border-radius:10px;border:1px solid var(--border);flex-wrap:wrap;}
 .tab{flex:1;min-width:80px;padding:10px 6px;background:transparent;border:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border-radius:7px;transition:all 0.2s;text-transform:uppercase;letter-spacing:1px;}
 .tab.active{background:var(--bg);color:var(--accent);border:1px solid var(--border);}
@@ -97,8 +101,6 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 #toast.warn-toast{border-color:var(--warn);color:var(--warn);}
 #toast.danger-toast{border-color:var(--danger);color:var(--danger);}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--dim);border-radius:4px;}
-
-/* GUARDRAIL MODAL */
 #guardrail-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;}
 #guardrail-modal.show{display:flex;}
 .modal-box{background:var(--panel);border:2px solid var(--danger);border-radius:14px;padding:28px;max-width:400px;width:90%;text-align:center;}
@@ -106,26 +108,21 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 .modal-title{font-size:18px;font-weight:800;color:var(--danger);margin-bottom:8px;}
 .modal-msg{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;font-family:'Space Mono',monospace;}
 .modal-btns{display:flex;gap:10px;justify-content:center;}
-
-/* ANALYTICS */
 .chart-wrap{position:relative;height:160px;margin:8px 0 4px;}
 canvas{width:100%!important;}
 .heatmap-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;}
 .hm-cell{border-radius:4px;height:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;font-family:'Space Mono',monospace;color:var(--muted);transition:all 0.3s;}
 .hm-label{font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;text-align:center;margin-top:3px;}
-
-/* DAY REVIEW LOG */
 .day-review-item{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color 0.2s;}
 .day-review-item:hover{border-color:var(--accent);}
 .day-review-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .day-review-date{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:1px;}
-.day-review-pnl{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;}
 .day-review-body{font-size:12px;color:var(--muted);line-height:1.6;display:none;}
 .day-review-item.open .day-review-body{display:block;}
-
-/* STREAK */
 .streak-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
 .streak-dot{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Space Mono',monospace;font-weight:700;}
+.sync-spinner{display:inline-block;width:10px;height:10px;border:2px solid rgba(0,229,160,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-left:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
@@ -135,6 +132,7 @@ canvas{width:100%!important;}
   <div>
     <div class="logo-title">Nifty <span>Trader</span></div>
     <div class="logo-sub">Session Assistant · Live</div>
+    <div id="db-status"><span class="db-dot"></span> Connecting...</div>
   </div>
   <div style="text-align:right;">
     <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end;">
@@ -154,7 +152,7 @@ canvas{width:100%!important;}
   <button class="tab" onclick="switchTab('ailog',this)">🤖 AI Log</button>
 </div>
 
-<!-- ══════════ PRE-SESSION ══════════ -->
+<!-- PRE-SESSION -->
 <div id="tab-meditation" class="panel active">
   <div class="card">
     <div class="card-title">Morning Ritual · Belief Alignment</div>
@@ -203,11 +201,10 @@ canvas{width:100%!important;}
   </div>
 </div>
 
-<!-- ══════════ PRE-ENTRY ══════════ -->
+<!-- PRE-ENTRY -->
 <div id="tab-checklist" class="panel">
   <div class="card">
     <div class="card-title">Pre-Entry Breath · Box Breathing 4-4-4-4</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:18px;font-family:'Space Mono',monospace;line-height:1.6;">Sharpens attention and calms the nervous system before you execute.</div>
     <div style="display:flex;flex-direction:column;align-items:center;">
       <div style="position:relative;width:160px;height:160px;margin-bottom:18px;">
         <svg width="160" height="160" style="position:absolute;top:0;left:0;transform:rotate(-90deg);">
@@ -227,7 +224,6 @@ canvas{width:100%!important;}
       <div id="pre-breath-done" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.2);font-size:13px;color:var(--accent);font-family:'Space Mono',monospace;">✅ Nervous system primed. Execute your plan.</div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">Two Critical Questions</div>
     <div class="question-block">
@@ -249,10 +245,8 @@ canvas{width:100%!important;}
     <div id="trade-verdict"></div>
     <div style="margin-top:16px;text-align:right;"><button class="btn" onclick="resetQuestions()">↺ Reset</button></div>
   </div>
-
   <div class="card">
     <div class="card-title">Post-Exit Breath · Physiological Sigh</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:18px;font-family:'Space Mono',monospace;line-height:1.6;">Fastest way to discharge adrenaline after a trade.</div>
     <div style="display:flex;flex-direction:column;align-items:center;">
       <div style="position:relative;width:160px;height:160px;margin-bottom:18px;">
         <svg width="160" height="160" style="position:absolute;top:0;left:0;transform:rotate(-90deg);">
@@ -272,7 +266,6 @@ canvas{width:100%!important;}
       <div id="post-breath-done" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:rgba(150,150,255,0.08);border:1px solid rgba(150,150,255,0.2);font-size:13px;color:#a0a0ff;font-family:'Space Mono',monospace;">✅ Reset complete. Clean slate for next setup.</div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">Pre-Entry Checklist</div>
     <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Checked Daily chart & EMA direction</div><span class="check-tag tag-htf">HTF</span></div>
@@ -288,7 +281,7 @@ canvas{width:100%!important;}
   </div>
 </div>
 
-<!-- ══════════ SESSION ══════════ -->
+<!-- SESSION -->
 <div id="tab-session" class="panel">
   <div class="card">
     <div class="card-title">Session Timeline · IST</div>
@@ -313,15 +306,12 @@ canvas{width:100%!important;}
   </div>
 </div>
 
-<!-- ══════════ JOURNAL ══════════ -->
+<!-- JOURNAL -->
 <div id="tab-journal" class="panel">
-
-  <!-- GUARDRAIL WARNING -->
   <div id="guardrail-banner" style="display:none;margin-bottom:16px;padding:14px 18px;border-radius:10px;background:rgba(255,49,92,0.08);border:2px solid var(--danger);">
     <div style="font-size:13px;font-weight:800;color:var(--danger);margin-bottom:4px;" id="guardrail-banner-title">⚠️ GUARDRAIL ACTIVE</div>
     <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;line-height:1.6;" id="guardrail-banner-msg"></div>
   </div>
-
   <div class="card">
     <div class="card-title">Log a Trade</div>
     <div style="margin-bottom:14px;">
@@ -370,7 +360,7 @@ canvas{width:100%!important;}
       <div class="field-label">NOTE (optional)</div>
       <textarea id="trade-note" rows="2" placeholder="What happened? What did you notice?" class="j-input" style="width:100%;resize:none;"></textarea>
     </div>
-    <button class="btn btn-accent" onclick="addTrade()" style="width:100%;justify-content:center;padding:14px;">+ Log Trade</button>
+    <button class="btn btn-accent" onclick="addTrade()" id="log-btn" style="width:100%;justify-content:center;padding:14px;">+ Log Trade</button>
   </div>
 
   <div class="session-grid" id="journal-stats" style="display:none;">
@@ -385,14 +375,14 @@ canvas{width:100%!important;}
       <span>📋 Trade Log</span>
       <div style="display:flex;gap:8px;">
         <button class="btn btn-sm" onclick="exportCSV()">⬇ CSV</button>
-        <button id="clear-btn" class="btn btn-sm" onclick="clearTrades()" style="color:var(--danger);border-color:var(--danger);" data-confirming="0">Clear</button>
+        <button class="btn btn-sm" onclick="clearTrades()" style="color:var(--danger);border-color:var(--danger);">Clear All</button>
       </div>
     </div>
     <div id="trade-log"></div>
   </div>
 </div>
 
-<!-- ══════════ ANALYTICS ══════════ -->
+<!-- ANALYTICS -->
 <div id="tab-analytics" class="panel">
   <div class="card">
     <div class="card-title">Equity Curve · Cumulative P&L (₹)</div>
@@ -415,11 +405,11 @@ canvas{width:100%!important;}
   </div>
 </div>
 
-<!-- ══════════ AI LOG ══════════ -->
+<!-- AI LOG -->
 <div id="tab-ailog" class="panel">
   <div class="card">
     <div class="card-title">🤖 AI Daily Review · Generate & Save</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7;">The AI reads your trades, studies your patterns over time, and saves a coaching note for today. Come back tomorrow and it will compare.</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7;">The AI reads your trades, studies your patterns over time, and saves a coaching note for today.</div>
     <button class="btn btn-accent" onclick="generateDailyReview()" style="width:100%;justify-content:center;padding:14px;margin-bottom:12px;">🔍 Generate Today's AI Review</button>
     <div id="ai-loading" style="display:none;text-align:center;padding:20px;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:1px;"><div style="margin-bottom:10px;font-size:22px;">⏳</div>Studying your trading patterns...</div>
     <div id="ai-today" style="font-size:13px;line-height:1.8;color:var(--text);"></div>
@@ -436,7 +426,7 @@ canvas{width:100%!important;}
 <div id="guardrail-modal">
   <div class="modal-box">
     <div class="modal-icon">🚨</div>
-    <div class="modal-title" id="modal-title">GUARDRAIL WARNING</div>
+    <div class="modal-title">GUARDRAIL WARNING</div>
     <div class="modal-msg" id="modal-msg"></div>
     <div class="modal-btns">
       <button class="btn" style="border-color:var(--danger);color:var(--danger);" onclick="dismissGuardrail(false)">← Go Back</button>
@@ -448,12 +438,83 @@ canvas{width:100%!important;}
 <div id="toast"></div>
 
 <script>
-// ── UTILS ──────────────────────────────────────────────────────
-function getISTDate(){const n=new Date();const i=new Date(n.toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));return i;}
-function formatDate(d){const ist=d instanceof Date?d:new Date(d);return String(ist.getDate()).padStart(2,'0')+'/'+String(ist.getMonth()+1).padStart(2,'0')+'/'+ist.getFullYear();}
+// ══════════════════════════════════════════════════
+//  SUPABASE CONFIG
+// ══════════════════════════════════════════════════
+const SUPABASE_URL = 'https://wtnjflyiguftwnwtahrx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0bmpmbHlpZ3VmdHdud3RhaHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMjc0MDMsImV4cCI6MjA4ODgwMzQwM30.udhfV4bZm4YqtB8annYF5VymQwRA6bp6J36vf0gZlOg';
+const HEADERS = { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY };
+
+// ── DB HELPERS ─────────────────────────────────────
+function setDbStatus(state) {
+  const el = document.getElementById('db-status');
+  if (state === 'connected') { el.className = 'db-dot connected'; el.innerHTML = '<span class="db-dot"></span> Supabase Connected'; }
+  else if (state === 'error')  { el.className = 'db-dot error';     el.innerHTML = '<span class="db-dot"></span> DB Error'; }
+  else                         { el.className = 'db-dot';           el.innerHTML = '<span class="db-dot"></span> Connecting...'; }
+}
+
+async function dbFetch(path, opts = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: HEADERS, ...opts });
+  if (!res.ok) { const e = await res.text(); throw new Error(e); }
+  return res.status === 204 ? null : res.json();
+}
+
+// ── LOAD ALL TRADES FROM SUPABASE ──────────────────
+async function loadTrades() {
+  try {
+    const rows = await dbFetch('trades?select=id,data&order=id.desc');
+    trades = rows.map(r => ({ ...r.data, _dbid: r.id }));
+    renderLog(); updateStats(); renderGuardrailBanner();
+    setDbStatus('connected');
+  } catch(e) {
+    setDbStatus('error');
+    showToast('Could not load trades from DB', true);
+    console.error(e);
+  }
+}
+
+// ── SAVE ONE TRADE TO SUPABASE ─────────────────────
+async function saveTrade(trade) {
+  // Use trade.id (timestamp) as the primary key
+  const row = { id: trade.id, data: trade };
+  const res = await dbFetch('trades', {
+    method: 'POST',
+    body: JSON.stringify(row),
+    headers: { ...HEADERS, 'Prefer': 'return=representation' }
+  });
+  return res;
+}
+
+// ── DELETE ALL TRADES FROM SUPABASE ───────────────
+async function deleteAllTrades() {
+  await dbFetch('trades?id=gte.0', { method: 'DELETE' });
+}
+
+// ── SAVE AI REVIEW TO SUPABASE ─────────────────────
+async function saveAIReview(dateStr, summary, full) {
+  const row = { id: Date.now(), data: { date: dateStr, summary, full, ts: Date.now() } };
+  await dbFetch('ai_reviews', {
+    method: 'POST',
+    body: JSON.stringify(row),
+    headers: { ...HEADERS, 'Prefer': 'return=minimal' }
+  });
+}
+
+async function loadAIReviews() {
+  try {
+    const rows = await dbFetch('ai_reviews?select=data&order=id.desc&limit=30');
+    return rows.map(r => r.data);
+  } catch(e) { return []; }
+}
+
+// ══════════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════════
+function getISTDate(){const n=new Date();return new Date(n.toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));}
+function formatDate(d){const i=d instanceof Date?d:new Date(d);return String(i.getDate()).padStart(2,'0')+'/'+String(i.getMonth()+1).padStart(2,'0')+'/'+i.getFullYear();}
 function todayStr(){return formatDate(getISTDate());}
 
-// ── CLOCK ──────────────────────────────────────────────────────
+// ── CLOCK ──────────────────────────────────────────
 function updateClock(){
   const ist=getISTDate();
   const h=String(ist.getHours()).padStart(2,'0'),m=String(ist.getMinutes()).padStart(2,'0'),s=String(ist.getSeconds()).padStart(2,'0');
@@ -473,7 +534,7 @@ function updateClock(){
 }
 setInterval(updateClock,1000);updateClock();
 
-// ── TABS ───────────────────────────────────────────────────────
+// ── TABS ───────────────────────────────────────────
 function switchTab(name,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -483,16 +544,16 @@ function switchTab(name,btn){
   if(name==='ailog')renderAIHistory();
 }
 
-// ── BELIEFS ────────────────────────────────────────────────────
+// ── BELIEFS ────────────────────────────────────────
 function toggleBelief(el){el.classList.toggle('checked');const items=document.querySelectorAll('.belief-item');const checked=document.querySelectorAll('.belief-item.checked').length;const pct=Math.round((checked/items.length)*100);document.getElementById('belief-progress').style.width=pct+'%';document.getElementById('belief-label').textContent=`${checked} / ${items.length} beliefs acknowledged`;if(checked===items.length)showToast('✅ All beliefs aligned. You are ready.',false);}
 
-// ── TEMP CHECK ─────────────────────────────────────────────────
-const tempData={cold:{pct:5,cls:'selected',bg:'rgba(0,229,160,0.05)',border:'rgba(0,229,160,0.2)',msg:'🧊 Ice cold — perfect trading state. Stick to your plan.'},warm:{pct:35,cls:'selected',bg:'rgba(255,209,102,0.05)',border:'rgba(255,209,102,0.2)',msg:'🌤️ Warm and focused — solid state. Trust the EMA terrain.'},hot:{pct:67,cls:'selected-bad',bg:'rgba(255,107,53,0.05)',border:'rgba(255,107,53,0.2)',msg:'🔥 Overheated — halve your size. No revenge trades. Breathe.'},burnt:{pct:97,cls:'selected-bad',bg:'rgba(255,49,92,0.05)',border:'rgba(255,49,92,0.2)',msg:'💀 Burnt out — your edge is gone. Observe only today.'}};
+// ── TEMP CHECK ─────────────────────────────────────
+const tempData={cold:{pct:5,cls:'selected',bg:'rgba(0,229,160,0.05)',border:'rgba(0,229,160,0.2)',msg:'🧊 Ice cold — perfect trading state.'},warm:{pct:35,cls:'selected',bg:'rgba(255,209,102,0.05)',border:'rgba(255,209,102,0.2)',msg:'🌤️ Warm and focused — solid state.'},hot:{pct:67,cls:'selected-bad',bg:'rgba(255,107,53,0.05)',border:'rgba(255,107,53,0.2)',msg:'🔥 Overheated — halve your size. Breathe.'},burnt:{pct:97,cls:'selected-bad',bg:'rgba(255,49,92,0.05)',border:'rgba(255,49,92,0.2)',msg:'💀 Burnt out — observe only today.'}};
 function selectTemp(el,pct,state){document.querySelectorAll('.emotion-btn').forEach(b=>b.classList.remove('selected','selected-bad'));const d=tempData[state];el.classList.add(d.cls);document.getElementById('temp-indicator').style.left=d.pct+'%';const a=document.getElementById('emotion-advice');a.style.display='block';a.innerHTML=d.msg;a.style.background=d.bg;a.style.borderColor=d.border;}
-const tcWarnings={'tc-sleep':'😴 Poor sleep degrades decision-making. Trade minimum size or skip.','tc-focus':'🧠 Low focus means you will misread the EMA terrain. Be extra cautious.','tc-social':'📱 Social media primes the brain for noise. Your focus is compromised.','tc-yt':'📺 Content consumption scatters attention. Your mind needs to be empty.'};
+const tcWarnings={'tc-sleep':'😴 Poor sleep degrades decision-making.','tc-focus':'🧠 Low focus means you will misread the EMA terrain.','tc-social':'📱 Social media primes the brain for noise.','tc-yt':'📺 Content consumption scatters attention.'};
 function toggleTempCheck(el){el.classList.toggle('checked');const items=document.querySelectorAll('#tab-meditation .check-item');const checked=document.querySelectorAll('#tab-meditation .check-item.checked').length;document.getElementById('temp-check-progress').style.width=Math.round((checked/items.length)*100)+'%';document.getElementById('temp-check-label').textContent=`${checked} / ${items.length} conditions met`;const warns=[];items.forEach(i=>{if(!i.classList.contains('checked'))warns.push(tcWarnings[i.id]);});const box=document.getElementById('temp-check-warning');if(warns.length){box.style.display='block';box.innerHTML='⚠️ UNMET CONDITIONS:<br><br>'+warns.join('<br><br>');}else box.style.display='none';}
 
-// ── BREATHING ENGINE ───────────────────────────────────────────
+// ── BREATHING ──────────────────────────────────────
 const breathTimers={pre:null,post:null};const CIRC=427;
 const prePhases=[{label:'INHALE',secs:4,arcDir:1},{label:'HOLD',secs:4,arcDir:0},{label:'EXHALE',secs:4,arcDir:-1},{label:'HOLD',secs:4,arcDir:0}];
 const postPhases=[{label:'INHALE',secs:2,arcDir:1},{label:'SIP IN',secs:1,arcDir:1},{label:'EXHALE',secs:6,arcDir:-1},{label:'REST',secs:1,arcDir:0}];
@@ -508,27 +569,29 @@ function startBreath(w){
 }
 function stopBreath(w){if(breathTimers[w]){clearInterval(breathTimers[w]);breathTimers[w]=null;}const a=document.getElementById(w+'-breath-arc');if(a)a.style.strokeDashoffset=CIRC;const ph=document.getElementById(w+'-breath-phase'),cn=document.getElementById(w+'-breath-count'),rn=document.getElementById(w+'-breath-round');if(ph)ph.textContent='READY';if(cn)cn.textContent='–';if(rn)rn.textContent='';}
 
-// ── MORNING BREATH ANIMATION ────────────────────────────────────
+// Morning breath
 const breathSteps=[{text:'inhale...',dur:2000},{text:'inhale again ↑',dur:1500},{text:'long exhale...',dur:6000},{text:'rest...',dur:2000}];
 let bIdx=0;
 function runBreath(){const s=breathSteps[bIdx];document.getElementById('breath-text').textContent=s.text;const c=document.getElementById('breath-circle');c.style.transform=s.text.startsWith('inhale')?(bIdx===0?'scale(1.1)':'scale(1.25)'):(s.text.startsWith('long')?'scale(0.9)':'scale(1)');c.style.opacity=s.text.startsWith('long')?'0.6':'1';bIdx=(bIdx+1)%breathSteps.length;setTimeout(runBreath,s.dur);}
 runBreath();
 
-// ── TWO QUESTIONS ──────────────────────────────────────────────
+// ── TWO QUESTIONS ──────────────────────────────────
 let q1=null,q2=null;
 function answerQ(n,v){const block=document.querySelectorAll('.question-block')[n-1];block.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));const btns=block.querySelectorAll('.ans-btn');if(n===1){q1=v;if(v==='no')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}else{q2=v;if(v==='yes')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}evalVerdict();}
 function evalVerdict(){if(q1===null||q2===null)return;const v=document.getElementById('trade-verdict');v.style.display='block';const ok=q1==='no'&&q2==='yes';if(ok){v.className='verdict-go';v.innerHTML='🟢 TRADE VALID<div class="verdict-sub">Both conditions met. Execute your plan.</div>';}else if(q1!=='no'){v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">AVWAP may fail. Wait for a cleaner setup.</div>';}else{v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">SL cannot hold here. Too much noise.</div>';}}
 function resetQuestions(){q1=null;q2=null;document.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));document.getElementById('trade-verdict').style.display='none';}
 
-// ── CHECKLIST ──────────────────────────────────────────────────
+// ── CHECKLIST ──────────────────────────────────────
 function toggleCheck(el){el.classList.toggle('checked');const items=document.querySelectorAll('#tab-checklist .check-item');const checked=document.querySelectorAll('#tab-checklist .check-item.checked').length;document.getElementById('check-progress').style.width=Math.round((checked/items.length)*100)+'%';document.getElementById('check-label').textContent=`${checked} / ${items.length} checks complete`;}
 
-// ── JOURNAL ────────────────────────────────────────────────────
-let trades=[],tradeType=null,ruleTags=[];
+// ══════════════════════════════════════════════════
+//  JOURNAL — SUPABASE-BACKED
+// ══════════════════════════════════════════════════
+let trades=[], tradeType=null, ruleTags=[];
 const BAD=['Chased breakout','Ignored SL','Traded first 3 candles','Revenge trade'];
-let guardrailOverride=false,pendingTrade=null;
+let guardrailOverride=false, pendingTrade=null;
 
-function setEntryDate(){const d=getISTDate();const str=formatDate(d);document.getElementById('entry-date-display').textContent=str;return str;}
+function setEntryDate(){document.getElementById('entry-date-display').textContent=todayStr();}
 setEntryDate();
 
 function setType(t){tradeType=t;document.getElementById('type-call').classList.toggle('selected-yes',t==='CALL');document.getElementById('type-put').classList.toggle('selected-yes',t==='PUT');calcPnl();}
@@ -540,8 +603,7 @@ function calcPnl(){
   const sl=parseFloat(document.getElementById('entry-sl').value);
   const disp=document.getElementById('pnl-display');
   if(!ep||!xp||!qty){disp.style.display='none';return;}
-  const ppu=xp-ep;const total=ppu*qty;
-  const prof=total>=0;
+  const ppu=xp-ep,total=ppu*qty,prof=total>=0;
   disp.style.display='block';
   disp.style.border=`1px solid ${prof?'rgba(0,229,160,0.3)':'rgba(255,49,92,0.3)'}`;
   disp.style.background=prof?'rgba(0,229,160,0.04)':'rgba(255,49,92,0.04)';
@@ -553,48 +615,57 @@ function calcPnl(){
 
 function toggleRuleTag(el){const r=el.dataset.rule;if(ruleTags.includes(r)){ruleTags=ruleTags.filter(x=>x!==r);el.classList.remove('selected-yes','selected-no');}else{ruleTags.push(r);el.classList.add(BAD.includes(r)?'selected-no':'selected-yes');}}
 
-// ── GUARDRAILS ─────────────────────────────────────────────────
+// ── GUARDRAILS ─────────────────────────────────────
 function checkGuardrails(trade){
-  const ist=getISTDate();const h=ist.getHours(),m=ist.getMinutes();const tot=h*60+m;
+  const ist=getISTDate();const tot=ist.getHours()*60+ist.getMinutes();
   const warnings=[];
   if(tot>=9*60+15&&tot<9*60+30)warnings.push('🕐 You are trying to trade in the first 3 candles (9:15–9:30). This is your lowest probability zone.');
   const todayTrades=trades.filter(t=>t.date===todayStr());
   const losses=todayTrades.filter(t=>t.totalPnl!==null&&t.totalPnl<0);
-  if(losses.length>=2)warnings.push(`🔴 You have already lost ${losses.length} trades today. Your rules say: protect your capital. Are you revenge trading?`);
+  if(losses.length>=2)warnings.push(`🔴 You have already lost ${losses.length} trades today. Are you revenge trading?`);
   const todayBreaks=todayTrades.reduce((s,t)=>s+t.breaks.length,0);
-  if(todayBreaks>=3)warnings.push(`⚠️ You have broken ${todayBreaks} rules today already. Trading more may compound the damage.`);
-  if(trade.rules.some(r=>BAD.includes(r)))warnings.push('🚨 You selected a rule violation tag. Are you sure you want to log this trade?');
+  if(todayBreaks>=3)warnings.push(`⚠️ You have broken ${todayBreaks} rules today already.`);
+  if(trade.rules.some(r=>BAD.includes(r)))warnings.push('🚨 You selected a rule violation tag. Are you sure?');
   return warnings;
 }
 
-function addTrade(){
+async function addTrade(){
   if(!tradeType){showToast('Select CALL or PUT first',true);return;}
   const ep=parseFloat(document.getElementById('entry-price').value);
   const xp=parseFloat(document.getElementById('exit-price').value);
   const qty=parseFloat(document.getElementById('entry-qty').value);
   if(!ep||!qty){showToast('Entry price & quantity required',true);return;}
-  const ppu=xp?(xp-ep):null;
-  const total=ppu!==null?ppu*qty:null;
+  const ppu=xp?(xp-ep):null,total=ppu!==null?ppu*qty:null;
   const trade={id:Date.now(),type:tradeType,date:todayStr(),entryTime:document.getElementById('entry-time').value||'—',exitTime:document.getElementById('exit-time').value||'—',entryPrice:ep,exitPrice:xp||null,sl:parseFloat(document.getElementById('entry-sl').value)||null,qty,totalPnl:total,result:total!==null?(total>=0?'WIN':'LOSS'):'OPEN',rules:[...ruleTags],breaks:ruleTags.filter(r=>BAD.includes(r)),note:document.getElementById('trade-note').value.trim()};
   const warns=checkGuardrails(trade);
   if(warns.length&&!guardrailOverride){pendingTrade=trade;showGuardrail(warns);return;}
-  commitTrade(trade);
+  await commitTrade(trade);
 }
 
-function showGuardrail(warns){
-  document.getElementById('modal-msg').innerHTML=warns.join('<br><br>');
-  document.getElementById('guardrail-modal').classList.add('show');
-  // also show banner
-  document.getElementById('guardrail-banner').style.display='block';
-  document.getElementById('guardrail-banner-msg').innerHTML=warns[0];
-}
+function showGuardrail(warns){document.getElementById('modal-msg').innerHTML=warns.join('<br><br>');document.getElementById('guardrail-modal').classList.add('show');document.getElementById('guardrail-banner').style.display='block';document.getElementById('guardrail-banner-msg').innerHTML=warns[0];}
 
-function dismissGuardrail(override){
+async function dismissGuardrail(override){
   document.getElementById('guardrail-modal').classList.remove('show');
-  if(override&&pendingTrade){guardrailOverride=true;commitTrade(pendingTrade);pendingTrade=null;guardrailOverride=false;}else{pendingTrade=null;}
+  if(override&&pendingTrade){guardrailOverride=true;await commitTrade(pendingTrade);pendingTrade=null;guardrailOverride=false;}
+  else pendingTrade=null;
 }
 
-function commitTrade(trade){trades.unshift(trade);saveTrades();renderLog();updateStats();resetTradeForm();showToast('Trade logged ✅',false);renderGuardrailBanner();}
+async function commitTrade(trade){
+  const btn=document.getElementById('log-btn');
+  btn.disabled=true;btn.innerHTML='<span class="sync-spinner"></span> Saving...';
+  try {
+    await saveTrade(trade);
+    trades.unshift(trade);
+    renderLog();updateStats();resetTradeForm();renderGuardrailBanner();
+    showToast('✅ Trade saved to Supabase',false);
+    setDbStatus('connected');
+  } catch(e) {
+    showToast('❌ Save failed — check DB connection',true);
+    setDbStatus('error');
+    console.error(e);
+  }
+  btn.disabled=false;btn.innerHTML='+ Log Trade';
+}
 
 function renderGuardrailBanner(){
   const banner=document.getElementById('guardrail-banner');
@@ -637,7 +708,7 @@ function renderLog(){
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
         <div>ENTRY<br><span style="color:var(--text);font-size:13px;">₹${t.entryPrice}</span></div>
         <div>EXIT<br><span style="color:var(--text);font-size:13px;">${t.exitPrice?'₹'+t.exitPrice:'—'}</span></div>
-        <div>QTY<br><span style="color:var(--text);font-size:13px;">${t.qty} units</span></div>
+        <div>QTY<br><span style="color:var(--text);font-size:13px;">${t.qty}</span></div>
         <div>SL<br><span style="color:var(--danger);font-size:13px;">${t.sl?'₹'+t.sl:'—'}</span></div>
         <div>IN<br><span style="color:var(--text);font-size:13px;">${t.entryTime}</span></div>
         <div>OUT<br><span style="color:var(--text);font-size:13px;">${t.exitTime}</span></div>
@@ -648,10 +719,15 @@ function renderLog(){
   }).join('');
 }
 
-// ── ANALYTICS ──────────────────────────────────────────────────
+async function clearTrades(){
+  if(!confirm('Delete ALL trades permanently from Supabase? This cannot be undone.'))return;
+  try{await deleteAllTrades();trades=[];renderLog();updateStats();renderGuardrailBanner();showToast('All trades deleted',true);}
+  catch(e){showToast('Delete failed',true);console.error(e);}
+}
+
+// ── ANALYTICS ──────────────────────────────────────
 let equityChart=null;
 function renderAnalytics(){
-  // Equity curve
   const sorted=[...trades].reverse();
   let cum=0;const labels=[],data=[];
   sorted.forEach((t,i)=>{cum+=(t.totalPnl||0);labels.push(`#${i+1} ${t.date}`);data.push(parseFloat(cum.toFixed(0)));});
@@ -661,162 +737,26 @@ function renderAnalytics(){
     if(equityChart)equityChart.destroy();
     equityChart=new Chart(eEl.getContext('2d'),{type:'line',data:{labels,datasets:[{label:'P&L',data,borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:data.map(v=>v>=0?'#00e5a0':'#ff3a5c'),tension:0.3,fill:true}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`₹${ctx.raw}`}}},scales:{x:{display:false},y:{ticks:{color:'#4a5568',callback:v=>'₹'+v},grid:{color:'#1e2430'}}}}});
   }
-
-  // Heatmap
   const hours={};for(let h=9;h<=15;h++)hours[h]={pnl:0,count:0};
-  trades.forEach(t=>{
-    const et=t.entryTime;
-    if(!et||et==='—'||!/^\d{1,2}:\d{2}$/.test(et))return;
-    const h=parseInt(et.split(':')[0],10);
-    if(hours[h]!==undefined){hours[h].pnl+=(t.totalPnl||0);hours[h].count++;}
-  });
+  trades.forEach(t=>{const et=t.entryTime;if(!et||et==='—'||!/^\d{1,2}:\d{2}$/.test(et))return;const h=parseInt(et.split(':')[0],10);if(hours[h]!==undefined){hours[h].pnl+=(t.totalPnl||0);hours[h].count++;}});
   const hEl=document.getElementById('heatmap-wrap'),hEmp=document.getElementById('heatmap-empty');
-  // Always render the heatmap grid; grey cells = no trades that hour
   hEmp.style.display='none';
   const maxAbs=Math.max(1,...Object.values(hours).map(v=>Math.abs(v.pnl)));
-  hEl.innerHTML=`<div class="heatmap-grid">${Object.entries(hours).map(([h,v])=>{
-    const intensity=v.count===0?0:Math.min(1,Math.abs(v.pnl)/maxAbs);
-    const col=v.count===0?'var(--dim)':v.pnl>=0?`rgba(0,229,160,${0.15+0.85*intensity})`:`rgba(255,49,92,${0.15+0.85*intensity})`;
-    const label=v.count>0?`${v.pnl>=0?'+':''}₹${Math.round(v.pnl)}`:'—';
-    return `<div><div class="hm-cell" style="background:${col};" title="${h}:00 · ${v.count} trade(s) · ₹${Math.round(v.pnl)}">${label}</div><div class="hm-label">${h}:00</div></div>`;
-  }).join('')}</div>
-  <div style="display:flex;gap:16px;margin-top:10px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);">
-    <span>⬛ No trades</span>
-    <span style="color:var(--accent);">🟩 Profitable hour</span>
-    <span style="color:var(--danger);">🟥 Loss hour</span>
-  </div>`;
-
-  // Discipline per day
+  hEl.innerHTML=`<div class="heatmap-grid">${Object.entries(hours).map(([h,v])=>{const intensity=v.count===0?0:Math.min(1,Math.abs(v.pnl)/maxAbs);const col=v.count===0?'var(--dim)':v.pnl>=0?`rgba(0,229,160,${0.15+0.85*intensity})`:`rgba(255,49,92,${0.15+0.85*intensity})`;const label=v.count>0?`${v.pnl>=0?'+':''}₹${Math.round(v.pnl)}`:'—';return `<div><div class="hm-cell" style="background:${col};">${label}</div><div class="hm-label">${h}:00</div></div>`;}).join('')}</div>`;
   const byDay={};trades.forEach(t=>{if(!byDay[t.date])byDay[t.date]={trades:0,breaks:0,pnl:0};byDay[t.date].trades++;byDay[t.date].breaks+=t.breaks.length;byDay[t.date].pnl+=(t.totalPnl||0);});
   const dEl=document.getElementById('discipline-wrap'),dEmp=document.getElementById('discipline-empty');
   if(!Object.keys(byDay).length){dEl.innerHTML='';dEmp.style.display='block';}
-  else{dEmp.style.display='none';
-    dEl.innerHTML=Object.entries(byDay).map(([date,d])=>{
-      const score=Math.max(0,100-d.breaks*20);const col=score>=80?'var(--accent)':score>=50?'var(--warn)':'var(--danger)';
-      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);min-width:70px;">${date}</div>
-        <div style="flex:1;height:8px;background:var(--dim);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${score}%;background:${col};border-radius:4px;transition:width 0.5s;"></div></div>
-        <div style="font-family:'Space Mono',monospace;font-size:12px;color:${col};min-width:36px;text-align:right;">${score}%</div>
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:${d.pnl>=0?'var(--accent)':'var(--danger)'};min-width:64px;text-align:right;">${d.pnl>=0?'+':''}₹${Math.round(d.pnl)}</div>
-      </div>`;
-    }).join('');
-  }
-
-  // Streak
+  else{dEmp.style.display='none';dEl.innerHTML=Object.entries(byDay).map(([date,d])=>{const score=Math.max(0,100-d.breaks*20);const col=score>=80?'var(--accent)':score>=50?'var(--warn)':'var(--danger)';return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);"><div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);min-width:70px;">${date}</div><div style="flex:1;height:8px;background:var(--dim);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${score}%;background:${col};border-radius:4px;"></div></div><div style="font-family:'Space Mono',monospace;font-size:12px;color:${col};min-width:36px;text-align:right;">${score}%</div><div style="font-family:'Space Mono',monospace;font-size:11px;color:${d.pnl>=0?'var(--accent)':'var(--danger)'};min-width:64px;text-align:right;">${d.pnl>=0?'+':''}₹${Math.round(d.pnl)}</div></div>`;}).join('');}
   const sEl=document.getElementById('streak-wrap');
   if(!trades.length){sEl.innerHTML='<div style="text-align:center;color:var(--muted);font-family:Space Mono,monospace;font-size:12px;padding:20px 0;">Log trades to see streaks</div>';return;}
   const closed=trades.filter(t=>t.result!=='OPEN').reverse();
-  let cur=0,curType='',longest=0,longestType='',streak=0;
+  let longest=0,longestType='',curType='',cur=0;
   closed.forEach(t=>{if(t.result===curType)cur++;else{curType=t.result;cur=1;}if(cur>longest){longest=cur;longestType=curType;}});
   const last=closed[closed.length-1];if(last){curType=last.result;cur=0;for(let i=closed.length-1;i>=0;i--){if(closed[i].result===curType)cur++;else break;}}
-  sEl.innerHTML=`<div style="display:flex;justify-content:space-around;margin-bottom:16px;">
-    <div style="text-align:center;"><div class="stat-label">Current Streak</div><div class="stat-value ${cur>0&&curType==='WIN'?'accent':'danger'}">${cur} ${curType}</div></div>
-    <div style="text-align:center;"><div class="stat-label">Best Streak</div><div class="stat-value accent">${longest} ${longestType}</div></div>
-  </div>
-  <div class="streak-row">${closed.slice(-20).map(t=>`<div class="streak-dot" style="background:${t.result==='WIN'?'rgba(0,229,160,0.15)':'rgba(255,49,92,0.15)'};color:${t.result==='WIN'?'var(--accent)':'var(--danger)'};border:1px solid ${t.result==='WIN'?'rgba(0,229,160,0.3)':'rgba(255,49,92,0.3)'};" title="${t.date}">${t.result==='WIN'?'W':'L'}</div>`).join('')}</div>
-  <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:8px;">Last ${Math.min(20,closed.length)} closed trades →</div>`;
+  sEl.innerHTML=`<div style="display:flex;justify-content:space-around;margin-bottom:16px;"><div style="text-align:center;"><div class="stat-label">Current Streak</div><div class="stat-value ${cur>0&&curType==='WIN'?'accent':'danger'}">${cur} ${curType}</div></div><div style="text-align:center;"><div class="stat-label">Best Streak</div><div class="stat-value accent">${longest} ${longestType}</div></div></div><div class="streak-row">${closed.slice(-20).map(t=>`<div class="streak-dot" style="background:${t.result==='WIN'?'rgba(0,229,160,0.15)':'rgba(255,49,92,0.15)'};color:${t.result==='WIN'?'var(--accent)':'var(--danger)'};border:1px solid ${t.result==='WIN'?'rgba(0,229,160,0.3)':'rgba(255,49,92,0.3)'};">${t.result==='WIN'?'W':'L'}</div>`).join('')}</div>`;
 }
 
-// ── AI DAILY REVIEW ────────────────────────────────────────────
-async function generateDailyReview(){
-  if(!trades.length){showToast('Log some trades first!',true);return;}
-  const loadEl=document.getElementById('ai-loading'),todayEl=document.getElementById('ai-today');
-  todayEl.innerHTML='';loadEl.style.display='block';
-
-  // Build historical context from saved reviews
-  let histContext='';
-  try{
-    if(window.storage){
-      const keys=await window.storage.list('ailog:');
-      if(keys&&keys.keys&&keys.keys.length){
-        const recent=keys.keys.slice(-3);
-        const reviews=await Promise.all(recent.map(k=>window.storage.get(k)));
-        histContext='\n\nPREVIOUS AI REVIEWS (for comparison):\n'+reviews.filter(r=>r).map(r=>{const d=JSON.parse(r.value);return `[${d.date}]: ${d.summary}`;}).join('\n');
-      }
-    }
-  }catch(e){}
-
-  const today=todayStr();
-  const todayTrades=trades.filter(t=>t.date===today);
-  const allSummary=trades.slice(0,30).map((t,i)=>`Trade ${i+1} (${t.date}): ${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Time: ${t.entryTime}→${t.exitTime}, Tags:[${t.rules.join(', ')}]${t.note?', Note:'+t.note:''}`).join('\n');
-
-  const prompt=`You are a strict but caring trading coach for an Indian Nifty options trader. Today is ${today}.
-
-TODAY'S TRADES (${todayTrades.length} trades):
-${todayTrades.length?todayTrades.map(t=>`${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Time:${t.entryTime}→${t.exitTime}, Tags:[${t.rules.join(', ')}]${t.note?', Note:'+t.note:''}`).join('\n'):'No trades today.'}
-
-ALL RECENT TRADES (last 30):
-${allSummary}
-${histContext}
-
-TRADER'S RULES:
-- No trades in first 3 candles (9:15–9:30 IST)
-- Only buy pullbacks via AVWAP, never chase breakouts
-- SL = 10 points max, no exceptions
-- Always check Daily EMA before entry
-- Follow 5-min price action terrain created by EMA
-- Think in Daily context, execute on 5-min
-
-Provide a day-by-day coaching review with these exact sections:
-**TODAY'S PERFORMANCE** — Quick summary of today's trades and P&L
-**PATTERNS I SEE** — Recurring habits (good or bad) across all their trades
-**COMPARED TO YESTERDAY** — How today compares (only if previous reviews exist)
-**ONE THING TO FIX** — Single most important improvement for tomorrow
-**TOMORROW'S INTENTION** — One sentence they should say to themselves tomorrow morning
-
-Keep it under 250 words. Be direct. Reference actual data.`;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    const text=data.content.map(b=>b.text||'').join('');
-    loadEl.style.display='none';
-    const html=text.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
-    todayEl.innerHTML=html;
-
-    // Save review
-    const summary=text.substring(0,300);
-    try{if(window.storage)await window.storage.set('ailog:'+today,JSON.stringify({date:today,summary,full:text,ts:Date.now()}));}catch(e){}
-    renderAIHistory();
-    showToast('AI review saved for '+today,false);
-  }catch(e){loadEl.style.display='none';todayEl.innerHTML='<span style="color:var(--danger);">Could not connect to AI. Check connection.</span>';}
-}
-
-async function renderAIHistory(){
-  const card=document.getElementById('ai-history-card'),log=document.getElementById('ai-history-log');
-  try{
-    if(!window.storage){card.style.display='none';return;}
-    const keys=await window.storage.list('ailog:');
-    if(!keys||!keys.keys||!keys.keys.length){card.style.display='none';return;}
-    card.style.display='block';
-    const reviews=await Promise.all(keys.keys.reverse().map(k=>window.storage.get(k)));
-    log.innerHTML=reviews.filter(r=>r).map(r=>{
-      const d=JSON.parse(r.value);
-      const html=d.full.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
-      return `<div class="day-review-item" onclick="this.classList.toggle('open')">
-        <div class="day-review-header"><span class="day-review-date">📅 ${d.date}</span><span style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">tap to expand ▾</span></div>
-        <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">${d.summary.substring(0,100)}...</div>
-        <div class="day-review-body" style="margin-top:12px;font-size:13px;line-height:1.8;color:var(--text);">${html}</div>
-      </div>`;
-    }).join('');
-  }catch(e){card.style.display='none';}
-}
-
-// ── CSV EXPORT ─────────────────────────────────────────────────
-function clearTrades(){
-  const btn=document.getElementById('clear-btn');
-  if(btn.dataset.confirming==='1'){
-    trades=[];saveTrades();renderLog();updateStats();renderGuardrailBanner();
-    document.getElementById('journal-stats').style.display='none';
-    document.getElementById('trade-log-card').style.display='none';
-    btn.textContent='Clear';btn.style.color='var(--danger)';btn.dataset.confirming='0';
-    showToast('All trades cleared.',true);
-  } else {
-    btn.textContent='Confirm?';btn.style.color='var(--warn)';btn.dataset.confirming='1';
-    setTimeout(()=>{btn.textContent='Clear';btn.style.color='var(--danger)';btn.dataset.confirming='0';},3000);
-  }
-}
-
+// ── CSV EXPORT ─────────────────────────────────────
 function exportCSV(){
   if(!trades.length){showToast('No trades to export',true);return;}
   const h='Date,Type,Result,Entry Time,Exit Time,Entry Price,Exit Price,Qty,SL,P&L (₹),Rules,Note';
@@ -826,61 +766,73 @@ function exportCSV(){
   showToast('CSV exported ✅',false);
 }
 
-// ── STORAGE ────────────────────────────────────────────────────
-function saveTrades(){try{window.storage&&window.storage.set('nifty-trades-v2',JSON.stringify(trades));}catch(e){}}
-async function loadTrades(){try{if(!window.storage)return;const r=await window.storage.get('nifty-trades-v2');if(r&&r.value){trades=JSON.parse(r.value);renderLog();updateStats();renderGuardrailBanner();}}catch(e){}}
-loadTrades();
-
-// ── TOAST ──────────────────────────────────────────────────────
-let audioMuted=false;
-function showToast(msg,warn,snd){
-  const t=document.getElementById('toast');t.textContent=msg;t.className=warn?'warn-toast show':'show';setTimeout(()=>t.className='',3500);
-  if(!audioMuted&&snd)playAlert(snd);
-  else if(!audioMuted&&warn)playAlert('warn');
-  else if(!audioMuted&&!warn)playAlert('good');
+// ── AI REVIEW ──────────────────────────────────────
+async function generateDailyReview(){
+  if(!trades.length){showToast('Log some trades first!',true);return;}
+  const loadEl=document.getElementById('ai-loading'),todayEl=document.getElementById('ai-today');
+  todayEl.innerHTML='';loadEl.style.display='block';
+  const today=todayStr();
+  const prevReviews=await loadAIReviews();
+  let histContext='';
+  if(prevReviews.length){histContext='\n\nPREVIOUS AI REVIEWS:\n'+prevReviews.slice(0,3).map(r=>`[${r.date}]: ${r.summary}`).join('\n');}
+  const todayTrades=trades.filter(t=>t.date===today);
+  const allSummary=trades.slice(0,30).map((t,i)=>`Trade ${i+1} (${t.date}): ${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Time:${t.entryTime}→${t.exitTime}, Tags:[${t.rules.join(', ')}]${t.note?', Note:'+t.note:''}`).join('\n');
+  const prompt=`You are a strict but caring trading coach for an Indian Nifty options trader. Today is ${today}.
+TODAY'S TRADES: ${todayTrades.length?todayTrades.map(t=>`${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Tags:[${t.rules.join(', ')}]`).join('\n'):'No trades today.'}
+ALL RECENT TRADES: ${allSummary}
+${histContext}
+RULES: No trades in first 3 candles. Only buy pullbacks via AVWAP. SL=10pts max. Always check Daily EMA. Follow 5-min EMA terrain.
+Provide coaching with these sections:
+**TODAY'S PERFORMANCE** — Quick P&L summary
+**PATTERNS I SEE** — Recurring habits across all trades
+**COMPARED TO YESTERDAY** — How today compares (only if history exists)
+**ONE THING TO FIX** — Single most important improvement
+**TOMORROW'S INTENTION** — One sentence for tomorrow morning
+Under 250 words. Be direct. Reference actual data.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=data.content.map(b=>b.text||'').join('');
+    loadEl.style.display='none';
+    todayEl.innerHTML=text.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+    await saveAIReview(today, text.substring(0,300), text);
+    renderAIHistory();
+    showToast('AI review saved to Supabase ✅',false);
+  }catch(e){loadEl.style.display='none';todayEl.innerHTML='<span style="color:var(--danger);">Could not connect to AI.</span>';}
 }
-function toggleMute(){audioMuted=!audioMuted;const b=document.getElementById('mute-btn');b.textContent=audioMuted?'🔇 Muted':'🔔 Sound';b.style.color=audioMuted?'var(--danger)':'var(--accent)';if(!audioMuted)playAlert('good');}
 
-// ── AUDIO ALERTS ───────────────────────────────────────────────
+async function renderAIHistory(){
+  const card=document.getElementById('ai-history-card'),log=document.getElementById('ai-history-log');
+  const reviews=await loadAIReviews();
+  if(!reviews.length){card.style.display='none';return;}
+  card.style.display='block';
+  log.innerHTML=reviews.map(r=>{
+    const html=r.full.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+    return `<div class="day-review-item" onclick="this.classList.toggle('open')"><div class="day-review-header"><span class="day-review-date">📅 ${r.date}</span><span style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">tap to expand ▾</span></div><div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">${r.summary.substring(0,100)}...</div><div class="day-review-body" style="margin-top:12px;font-size:13px;line-height:1.8;color:var(--text);">${html}</div></div>`;
+  }).join('');
+}
+
+// ── TOAST & AUDIO ──────────────────────────────────
+let audioMuted=false;
+function showToast(msg,warn){const t=document.getElementById('toast');t.textContent=msg;t.className=warn?'warn-toast show':'show';setTimeout(()=>t.className='',3500);if(!audioMuted)playAlert(warn?'warn':'good');}
+function toggleMute(){audioMuted=!audioMuted;const b=document.getElementById('mute-btn');b.textContent=audioMuted?'🔇 Muted':'🔔 Sound';b.style.color=audioMuted?'var(--danger)':'var(--accent)';if(!audioMuted)playAlert('good');}
 let audioCtx=null;
 function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playTone(freq,dur,type='sine',vol=0.4){try{const ctx=getAudioCtx();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=type;o.frequency.setValueAtTime(freq,ctx.currentTime);g.gain.setValueAtTime(vol,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);o.start(ctx.currentTime);o.stop(ctx.currentTime+dur);}catch(e){}}
+function playAlert(type){if(type==='warn'){playTone(880,0.15,'square',0.3);setTimeout(()=>playTone(660,0.25,'square',0.3),180);}else if(type==='good'){playTone(523,0.15,'sine',0.35);setTimeout(()=>playTone(659,0.15,'sine',0.35),160);setTimeout(()=>playTone(784,0.3,'sine',0.35),320);}else if(type==='danger'){[0,220,440].forEach(d=>setTimeout(()=>playTone(440,0.18,'sawtooth',0.35),d));}}
 
-function playTone(freq,dur,type='sine',vol=0.4){
-  try{const ctx=getAudioCtx();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=type;o.frequency.setValueAtTime(freq,ctx.currentTime);g.gain.setValueAtTime(vol,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);o.start(ctx.currentTime);o.stop(ctx.currentTime+dur);}catch(e){}}
-
-function playAlert(type){
-  const ctx=getAudioCtx();
-  if(type==='warn'){
-    // Two-tone warning beep
-    playTone(880,0.15,'square',0.3);
-    setTimeout(()=>playTone(660,0.25,'square',0.3),180);
-  } else if(type==='good'){
-    // Rising pleasant chime
-    playTone(523,0.15,'sine',0.35);
-    setTimeout(()=>playTone(659,0.15,'sine',0.35),160);
-    setTimeout(()=>playTone(784,0.3,'sine',0.35),320);
-  } else if(type==='bell'){
-    // Single bell
-    playTone(1047,0.6,'sine',0.4);
-    setTimeout(()=>playTone(1047,0.4,'sine',0.15),650);
-  } else if(type==='danger'){
-    // Urgent triple beep
-    [0,220,440].forEach(d=>setTimeout(()=>playTone(440,0.18,'sawtooth',0.35),d));
-  }
-}
-
-// ── TOAST + AUDIO ──────────────────────────────────────────────
-// ── TIME ALERTS ────────────────────────────────────────────────
+// ── SESSION TIME ALERTS ────────────────────────────
 let lastAlertMin=-1;
 setInterval(()=>{const ist=getISTDate();const h=ist.getHours(),m=ist.getMinutes(),key=h*60+m;if(key===lastAlertMin)return;lastAlertMin=key;
-  if(h===9&&m===15){showToast('🔔 Market Open — Watch Only. No trades yet.',true);playAlert('bell');}
-  if(h===9&&m===30){showToast('✅ 3 candles done. Direction forming. Stay patient.',false);playAlert('good');}
-  if(h===10&&m===30){showToast('📈 Prime window open. Hunt your pullback.',false);playAlert('good');}
-  if(h===13&&m===0){showToast('⚠️ Lunch hour — choppy. Reduce risk.',true);playAlert('warn');}
-  if(h===15&&m===15){showToast('🔔 Close all positions. Session ending soon.',true);playAlert('danger');}
+  if(h===9&&m===15){showToast('🔔 Market Open — Watch Only.',true);}
+  if(h===9&&m===30){showToast('✅ 3 candles done. Stay patient.',false);}
+  if(h===10&&m===30){showToast('📈 Prime window open. Hunt your pullback.',false);}
+  if(h===13&&m===0){showToast('⚠️ Lunch hour — reduce risk.',true);}
+  if(h===15&&m===15){showToast('🔔 Close all positions now.',true);}
 },15000);
 
-// ── CHART.JS CDN ───────────────────────────────────────────────
+// ── INIT ────────────────────────────────────────────
+loadTrades();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 </body>
