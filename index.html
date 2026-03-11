@@ -703,7 +703,10 @@ function renderLog(){
     return `<div style="padding:14px 0;border-bottom:1px solid var(--border);">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
         <div><span style="font-size:14px;font-weight:800;color:${t.type==='CALL'?'var(--accent)':'var(--danger)'};margin-right:8px;">${t.type==='CALL'?'📈':'📉'} ${t.type}</span><span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">${t.date}</span></div>
-        <span style="font-size:18px;font-weight:800;font-family:'Space Mono',monospace;color:${pc};">${pstr}</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;font-weight:800;font-family:'Space Mono',monospace;color:${pc};">${pstr}</span>
+          <button onclick="deleteTrade(${t.id})" title="Delete this trade" style="background:none;border:1px solid rgba(255,49,92,0.3);border-radius:6px;color:var(--danger);cursor:pointer;font-size:11px;padding:3px 8px;font-family:'Space Mono',monospace;opacity:0.6;transition:all 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">✕</button>
+        </div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
         <div>ENTRY<br><span style="color:var(--text);font-size:13px;">₹${t.entryPrice}</span></div>
@@ -717,6 +720,16 @@ function renderLog(){
       ${t.note?`<div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;line-height:1.5;">${t.note}</div>`:''}
     </div>`;
   }).join('');
+}
+
+async function deleteTrade(id){
+  if(!confirm('Delete this trade permanently?'))return;
+  try{
+    await dbFetch(`trades?id=eq.${id}`,{method:'DELETE'});
+    trades=trades.filter(t=>t.id!==id);
+    renderLog();updateStats();renderGuardrailBanner();
+    showToast('Trade deleted ✅',false);
+  }catch(e){showToast('Delete failed',true);console.error(e);}
 }
 
 async function clearTrades(){
@@ -790,9 +803,9 @@ Provide coaching with these sections:
 **TOMORROW'S INTENTION** — One sentence for tomorrow morning
 Under 250 words. Be direct. Reference actual data.`;
   try{
-    const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer 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','HTTP-Referer':'https://github.com','X-Title':'Nifty Trader'},body:JSON.stringify({model:'google/gemini-2.0-flash-001',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
-    const text=data.choices[0].message.content||'';
+    const text=data.content.map(b=>b.text||'').join('');
     loadEl.style.display='none';
     todayEl.innerHTML=text.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
     await saveAIReview(today, text.substring(0,300), text);
