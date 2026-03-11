@@ -790,9 +790,9 @@ Provide coaching with these sections:
 **TOMORROW'S INTENTION** — One sentence for tomorrow morning
 Under 250 words. Be direct. Reference actual data.`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer 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','HTTP-Referer':'https://github.com','X-Title':'Nifty Trader'},body:JSON.stringify({model:'google/gemini-2.0-flash-001',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
-    const text=data.content.map(b=>b.text||'').join('');
+    const text=data.choices[0].message.content||'';
     loadEl.style.display='none';
     todayEl.innerHTML=text.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
     await saveAIReview(today, text.substring(0,300), text);
