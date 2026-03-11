@@ -490,6 +490,20 @@ async function deleteAllTrades() {
   await dbFetch('trades?id=gte.0', { method: 'DELETE' });
 }
 
+// ── DELETE ONE TRADE FROM SUPABASE ────────────────
+async function deleteSingleTrade(tradeId) {
+  if (!confirm('Delete this trade? This cannot be undone.')) return;
+  try {
+    await dbFetch('trades?id=eq.' + tradeId, { method: 'DELETE' });
+    trades = trades.filter(t => t.id !== tradeId);
+    renderLog(); updateStats(); renderGuardrailBanner();
+    showToast('Trade deleted', true);
+  } catch(e) {
+    showToast('Delete failed', true);
+    console.error(e);
+  }
+}
+
 // ── SAVE AI REVIEW TO SUPABASE ─────────────────────
 async function saveAIReview(dateStr, summary, full) {
   const row = { id: Date.now(), data: { date: dateStr, summary, full, ts: Date.now() } };
@@ -703,7 +717,7 @@ function renderLog(){
     return `<div style="padding:14px 0;border-bottom:1px solid var(--border);">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
         <div><span style="font-size:14px;font-weight:800;color:${t.type==='CALL'?'var(--accent)':'var(--danger)'};margin-right:8px;">${t.type==='CALL'?'📈':'📉'} ${t.type}</span><span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">${t.date}</span></div>
-        <span style="font-size:18px;font-weight:800;font-family:'Space Mono',monospace;color:${pc};">${pstr}</span>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:18px;font-weight:800;font-family:'Space Mono',monospace;color:${pc};">${pstr}</span><button onclick="deleteSingleTrade(${t.id})" title="Delete trade" style="background:none;border:1px solid rgba(255,49,92,0.25);border-radius:6px;color:rgba(255,49,92,0.5);font-size:12px;cursor:pointer;padding:3px 8px;line-height:1;transition:all 0.2s;font-family:'Space Mono',monospace;" onmouseover="this.style.borderColor='var(--danger)';this.style.color='var(--danger)';" onmouseout="this.style.borderColor='rgba(255,49,92,0.25)';this.style.color='rgba(255,49,92,0.5)';">✕</button></div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
         <div>ENTRY<br><span style="color:var(--text);font-size:13px;">₹${t.entryPrice}</span></div>
