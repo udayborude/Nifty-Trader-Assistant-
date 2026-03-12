@@ -103,6 +103,30 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--dim);border-radius:4px;}
 #guardrail-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;}
 #guardrail-modal.show{display:flex;}
+
+/* ── AUTH SCREEN ── */
+#auth-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
+#auth-screen.hidden{display:none;}
+.auth-box{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:36px 32px;width:100%;max-width:380px;text-align:center;}
+.auth-logo{font-size:26px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px;}
+.auth-logo span{color:var(--accent);}
+.auth-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;}
+.auth-tabs{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:8px;border:1px solid var(--border);margin-bottom:24px;}
+.auth-tab{flex:1;padding:8px;background:transparent;border:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border-radius:6px;transition:all 0.2s;text-transform:uppercase;letter-spacing:1px;}
+.auth-tab.active{background:var(--panel);color:var(--accent);border:1px solid var(--border);}
+.auth-field{margin-bottom:14px;text-align:left;}
+.auth-field label{display:block;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;}
+.auth-field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;outline:none;transition:border-color 0.2s;}
+.auth-field input:focus{border-color:var(--accent);}
+.auth-btn{width:100%;padding:12px;border-radius:8px;border:none;background:var(--accent);color:#000;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:background 0.2s;margin-top:4px;}
+.auth-btn:hover{background:#00c888;}
+.auth-btn:disabled{background:var(--dim);color:var(--muted);cursor:not-allowed;}
+.auth-msg{font-family:'Space Mono',monospace;font-size:11px;margin-top:14px;padding:10px;border-radius:6px;display:none;}
+.auth-msg.error{background:rgba(255,49,92,0.08);border:1px solid rgba(255,49,92,0.2);color:var(--danger);}
+.auth-msg.success{background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.2);color:var(--accent);}
+.auth-user-bar{display:none;align-items:center;gap:8px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--panel);font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);cursor:pointer;transition:border-color 0.2s;}
+.auth-user-bar:hover{border-color:var(--danger);color:var(--danger);}
+.auth-user-bar.visible{display:inline-flex;}
 .modal-box{background:var(--panel);border:2px solid var(--danger);border-radius:14px;padding:28px;max-width:400px;width:90%;text-align:center;}
 .modal-icon{font-size:40px;margin-bottom:12px;}
 .modal-title{font-size:18px;font-weight:800;color:var(--danger);margin-bottom:8px;}
@@ -126,6 +150,28 @@ canvas{width:100%!important;}
 </style>
 </head>
 <body>
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">Nifty <span>Trader</span></div>
+    <div class="auth-sub">Session Assistant · Secure Login</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div class="auth-field">
+      <label>Email</label>
+      <input type="email" id="auth-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')authSubmit()">
+    </div>
+    <div class="auth-field">
+      <label>Password</label>
+      <input type="password" id="auth-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')authSubmit()">
+    </div>
+    <button class="auth-btn" id="auth-btn" onclick="authSubmit()">Login</button>
+    <div class="auth-msg" id="auth-msg"></div>
+  </div>
+</div>
+
 <div class="container">
 
 <header>
@@ -137,6 +183,7 @@ canvas{width:100%!important;}
   <div style="text-align:right;">
     <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end;">
       <button id="mute-btn" onclick="toggleMute()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--accent);font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;">🔔 Sound</button>
+      <button class="auth-user-bar" id="logout-btn" onclick="authSignOut()">🔐 Logout</button>
       <div id="clock">--:--:--</div>
     </div>
     <div id="session-label">Loading...</div>
@@ -846,8 +893,84 @@ setInterval(()=>{const ist=getISTDate();const h=ist.getHours(),m=ist.getMinutes(
 },15000);
 
 // ── INIT ────────────────────────────────────────────
-loadTrades();
+// loadTrades() is called after successful auth login
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── SUPABASE AUTH ──────────────────────────────────
+const _supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let _authMode = 'login';
+
+function switchAuthTab(mode) {
+  _authMode = mode;
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('auth-btn').textContent = mode === 'login' ? 'Login' : 'Create Account';
+  showAuthMsg('', '');
+}
+
+function showAuthMsg(msg, type) {
+  const el = document.getElementById('auth-msg');
+  if (!msg) { el.style.display = 'none'; return; }
+  el.className = 'auth-msg ' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function authSubmit() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const btn = document.getElementById('auth-btn');
+  if (!email || !password) { showAuthMsg('Please enter email and password.', 'error'); return; }
+  btn.disabled = true;
+  btn.textContent = 'Please wait...';
+  try {
+    let result;
+    if (_authMode === 'login') {
+      result = await _supa.auth.signInWithPassword({ email, password });
+    } else {
+      result = await _supa.auth.signUp({ email, password });
+    }
+    if (result.error) {
+      showAuthMsg(result.error.message, 'error');
+    } else if (_authMode === 'signup' && !result.data?.session) {
+      showAuthMsg('✅ Check your email to confirm your account, then log in.', 'success');
+    } else {
+      onAuthSuccess(result.data.user);
+    }
+  } catch(e) {
+    showAuthMsg('Something went wrong. Try again.', 'error');
+  }
+  btn.disabled = false;
+  btn.textContent = _authMode === 'login' ? 'Login' : 'Create Account';
+}
+
+function onAuthSuccess(user) {
+  document.getElementById('auth-screen').classList.add('hidden');
+  const logoutBtn = document.getElementById('logout-btn');
+  logoutBtn.classList.add('visible');
+  logoutBtn.title = user.email;
+  // Load app data now that user is authenticated
+  loadTrades();
+}
+
+async function authSignOut() {
+  if (!confirm('Log out?')) return;
+  await _supa.auth.signOut();
+  document.getElementById('auth-screen').classList.remove('hidden');
+  document.getElementById('logout-btn').classList.remove('visible');
+}
+
+// Check if already logged in on page load
+(async () => {
+  const { data: { session } } = await _supa.auth.getSession();
+  if (session) {
+    onAuthSuccess(session.user);
+  }
+  // Otherwise auth screen stays visible — don't auto-load trades
+})();
+</script>
 </body>
 </html>
