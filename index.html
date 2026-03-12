@@ -431,102 +431,25 @@ canvas{width:100%!important;}
 
 <!-- ANALYTICS -->
 <div id="tab-analytics" class="panel">
-
-  <!-- KPI ROW -->
-  <div id="analytics-kpi-row" style="display:none;margin-bottom:16px;">
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;" id="analytics-kpi-grid"></div>
-  </div>
-
-  <!-- EQUITY CURVE -->
   <div class="card">
-    <div class="card-title" style="justify-content:space-between;display:flex;align-items:center;">
-      <span>Equity Curve · Cumulative P&amp;L (₹)</span>
-      <span id="equity-change-badge" style="display:none;font-family:'Space Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;letter-spacing:1px;"></span>
-    </div>
+    <div class="card-title">Equity Curve · Cumulative P&L (₹)</div>
     <div class="chart-wrap"><canvas id="equity-chart"></canvas></div>
     <div id="equity-empty" style="text-align:center;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;padding:30px 0;">Log trades to see your equity curve</div>
   </div>
-
-  <!-- WIN / LOSS SPLIT -->
   <div class="card">
-    <div class="card-title">Win vs Loss · Distribution &amp; Avg Size</div>
-    <div id="wl-wrap">
-      <div id="wl-empty" style="text-align:center;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;padding:20px 0;">Log closed trades to see win/loss breakdown</div>
-      <div id="wl-content" style="display:none;">
-        <!-- bar -->
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);min-width:24px;text-align:right;" id="wl-win-pct-lbl">0%</div>
-          <div style="flex:1;height:12px;background:var(--dim);border-radius:6px;overflow:hidden;display:flex;">
-            <div id="wl-win-bar" style="height:100%;background:linear-gradient(90deg,#00e5a0,#00b37a);border-radius:6px 0 0 6px;transition:width 0.6s ease;"></div>
-            <div id="wl-loss-bar" style="height:100%;background:linear-gradient(90deg,#ff3a5c,#cc1a3a);transition:width 0.6s ease;"></div>
-          </div>
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--danger);min-width:24px;" id="wl-loss-pct-lbl">0%</div>
-        </div>
-        <!-- stats grid -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-          <div style="background:rgba(0,229,160,0.05);border:1px solid rgba(0,229,160,0.15);border-radius:10px;padding:12px;">
-            <div style="font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:1.5px;margin-bottom:6px;">AVG WIN</div>
-            <div id="wl-avg-win" style="font-size:20px;font-weight:800;font-family:'Space Mono',monospace;color:var(--accent);">—</div>
-          </div>
-          <div style="background:rgba(255,49,92,0.05);border:1px solid rgba(255,49,92,0.15);border-radius:10px;padding:12px;">
-            <div style="font-size:10px;color:var(--danger);font-family:'Space Mono',monospace;letter-spacing:1.5px;margin-bottom:6px;">AVG LOSS</div>
-            <div id="wl-avg-loss" style="font-size:20px;font-weight:800;font-family:'Space Mono',monospace;color:var(--danger);">—</div>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;">
-            <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1.5px;margin-bottom:6px;">PROFIT FACTOR</div>
-            <div id="wl-pf" style="font-size:20px;font-weight:800;font-family:'Space Mono',monospace;color:var(--text);">—</div>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;">
-            <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1.5px;margin-bottom:6px;">EXPECTANCY / TRADE</div>
-            <div id="wl-expect" style="font-size:20px;font-weight:800;font-family:'Space Mono',monospace;color:var(--text);">—</div>
-          </div>
-        </div>
-        <!-- call vs put mini bar -->
-        <div style="margin-top:4px;">
-          <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1.5px;margin-bottom:8px;">CALL vs PUT P&amp;L SPLIT</div>
-          <div style="display:flex;gap:10px;">
-            <div style="flex:1;background:var(--bg);border:1px solid rgba(0,229,160,0.2);border-radius:8px;padding:10px;text-align:center;">
-              <div style="font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;margin-bottom:4px;">📈 CALL</div>
-              <div id="wl-call-pnl" style="font-size:16px;font-weight:800;font-family:'Space Mono',monospace;">—</div>
-              <div id="wl-call-count" style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;"></div>
-            </div>
-            <div style="flex:1;background:var(--bg);border:1px solid rgba(255,49,92,0.2);border-radius:8px;padding:10px;text-align:center;">
-              <div style="font-size:10px;color:var(--danger);font-family:'Space Mono',monospace;margin-bottom:4px;">📉 PUT</div>
-              <div id="wl-put-pnl" style="font-size:16px;font-weight:800;font-family:'Space Mono',monospace;">—</div>
-              <div id="wl-put-count" style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TIME OF DAY HEATMAP -->
-  <div class="card">
-    <div class="card-title">Time of Day Heatmap · P&amp;L by Hour (IST)</div>
+    <div class="card-title">Time of Day Heatmap · P&L by Hour (IST)</div>
     <div id="heatmap-wrap"></div>
     <div id="heatmap-empty" style="text-align:center;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;padding:30px 0;">Log trades with entry times to see heatmap</div>
   </div>
-
-  <!-- RULE DISCIPLINE -->
   <div class="card">
     <div class="card-title">Rule Discipline Score · Per Day</div>
     <div id="discipline-wrap"></div>
     <div id="discipline-empty" style="text-align:center;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;padding:20px 0;">Log trades to see daily discipline scores</div>
   </div>
-
-  <!-- RULE BREAK BREAKDOWN -->
-  <div class="card" id="rule-break-card" style="display:none;">
-    <div class="card-title">Rule Violations · All Time Breakdown</div>
-    <div id="rule-break-wrap"></div>
-  </div>
-
-  <!-- WIN/LOSS STREAK -->
   <div class="card">
     <div class="card-title">Win/Loss Streak Tracker</div>
     <div id="streak-wrap"><div style="text-align:center;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;padding:20px 0;">Log trades to see streaks</div></div>
   </div>
-
 </div>
 
 <!-- AI LOG -->
@@ -867,167 +790,31 @@ async function clearTrades(){
 let equityChart=null;
 function renderAnalytics(){
   const sorted=[...trades].reverse();
-  const closed=sorted.filter(t=>t.result!=='OPEN');
-  const wins=closed.filter(t=>t.result==='WIN');
-  const losses=closed.filter(t=>t.result==='LOSS');
-  const totalPnl=sorted.reduce((s,t)=>s+(t.totalPnl||0),0);
-  const winRate=closed.length?Math.round((wins.length/closed.length)*100):null;
-  const avgWin=wins.length?(wins.reduce((s,t)=>s+(t.totalPnl||0),0)/wins.length):0;
-  const avgLoss=losses.length?(losses.reduce((s,t)=>s+(t.totalPnl||0),0)/losses.length):0;
-  const grossWin=wins.reduce((s,t)=>s+(t.totalPnl||0),0);
-  const grossLoss=Math.abs(losses.reduce((s,t)=>s+(t.totalPnl||0),0));
-  const profitFactor=grossLoss>0?(grossWin/grossLoss):null;
-  const expectancy=closed.length?((wins.length/closed.length)*avgWin+(losses.length/closed.length)*avgLoss):null;
-
-  // ── KPI ROW ──
-  const kpiRow=document.getElementById('analytics-kpi-row');
-  const kpiGrid=document.getElementById('analytics-kpi-grid');
-  if(sorted.length){
-    kpiRow.style.display='block';
-    const kpis=[
-      {label:'Total Trades',value:sorted.length,color:'var(--text)'},
-      {label:'Win Rate',value:winRate!==null?winRate+'%':'—',color:winRate>=55?'var(--accent)':winRate>=40?'var(--warn)':'var(--danger)'},
-      {label:'Total P&L',value:(totalPnl>=0?'+':'')+'₹'+Math.round(totalPnl),color:totalPnl>=0?'var(--accent)':'var(--danger)'},
-      {label:'Profit Factor',value:profitFactor!==null?profitFactor.toFixed(2):'—',color:profitFactor===null?'var(--text)':profitFactor>=1.5?'var(--accent)':profitFactor>=1?'var(--warn)':'var(--danger)'},
-    ];
-    kpiGrid.innerHTML=kpis.map(k=>`<div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:6px;">${k.label}</div><div style="font-size:24px;font-weight:800;font-family:'Space Mono',monospace;color:${k.color};">${k.value}</div></div>`).join('');
-  } else { kpiRow.style.display='none'; }
-
-  // ── EQUITY CURVE ──
   let cum=0;const labels=[],data=[];
   sorted.forEach((t,i)=>{cum+=(t.totalPnl||0);labels.push(`#${i+1} ${t.date}`);data.push(parseFloat(cum.toFixed(0)));});
   const eEl=document.getElementById('equity-chart'),eEmp=document.getElementById('equity-empty');
-  const badge=document.getElementById('equity-change-badge');
-  if(!sorted.length){eEl.style.display='none';eEmp.style.display='block';badge.style.display='none';}
-  else{
-    eEl.style.display='block';eEmp.style.display='none';
-    badge.style.display='inline-block';
-    const net=data[data.length-1];
-    badge.textContent=(net>=0?'+':'')+'₹'+net;
-    badge.style.background=net>=0?'rgba(0,229,160,0.1)':'rgba(255,49,92,0.1)';
-    badge.style.color=net>=0?'var(--accent)':'var(--danger)';
-    badge.style.border=`1px solid ${net>=0?'rgba(0,229,160,0.3)':'rgba(255,49,92,0.3)'}`;
+  if(!sorted.length){eEl.style.display='none';eEmp.style.display='block';}
+  else{eEl.style.display='block';eEmp.style.display='none';
     if(equityChart)equityChart.destroy();
-    equityChart=new Chart(eEl.getContext('2d'),{type:'line',data:{labels,datasets:[{label:'P&L',data,borderColor:'#00e5a0',backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,ctx.chart.height);g.addColorStop(0,'rgba(0,229,160,0.18)');g.addColorStop(1,'rgba(0,229,160,0)');return g;},borderWidth:2,pointRadius:data.map((_,i)=>i===data.length-1?5:2),pointBackgroundColor:data.map(v=>v>=0?'#00e5a0':'#ff3a5c'),tension:0.4,fill:true}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`₹${ctx.raw}`},backgroundColor:'#111418',borderColor:'#1e2430',borderWidth:1,titleColor:'#4a5568',bodyColor:'#e8edf5'}},scales:{x:{display:false},y:{ticks:{color:'#4a5568',callback:v=>'₹'+v,font:{family:'Space Mono',size:10}},grid:{color:'#1e2430'}}}}});
+    equityChart=new Chart(eEl.getContext('2d'),{type:'line',data:{labels,datasets:[{label:'P&L',data,borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:data.map(v=>v>=0?'#00e5a0':'#ff3a5c'),tension:0.3,fill:true}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`₹${ctx.raw}`}}},scales:{x:{display:false},y:{ticks:{color:'#4a5568',callback:v=>'₹'+v},grid:{color:'#1e2430'}}}}});
   }
-
-  // ── WIN/LOSS SPLIT ──
-  const wlEmpty=document.getElementById('wl-empty'),wlContent=document.getElementById('wl-content');
-  if(!closed.length){wlEmpty.style.display='block';wlContent.style.display='none';}
-  else{
-    wlEmpty.style.display='none';wlContent.style.display='block';
-    const wp=Math.round((wins.length/closed.length)*100);
-    document.getElementById('wl-win-pct-lbl').textContent=wp+'%';
-    document.getElementById('wl-loss-pct-lbl').textContent=(100-wp)+'%';
-    document.getElementById('wl-win-bar').style.width=wp+'%';
-    document.getElementById('wl-loss-bar').style.width=(100-wp)+'%';
-    document.getElementById('wl-avg-win').textContent=wins.length?'+₹'+Math.round(avgWin):'—';
-    document.getElementById('wl-avg-loss').textContent=losses.length?'₹'+Math.round(avgLoss):'—';
-    document.getElementById('wl-pf').textContent=profitFactor!==null?profitFactor.toFixed(2):'—';
-    document.getElementById('wl-pf').style.color=profitFactor===null?'var(--text)':profitFactor>=1.5?'var(--accent)':profitFactor>=1?'var(--warn)':'var(--danger)';
-    const expEl=document.getElementById('wl-expect');
-    expEl.textContent=expectancy!==null?(expectancy>=0?'+':'')+'₹'+Math.round(expectancy):'—';
-    expEl.style.color=expectancy===null?'var(--text)':expectancy>=0?'var(--accent)':'var(--danger)';
-    // call vs put
-    const callTrades=sorted.filter(t=>t.type==='CALL'),putTrades=sorted.filter(t=>t.type==='PUT');
-    const callPnl=callTrades.reduce((s,t)=>s+(t.totalPnl||0),0),putPnl=putTrades.reduce((s,t)=>s+(t.totalPnl||0),0);
-    const cpEl=document.getElementById('wl-call-pnl'),ppEl=document.getElementById('wl-put-pnl');
-    cpEl.textContent=callTrades.length?(callPnl>=0?'+':'')+'₹'+Math.round(callPnl):'—';
-    cpEl.style.color=callPnl>=0?'var(--accent)':'var(--danger)';
-    ppEl.textContent=putTrades.length?(putPnl>=0?'+':'')+'₹'+Math.round(putPnl):'—';
-    ppEl.style.color=putPnl>=0?'var(--accent)':'var(--danger)';
-    document.getElementById('wl-call-count').textContent=callTrades.length?callTrades.length+' trade'+(callTrades.length>1?'s':''):'';
-    document.getElementById('wl-put-count').textContent=putTrades.length?putTrades.length+' trade'+(putTrades.length>1?'s':''):'';
-  }
-
-  // ── TIME OF DAY HEATMAP ──
-  const hours={};for(let h=9;h<=15;h++)hours[h]={pnl:0,count:0,wins:0};
-  trades.forEach(t=>{const et=t.entryTime;if(!et||et==='—'||!/^\d{1,2}:\d{2}$/.test(et))return;const h=parseInt(et.split(':')[0],10);if(hours[h]!==undefined){hours[h].pnl+=(t.totalPnl||0);hours[h].count++;if(t.result==='WIN')hours[h].wins++;}});
+  const hours={};for(let h=9;h<=15;h++)hours[h]={pnl:0,count:0};
+  trades.forEach(t=>{const et=t.entryTime;if(!et||et==='—'||!/^\d{1,2}:\d{2}$/.test(et))return;const h=parseInt(et.split(':')[0],10);if(hours[h]!==undefined){hours[h].pnl+=(t.totalPnl||0);hours[h].count++;}});
   const hEl=document.getElementById('heatmap-wrap'),hEmp=document.getElementById('heatmap-empty');
-  const anyTimed=Object.values(hours).some(v=>v.count>0);
-  if(!anyTimed){hEl.innerHTML='';hEmp.style.display='block';}
-  else{
-    hEmp.style.display='none';
-    const maxAbs=Math.max(1,...Object.values(hours).map(v=>Math.abs(v.pnl)));
-    const SESSION_LABELS={9:'Pre',10:'Early',11:'Prime',12:'Prime',13:'Lunch',14:'Late',15:'Close'};
-    hEl.innerHTML=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px;">${Object.entries(hours).map(([h,v])=>{
-      const intensity=v.count===0?0:Math.min(1,Math.abs(v.pnl)/maxAbs);
-      const col=v.count===0?'var(--dim)':v.pnl>=0?`rgba(0,229,160,${0.12+0.88*intensity})`:`rgba(255,49,92,${0.12+0.88*intensity})`;
-      const label=v.count>0?`${v.pnl>=0?'+':''}₹${Math.round(v.pnl)}`:'—';
-      const wr=v.count>0?Math.round((v.wins/v.count)*100)+'%':'';
-      return `<div style="text-align:center;">
-        <div style="border-radius:8px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:${col};border:1px solid ${v.count>0?(v.pnl>=0?'rgba(0,229,160,0.2)':'rgba(255,49,92,0.2)'):'var(--border)'};transition:all 0.3s;">
-          <div style="font-size:9px;font-family:'Space Mono',monospace;color:${v.count===0?'var(--muted)':v.pnl>=0?'var(--accent)':'var(--danger)'};">${label}</div>
-          ${wr?`<div style="font-size:8px;font-family:'Space Mono',monospace;color:var(--muted);margin-top:2px;">${wr} WR</div>`:''}
-        </div>
-        <div style="font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:4px;text-align:center;">${h}:00</div>
-        <div style="font-size:8px;color:var(--dim);font-family:'Space Mono',monospace;text-align:center;">${SESSION_LABELS[h]||''}</div>
-      </div>`;}).join('')}</div>`;
-  }
-
-  // ── DISCIPLINE PER DAY ──
+  hEmp.style.display='none';
+  const maxAbs=Math.max(1,...Object.values(hours).map(v=>Math.abs(v.pnl)));
+  hEl.innerHTML=`<div class="heatmap-grid">${Object.entries(hours).map(([h,v])=>{const intensity=v.count===0?0:Math.min(1,Math.abs(v.pnl)/maxAbs);const col=v.count===0?'var(--dim)':v.pnl>=0?`rgba(0,229,160,${0.15+0.85*intensity})`:`rgba(255,49,92,${0.15+0.85*intensity})`;const label=v.count>0?`${v.pnl>=0?'+':''}₹${Math.round(v.pnl)}`:'—';return `<div><div class="hm-cell" style="background:${col};">${label}</div><div class="hm-label">${h}:00</div></div>`;}).join('')}</div>`;
   const byDay={};trades.forEach(t=>{if(!byDay[t.date])byDay[t.date]={trades:0,breaks:0,pnl:0};byDay[t.date].trades++;byDay[t.date].breaks+=t.breaks.length;byDay[t.date].pnl+=(t.totalPnl||0);});
   const dEl=document.getElementById('discipline-wrap'),dEmp=document.getElementById('discipline-empty');
   if(!Object.keys(byDay).length){dEl.innerHTML='';dEmp.style.display='block';}
-  else{dEmp.style.display='none';dEl.innerHTML=Object.entries(byDay).map(([date,d])=>{
-    const score=Math.max(0,100-d.breaks*20);
-    const col=score>=80?'var(--accent)':score>=50?'var(--warn)':'var(--danger)';
-    const grade=score>=80?'A':score>=60?'B':score>=40?'C':'D';
-    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);min-width:70px;">${date}</div>
-      <div style="flex:1;height:8px;background:var(--dim);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${score}%;background:${col};border-radius:4px;transition:width 0.5s ease;"></div></div>
-      <div style="font-family:'Space Mono',monospace;font-size:12px;color:${col};min-width:30px;text-align:center;font-weight:700;">${grade}</div>
-      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);min-width:20px;text-align:right;">${score}%</div>
-      <div style="font-family:'Space Mono',monospace;font-size:11px;color:${d.pnl>=0?'var(--accent)':'var(--danger)'};min-width:64px;text-align:right;">${d.pnl>=0?'+':''}₹${Math.round(d.pnl)}</div>
-    </div>`;}).join('');}
-
-  // ── RULE BREAK BREAKDOWN ──
-  const rbCard=document.getElementById('rule-break-card'),rbWrap=document.getElementById('rule-break-wrap');
-  const breakCounts={};
-  trades.forEach(t=>{(t.breaks||[]).forEach(b=>{breakCounts[b]=(breakCounts[b]||0)+1;});});
-  const breakEntries=Object.entries(breakCounts).sort((a,b)=>b[1]-a[1]);
-  if(!breakEntries.length){rbCard.style.display='none';}
-  else{
-    rbCard.style.display='block';
-    const maxB=breakEntries[0][1];
-    rbWrap.innerHTML=breakEntries.map(([rule,count])=>{
-      const pct=Math.round((count/maxB)*100);
-      return `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);">
-        <div style="flex:1;font-size:12px;font-weight:600;color:var(--danger);">${rule}</div>
-        <div style="width:100px;height:6px;background:var(--dim);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:rgba(255,49,92,0.6);border-radius:3px;"></div></div>
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--danger);min-width:20px;text-align:right;">${count}×</div>
-      </div>`;}).join('');
-  }
-
-  // ── STREAK ──
+  else{dEmp.style.display='none';dEl.innerHTML=Object.entries(byDay).map(([date,d])=>{const score=Math.max(0,100-d.breaks*20);const col=score>=80?'var(--accent)':score>=50?'var(--warn)':'var(--danger)';return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);"><div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);min-width:70px;">${date}</div><div style="flex:1;height:8px;background:var(--dim);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${score}%;background:${col};border-radius:4px;"></div></div><div style="font-family:'Space Mono',monospace;font-size:12px;color:${col};min-width:36px;text-align:right;">${score}%</div><div style="font-family:'Space Mono',monospace;font-size:11px;color:${d.pnl>=0?'var(--accent)':'var(--danger)'};min-width:64px;text-align:right;">${d.pnl>=0?'+':''}₹${Math.round(d.pnl)}</div></div>`;}).join('');}
   const sEl=document.getElementById('streak-wrap');
   if(!trades.length){sEl.innerHTML='<div style="text-align:center;color:var(--muted);font-family:Space Mono,monospace;font-size:12px;padding:20px 0;">Log trades to see streaks</div>';return;}
-  const closedRev=trades.filter(t=>t.result!=='OPEN').reverse();
+  const closed=trades.filter(t=>t.result!=='OPEN').reverse();
   let longest=0,longestType='',curType='',cur=0;
-  closedRev.forEach(t=>{if(t.result===curType)cur++;else{curType=t.result;cur=1;}if(cur>longest){longest=cur;longestType=curType;}});
-  const last=closedRev[closedRev.length-1];
-  if(last){curType=last.result;cur=0;for(let i=closedRev.length-1;i>=0;i--){if(closedRev[i].result===curType)cur++;else break;}}
-  const curColor=cur>0&&curType==='WIN'?'accent':'danger';
-  sEl.innerHTML=`
-    <div style="display:flex;justify-content:space-around;margin-bottom:20px;gap:10px;">
-      <div style="text-align:center;flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;">
-        <div class="stat-label">Current Streak</div>
-        <div class="stat-value ${curColor}" style="font-size:28px;">${cur}</div>
-        <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;">${curType}</div>
-      </div>
-      <div style="text-align:center;flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;">
-        <div class="stat-label">Best Streak</div>
-        <div class="stat-value accent" style="font-size:28px;">${longest}</div>
-        <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;">${longestType}</div>
-      </div>
-      <div style="text-align:center;flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;">
-        <div class="stat-label">Total Closed</div>
-        <div class="stat-value" style="font-size:28px;">${closedRev.length}</div>
-        <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;">trades</div>
-      </div>
-    </div>
-    <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1.5px;margin-bottom:8px;">LAST 30 TRADES</div>
-    <div class="streak-row">${closedRev.slice(-30).map(t=>`<div class="streak-dot" title="${t.date} · ${t.result===\'WIN\'?'+':''}₹${Math.round(t.totalPnl||0)}" style="background:${t.result==='WIN'?'rgba(0,229,160,0.15)':'rgba(255,49,92,0.15)'};color:${t.result==='WIN'?'var(--accent)':'var(--danger)'};border:1px solid ${t.result==='WIN'?'rgba(0,229,160,0.3)':'rgba(255,49,92,0.3)'};">${t.result==='WIN'?'W':'L'}</div>`).join('')}</div>`;
+  closed.forEach(t=>{if(t.result===curType)cur++;else{curType=t.result;cur=1;}if(cur>longest){longest=cur;longestType=curType;}});
+  const last=closed[closed.length-1];if(last){curType=last.result;cur=0;for(let i=closed.length-1;i>=0;i--){if(closed[i].result===curType)cur++;else break;}}
+  sEl.innerHTML=`<div style="display:flex;justify-content:space-around;margin-bottom:16px;"><div style="text-align:center;"><div class="stat-label">Current Streak</div><div class="stat-value ${cur>0&&curType==='WIN'?'accent':'danger'}">${cur} ${curType}</div></div><div style="text-align:center;"><div class="stat-label">Best Streak</div><div class="stat-value accent">${longest} ${longestType}</div></div></div><div class="streak-row">${closed.slice(-20).map(t=>`<div class="streak-dot" style="background:${t.result==='WIN'?'rgba(0,229,160,0.15)':'rgba(255,49,92,0.15)'};color:${t.result==='WIN'?'var(--accent)':'var(--danger)'};border:1px solid ${t.result==='WIN'?'rgba(0,229,160,0.3)':'rgba(255,49,92,0.3)'};">${t.result==='WIN'?'W':'L'}</div>`).join('')}</div>`;
 }
 
 // ── CSV EXPORT ─────────────────────────────────────
