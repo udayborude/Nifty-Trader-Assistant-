@@ -851,9 +851,11 @@ Provide coaching with these sections:
 **TOMORROW'S INTENTION** — One sentence for tomorrow morning
 Under 250 words. Be direct. Reference actual data.`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
+    const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENROUTER_KEY,'HTTP-Referer':window.location.origin,'X-Title':'Nifty Trader'},body:JSON.stringify({model:'anthropic/claude-sonnet-4-5',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
-    const text=data.content.map(b=>b.text||'').join('');
+    if(data.error){throw new Error(data.error.message);}
+    const text=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
     loadEl.style.display='none';
     todayEl.innerHTML=text.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
     await saveAIReview(today, text.substring(0,300), text);
