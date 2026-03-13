@@ -16,9 +16,9 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 .logo-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
 #clock{font-size:26px;font-weight:700;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:2px;}
 #session-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:2px;font-family:'Space Mono',monospace;text-align:right;}
-#db-status{display:inline-flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);margin-top:4px;cursor:default;}
-#db-status.connected{border-color:rgba(0,229,160,0.3);color:var(--accent);background:rgba(0,229,160,0.05);}
-#db-status.error{border-color:rgba(255,49,92,0.3);color:var(--danger);background:rgba(255,49,92,0.05);}
+#db-status{display:inline-flex;align-items:center;margin-top:6px;cursor:default;}
+
+
 .db-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
 .tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--panel);padding:4px;border-radius:10px;border:1px solid var(--border);flex-wrap:wrap;}
 .tab{flex:1;min-width:80px;padding:10px 6px;background:transparent;border:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border-radius:7px;transition:all 0.2s;text-transform:uppercase;letter-spacing:1px;}
@@ -371,7 +371,7 @@ svg.ring{overflow:visible;}
   <div>
     <div class="logo-title">Nifty <span>Trader</span></div>
     <div class="logo-sub">Session Assistant · Live</div>
-    <div id="db-status"><span class="db-dot"></span> Connecting...</div>
+    <div id="db-status"><span class="db-dot"></span></div>
   </div>
   <div style="text-align:right;">
     <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end;">
@@ -832,10 +832,11 @@ const HEADERS = { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'A
 
 // ── DB HELPERS ─────────────────────────────────────
 function setDbStatus(state) {
-  const el = document.getElementById('db-status');
-  if (state === 'connected') { el.className = 'db-dot connected'; el.innerHTML = '<span class="db-dot"></span> Supabase Connected'; }
-  else if (state === 'error')  { el.className = 'db-dot error';     el.innerHTML = '<span class="db-dot"></span> DB Error'; }
-  else                         { el.className = 'db-dot';           el.innerHTML = '<span class="db-dot"></span> Connecting...'; }
+  const dot = document.querySelector('#db-status .db-dot');
+  if (!dot) return;
+  if (state === 'connected') { dot.style.background='var(--accent)'; dot.title='Supabase Connected'; }
+  else if (state === 'error'){ dot.style.background='var(--danger)'; dot.title='DB Error'; }
+  else                       { dot.style.background='var(--muted)';  dot.title='Connecting...'; }
 }
 
 async function dbFetch(path, opts = {}) {
