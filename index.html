@@ -378,6 +378,20 @@ svg.ring{overflow:visible;}
 .dpnl-kpi{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
 .dpnl-kpi .dk-val{font-family:'Space Mono',monospace;font-size:14px;font-weight:800;line-height:1.1;}
 .dpnl-kpi .dk-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+
+/* ── PULLBACK QUALITY CARD ───────────────────────── */
+.pq-zone-btn{padding:12px 8px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .2s;text-align:center;text-transform:uppercase;}
+.pq-zone-btn:hover{border-color:var(--accent);color:var(--text);}
+.pq-zone-btn.pq-selected-discount{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.35);color:var(--accent);}
+.pq-zone-btn.pq-selected-premium{background:rgba(255,49,92,.1);border-color:rgba(255,49,92,.35);color:var(--danger);}
+.pq-zone-btn.pq-selected-fair{background:rgba(255,209,102,.1);border-color:rgba(255,209,102,.35);color:var(--warn);}
+.pq-zone-btn.pq-selected-above{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.35);color:var(--accent);}
+.pq-zone-btn.pq-selected-below{background:rgba(255,49,92,.1);border-color:rgba(255,49,92,.35);color:var(--danger);}
+.pq-zone-btn.pq-selected-atvwap{background:rgba(255,209,102,.1);border-color:rgba(255,209,102,.35);color:var(--warn);}
+.pq-vwap-scale{position:relative;height:8px;border-radius:8px;background:linear-gradient(90deg,var(--danger),var(--warn),var(--accent));margin:10px 0 5px;}
+.pq-vwap-needle{position:absolute;top:-6px;width:20px;height:20px;background:var(--text);border-radius:50%;border:3px solid var(--bg);transform:translateX(-50%);transition:left .4s ease;left:50%;}
+.pq-result{margin-top:14px;padding:12px 16px;border-radius:10px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.8;display:none;border:1px solid;}
+.pq-section-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
 </style>
 </head>
 <body>
@@ -545,6 +559,52 @@ svg.ring{overflow:visible;}
       <div id="pre-breath-done" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.2);font-size:13px;color:var(--accent);font-family:'Space Mono',monospace;">✅ Nervous system primed. Execute your plan.</div>
     </div>
   </div>
+  <div class="card">
+    <div class="card-title">Pullback Quality Assessment</div>
+
+    <!-- PREMIUM / DISCOUNT -->
+    <div class="pq-section-lbl">Is price at a premium or discount?</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
+      <div class="pq-zone-btn" id="pq-discount" onclick="selectPQ('pd','discount')">
+        <div style="font-size:18px;margin-bottom:4px;">🟢</div>
+        Discount<div style="font-size:9px;margin-top:3px;color:var(--accent);">BUY ZONE</div>
+      </div>
+      <div class="pq-zone-btn" id="pq-fair" onclick="selectPQ('pd','fair')">
+        <div style="font-size:18px;margin-bottom:4px;">🟡</div>
+        Fair Value<div style="font-size:9px;margin-top:3px;color:var(--warn);">NEUTRAL</div>
+      </div>
+      <div class="pq-zone-btn" id="pq-premium" onclick="selectPQ('pd','premium')">
+        <div style="font-size:18px;margin-bottom:4px;">🔴</div>
+        Premium<div style="font-size:9px;margin-top:3px;color:var(--danger);">RISKY BUY</div>
+      </div>
+    </div>
+
+    <!-- DAILY VWAP POSITION -->
+    <div class="pq-section-lbl">Where is price from Daily VWAP?</div>
+    <div class="pq-vwap-scale"><div class="pq-vwap-needle" id="pq-vwap-needle"></div></div>
+    <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;margin-bottom:10px;">
+      <span style="color:var(--danger)">FAR BELOW</span><span style="color:var(--warn)">AT VWAP</span><span style="color:var(--accent)">ABOVE</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
+      <div class="pq-zone-btn" id="pq-above" onclick="selectPQ('vwap','above')">
+        <div style="font-size:16px;margin-bottom:3px;">⬆️</div>
+        Above VWAP<div style="font-size:9px;margin-top:3px;color:var(--accent);">BULLISH</div>
+      </div>
+      <div class="pq-zone-btn" id="pq-atvwap" onclick="selectPQ('vwap','atvwap')">
+        <div style="font-size:16px;margin-bottom:3px;">↔️</div>
+        At VWAP<div style="font-size:9px;margin-top:3px;color:var(--warn);">DECISION</div>
+      </div>
+      <div class="pq-zone-btn" id="pq-below" onclick="selectPQ('vwap','below')">
+        <div style="font-size:16px;margin-bottom:3px;">⬇️</div>
+        Below VWAP<div style="font-size:9px;margin-top:3px;color:var(--danger);">BEARISH</div>
+      </div>
+    </div>
+
+    <!-- COMBINED SIGNAL -->
+    <div class="pq-result" id="pq-result"></div>
+    <div style="text-align:right;margin-top:10px;"><button class="btn btn-sm" onclick="resetPQ()">↺ Reset</button></div>
+  </div>
+
   <div class="card">
     <div class="card-title">Three Critical Questions</div>
     <div class="question-block">
@@ -1175,6 +1235,82 @@ function runBreath(){const s=breathSteps[bIdx];document.getElementById('breath-t
 runBreath();
 
 // ── TWO QUESTIONS ──────────────────────────────────
+
+// ── PULLBACK QUALITY ASSESSMENT ─────────────────────
+let pqPD=null, pqVWAP=null;
+
+function selectPQ(type, val){
+  if(type==='pd'){
+    pqPD=val;
+    ['pq-discount','pq-fair','pq-premium'].forEach(id=>{
+      document.getElementById(id).className='pq-zone-btn';
+    });
+    const clsMap={discount:'pq-selected-discount',fair:'pq-selected-fair',premium:'pq-selected-premium'};
+    document.getElementById('pq-'+val).classList.add(clsMap[val]);
+  } else {
+    pqVWAP=val;
+    ['pq-above','pq-atvwap','pq-below'].forEach(id=>{
+      document.getElementById(id).className='pq-zone-btn';
+    });
+    const clsMap={above:'pq-selected-above',atvwap:'pq-selected-atvwap',below:'pq-selected-below'};
+    const needlePos={above:'80%',atvwap:'50%',below:'20%'};
+    document.getElementById('pq-'+val).classList.add(clsMap[val]);
+    document.getElementById('pq-vwap-needle').style.left=needlePos[val];
+  }
+  if(pqPD && pqVWAP) evalPQResult();
+}
+
+function evalPQResult(){
+  const el=document.getElementById('pq-result');
+  el.style.display='block';
+
+  const combos={
+    'discount-above': {col:'var(--accent)',bg:'rgba(0,229,160,.07)',bc:'rgba(0,229,160,.25)',
+      icon:'🟢', title:'HIGH QUALITY SETUP',
+      msg:'Price is at a discount AND above daily VWAP — strongest buy zone. Pullback into discount is your ideal entry.'},
+    'discount-atvwap':{col:'var(--accent)',bg:'rgba(0,229,160,.06)',bc:'rgba(0,229,160,.2)',
+      icon:'🟢', title:'GOOD SETUP',
+      msg:'Discount zone with price testing VWAP — watch for VWAP hold and bounce. Valid entry if AVWAP confirms.'},
+    'discount-below': {col:'var(--warn)',bg:'rgba(255,209,102,.06)',bc:'rgba(255,209,102,.2)',
+      icon:'🟡', title:'CAUTION — BELOW VWAP',
+      msg:'Discount price but below daily VWAP — market is still bearish overall. Wait for VWAP reclaim before CALL entry.'},
+    'fair-above':     {col:'var(--warn)',bg:'rgba(255,209,102,.06)',bc:'rgba(255,209,102,.2)',
+      icon:'🟡', title:'NEUTRAL — FAIR VALUE',
+      msg:'Fair value above VWAP — not ideal for a buy. Prefer waiting for a deeper pullback into discount zone.'},
+    'fair-atvwap':    {col:'var(--warn)',bg:'rgba(255,209,102,.06)',bc:'rgba(255,209,102,.2)',
+      icon:'🟡', title:'DECISION POINT',
+      msg:'Price is exactly at fair value and VWAP — market is at a crossroads. Wait for direction before committing.'},
+    'fair-below':     {col:'var(--danger)',bg:'rgba(255,49,92,.06)',bc:'rgba(255,49,92,.2)',
+      icon:'🔴', title:'AVOID CALL ENTRY',
+      msg:'Fair value with price below VWAP — bearish context. Not a valid CALL setup. Look for PUT or stay out.'},
+    'premium-above':  {col:'var(--danger)',bg:'rgba(255,49,92,.06)',bc:'rgba(255,49,92,.2)',
+      icon:'🔴', title:'DO NOT CHASE',
+      msg:'Price at premium above VWAP — you are late to the move. Chasing here breaks your rules. Wait for pullback.'},
+    'premium-atvwap': {col:'var(--danger)',bg:'rgba(255,49,92,.06)',bc:'rgba(255,49,92,.2)',
+      icon:'🔴', title:'HIGH RISK — SKIP',
+      msg:'Premium price at VWAP — likely rejection zone. Very poor risk:reward. Do not enter.'},
+    'premium-below':  {col:'var(--danger)',bg:'rgba(255,49,92,.07)',bc:'rgba(255,49,92,.3)',
+      icon:'🔴', title:'DO NOT TRADE',
+      msg:'Premium price AND below VWAP — worst possible combination. Strong bearish signal. No CALL entry today.'},
+  };
+
+  const key=pqPD+'-'+pqVWAP;
+  const c=combos[key]||{col:'var(--muted)',bg:'rgba(30,36,48,.3)',bc:'rgba(30,36,48,.5)',icon:'⬜',title:'UNKNOWN',msg:'Select both options to see analysis.'};
+  el.style.background=c.bg;el.style.borderColor=c.bc;el.style.color=c.col;
+  el.innerHTML=c.icon+' <strong>'+c.title+'</strong><br><span style="opacity:.8;font-size:10px;">'+c.msg+'</span>';
+}
+
+function resetPQ(){
+  pqPD=null;pqVWAP=null;
+  ['pq-discount','pq-fair','pq-premium','pq-above','pq-atvwap','pq-below'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.className='pq-zone-btn';
+  });
+  const r=document.getElementById('pq-result');
+  if(r)r.style.display='none';
+  document.getElementById('pq-vwap-needle').style.left='50%';
+}
+
 let q1=null,q2=null,q3=null;
 function answerQ(n,v){const block=document.querySelectorAll('.question-block')[n-1];block.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));const btns=block.querySelectorAll('.ans-btn');if(n===1){q1=v;if(v==='no')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}else if(n===2){q2=v;if(v==='yes')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}else{q3=v;if(v==='yes')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}evalVerdict();}
 function evalVerdict(){if(q1===null||q2===null||q3===null)return;const v=document.getElementById('trade-verdict');v.style.display='block';const ok=q1==='no'&&q2==='yes'&&q3==='yes';if(ok){v.className='verdict-go';v.innerHTML='🟢 TRADE VALID<div class="verdict-sub">All 3 conditions met. Execute your plan.</div>';}else if(q1!=='no'){v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">AVWAP may fail. Wait for a cleaner setup.</div>';}else if(q2!=='yes'){v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">SL cannot hold here. Too much noise.</div>';}else{v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">5-min candle not closed yet. Wait for confirmation.</div>';}}
