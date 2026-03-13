@@ -379,37 +379,24 @@ svg.ring{overflow:visible;}
 .dpnl-kpi .dk-val{font-family:'Space Mono',monospace;font-size:14px;font-weight:800;line-height:1.1;}
 .dpnl-kpi .dk-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
 
-/* ── PULLBACK QUALITY CARD ───────────────────────── */
-.pq-section-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.pq-section-lbl::after{content:'';flex:1;height:1px;background:var(--border);}
-/* Pill row selector */
-.pq-pill-row{display:flex;gap:6px;margin-bottom:18px;}
-.pq-pill{flex:1;padding:10px 6px;border-radius:30px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;text-align:center;text-transform:uppercase;line-height:1.4;}
-.pq-pill:hover{border-color:var(--border2);color:var(--text);}
-.pq-pill .pq-pill-icon{font-size:16px;display:block;margin-bottom:5px;}
-.pq-pill .pq-pill-lbl{font-size:10px;font-weight:700;}
-.pq-pill .pq-pill-sub{font-size:8px;letter-spacing:1px;margin-top:3px;opacity:.7;}
-/* Selected states */
-.pq-pill.sel-green{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.4);color:var(--accent);}
-.pq-pill.sel-red{background:rgba(255,49,92,.1);border-color:rgba(255,49,92,.4);color:var(--danger);}
-.pq-pill.sel-warn{background:rgba(255,209,102,.1);border-color:rgba(255,209,102,.4);color:var(--warn);}
-.pq-pill.sel-info{background:rgba(124,156,255,.1);border-color:rgba(124,156,255,.4);color:var(--info);}
-/* Price range visual */
-.pq-range-wrap{position:relative;margin:4px 0 18px;height:56px;}
-.pq-range-bar{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(0,229,160,.25) 0%,rgba(0,229,160,.15) 33%,rgba(255,209,102,.15) 40%,rgba(255,209,102,.15) 60%,rgba(255,49,92,.15) 67%,rgba(255,49,92,.25) 100%);}
-.pq-range-labels{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;position:absolute;width:100%;top:0;}
-.pq-range-sublabels{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:7px;color:var(--muted);position:absolute;width:100%;bottom:0;}
-.pq-price-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;border:3px solid var(--bg);transition:left .4s ease,background .3s ease;left:50%;}
-/* VWAP line visual */
-.pq-vwap-wrap{position:relative;height:52px;margin:4px 0 18px;}
-.pq-vwap-bar{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:3px;background:var(--border2);border-radius:3px;}
-.pq-vwap-line{position:absolute;top:10%;bottom:10%;width:2px;background:rgba(255,209,102,.7);border-radius:2px;left:50%;transform:translateX(-50%);transition:left .4s ease;}
-.pq-vwap-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--text);border:3px solid var(--bg);transition:left .4s ease;left:50%;}
-.pq-vwap-labels{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:8px;position:absolute;width:100%;top:0;letter-spacing:1px;}
-.pq-vwap-sublabels{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:7px;color:var(--muted);position:absolute;width:100%;bottom:0;}
-/* Result */
-.pq-result{margin-top:14px;padding:14px 16px;border-radius:12px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.9;display:none;border:1px solid;position:relative;overflow:hidden;}
-.pq-result::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:currentColor;opacity:.6;}
+/* ── PULLBACK QUALITY CARD — OPTION C (step checklist) ── */
+.pq-step{display:flex;gap:12px;align-items:flex-start;margin-bottom:6px;}
+.pq-step-num{width:26px;height:26px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);flex-shrink:0;font-family:'Space Mono',monospace;font-weight:700;transition:all .25s;}
+.pq-step-num.done-g{background:rgba(0,229,160,.12);border-color:rgba(0,229,160,.5);color:var(--accent);}
+.pq-step-num.done-y{background:rgba(255,209,102,.12);border-color:rgba(255,209,102,.5);color:var(--warn);}
+.pq-step-num.done-r{background:rgba(255,49,92,.12);border-color:rgba(255,49,92,.5);color:var(--danger);}
+.pq-step-num.done-b{background:rgba(124,156,255,.12);border-color:rgba(124,156,255,.5);color:var(--info);}
+.pq-step-body{flex:1;}
+.pq-step-q{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--text);letter-spacing:.5px;margin-bottom:8px;}
+.pq-step-opts{display:flex;gap:6px;flex-wrap:wrap;}
+.pq-opt{padding:6px 14px;border-radius:30px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.5px;cursor:pointer;transition:all .18s;text-transform:uppercase;}
+.pq-opt:hover{border-color:var(--border2);color:var(--text);}
+.pq-opt.sel-g{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.45);color:var(--accent);}
+.pq-opt.sel-y{background:rgba(255,209,102,.1);border-color:rgba(255,209,102,.45);color:var(--warn);}
+.pq-opt.sel-r{background:rgba(255,49,92,.1);border-color:rgba(255,49,92,.45);color:var(--danger);}
+.pq-opt.sel-b{background:rgba(124,156,255,.1);border-color:rgba(124,156,255,.45);color:var(--info);}
+.pq-connector{width:0.5px;height:14px;background:var(--border);margin-left:13px;margin-bottom:6px;}
+.pq-result{margin-top:14px;padding:13px 16px;border-radius:10px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.9;display:none;border:1px solid;border-left-width:3px;}
 </style>
 </head>
 <body>
@@ -580,84 +567,43 @@ svg.ring{overflow:visible;}
   <div class="card">
     <div class="card-title">Pullback Quality Assessment</div>
 
-    <!-- SECTION 1: PREMIUM / DISCOUNT -->
-    <div class="pq-section-lbl">Price Zone</div>
-    <!-- Visual price range bar -->
-    <div class="pq-range-wrap">
-      <div class="pq-range-labels">
-        <span style="color:var(--accent)">DISCOUNT</span>
-        <span style="color:var(--warn)">FAIR VALUE</span>
-        <span style="color:var(--danger)">PREMIUM</span>
-      </div>
-      <div class="pq-range-bar"></div>
-      <div class="pq-price-dot" id="pq-price-dot" style="background:var(--muted);left:50%;"></div>
-      <div class="pq-range-sublabels">
-        <span>BUY CALL</span><span style="text-align:center;flex:1;">WAIT</span><span>BUY PUT</span>
+    <!-- STEP 1: PRICE ZONE -->
+    <div class="pq-step">
+      <div class="pq-step-num" id="pq-num1">1</div>
+      <div class="pq-step-body">
+        <div class="pq-step-q">Is price at a premium or discount?</div>
+        <div class="pq-step-opts">
+          <div class="pq-opt" id="pq-discount" onclick="selectPQ('pd','discount')">📉 Discount — buy call</div>
+          <div class="pq-opt" id="pq-fair" onclick="selectPQ('pd','fair')">⚖️ Fair value — wait</div>
+          <div class="pq-opt" id="pq-premium" onclick="selectPQ('pd','premium')">📈 Premium — buy put</div>
+        </div>
       </div>
     </div>
-    <div class="pq-pill-row">
-      <div class="pq-pill" id="pq-discount" onclick="selectPQ('pd','discount')">
-        <span class="pq-pill-icon">📉</span>
-        <div class="pq-pill-lbl">Discount</div>
-        <div class="pq-pill-sub" style="color:var(--accent);">BUY CALL</div>
-      </div>
-      <div class="pq-pill" id="pq-fair" onclick="selectPQ('pd','fair')">
-        <span class="pq-pill-icon">⚖️</span>
-        <div class="pq-pill-lbl">Fair Value</div>
-        <div class="pq-pill-sub" style="color:var(--warn);">NEUTRAL</div>
-      </div>
-      <div class="pq-pill" id="pq-premium" onclick="selectPQ('pd','premium')">
-        <span class="pq-pill-icon">📈</span>
-        <div class="pq-pill-lbl">Premium</div>
-        <div class="pq-pill-sub" style="color:var(--info);">BUY PUT</div>
-      </div>
-    </div>
+    <div class="pq-connector"></div>
 
-    <!-- SECTION 2: DAILY VWAP -->
-    <div class="pq-section-lbl">Daily VWAP Position</div>
-    <div class="pq-vwap-wrap">
-      <div class="pq-vwap-labels">
-        <span style="color:var(--danger)">BELOW</span>
-        <span style="color:var(--warn)">AT VWAP</span>
-        <span style="color:var(--accent)">ABOVE</span>
-      </div>
-      <div class="pq-vwap-bar"></div>
-      <div class="pq-vwap-line" id="pq-vwap-line"></div>
-      <div class="pq-vwap-dot" id="pq-vwap-needle"></div>
-      <div class="pq-vwap-sublabels">
-        <span>BEARISH</span><span>EQUILIBRIUM</span><span>BULLISH</span>
+    <!-- STEP 2: DAILY VWAP -->
+    <div class="pq-step">
+      <div class="pq-step-num" id="pq-num2">2</div>
+      <div class="pq-step-body">
+        <div class="pq-step-q">Where is price relative to daily VWAP?</div>
+        <div class="pq-step-opts">
+          <div class="pq-opt" id="pq-above" onclick="selectPQ('vwap','above')">▲ Above — bullish</div>
+          <div class="pq-opt" id="pq-atvwap" onclick="selectPQ('vwap','atvwap')">◆ At VWAP — decision</div>
+          <div class="pq-opt" id="pq-below" onclick="selectPQ('vwap','below')">▼ Below — bearish</div>
+        </div>
       </div>
     </div>
-    <div class="pq-pill-row">
-      <div class="pq-pill" id="pq-above" onclick="selectPQ('vwap','above')">
-        <span class="pq-pill-icon">▲</span>
-        <div class="pq-pill-lbl">Above VWAP</div>
-        <div class="pq-pill-sub" style="color:var(--accent);">BULLISH</div>
-      </div>
-      <div class="pq-pill" id="pq-atvwap" onclick="selectPQ('vwap','atvwap')">
-        <span class="pq-pill-icon">◆</span>
-        <div class="pq-pill-lbl">At VWAP</div>
-        <div class="pq-pill-sub" style="color:var(--warn);">DECISION</div>
-      </div>
-      <div class="pq-pill" id="pq-below" onclick="selectPQ('vwap','below')">
-        <span class="pq-pill-icon">▼</span>
-        <div class="pq-pill-lbl">Below VWAP</div>
-        <div class="pq-pill-sub" style="color:var(--danger);">BEARISH</div>
-      </div>
-    </div>
+    <div class="pq-connector"></div>
 
-    <!-- SECTION 3: OPTIONS LIQUIDITY -->
-    <div class="pq-section-lbl">Buyside Liquidity</div>
-    <div class="pq-pill-row">
-      <div class="pq-pill" id="pq-liq-yes" onclick="selectPQ('liq','yes')" style="flex:none;width:48%;">
-        <span class="pq-pill-icon">⚡</span>
-        <div class="pq-pill-lbl">YES</div>
-        <div class="pq-pill-sub" style="color:var(--accent);">NO OVERHEAD RESISTANCE</div>
-      </div>
-      <div class="pq-pill" id="pq-liq-no" onclick="selectPQ('liq','no')" style="flex:none;width:48%;">
-        <span class="pq-pill-icon">🧱</span>
-        <div class="pq-pill-lbl">NO</div>
-        <div class="pq-pill-sub" style="color:var(--danger);">OVERHEAD RESISTANCE</div>
+    <!-- STEP 3: BUYSIDE LIQUIDITY -->
+    <div class="pq-step">
+      <div class="pq-step-num" id="pq-num3">3</div>
+      <div class="pq-step-body">
+        <div class="pq-step-q">Will options premium take buyside liquidity?</div>
+        <div class="pq-step-opts">
+          <div class="pq-opt" id="pq-liq-yes" onclick="selectPQ('liq','yes')">⚡ Yes — no resistance</div>
+          <div class="pq-opt" id="pq-liq-no" onclick="selectPQ('liq','no')">🧱 No — overhead resistance</div>
+        </div>
       </div>
     </div>
 
@@ -1301,40 +1247,68 @@ runBreath();
 let pqPD=null, pqVWAP=null, pqLIQ=null;
 
 function selectPQ(type, val){
+  const VERDICTS={
+    'discount-above-yes':'🟢 BUY CALL — prime setup. Discount + above VWAP + liquidity clear. Enter on AVWAP confirmation.',
+    'discount-above-no':'🟡 Discount + above VWAP but overhead resistance blocks premium. Wait for resistance to clear.',
+    'discount-atvwap-yes':'🟢 BUY CALL — VWAP holding as support at discount. Liquidity confirmed. Enter on VWAP bounce.',
+    'discount-atvwap-no':'🟡 Discount + at VWAP, but resistance present. Premium may not move. Wait.',
+    'discount-below-yes':'🟡 Discount but still below VWAP. Wait for VWAP reclaim before CALL entry.',
+    'discount-below-no':'🔴 Discount, below VWAP, resistance blocking. No trade.',
+    'fair-above-yes':'🟡 Fair value above VWAP — no real edge. Wait for deeper discount pullback.',
+    'fair-above-no':'🔴 Fair value + resistance overhead. No edge. Skip.',
+    'fair-atvwap-yes':'🟡 Equilibrium point. Wait for clear direction.',
+    'fair-atvwap-no':'🔴 Decision point with resistance. Avoid.',
+    'fair-below-yes':'🔵 BUY PUT — fair value below VWAP. Pullback to VWAP + rejection = PUT entry.',
+    'fair-below-no':'🔴 Below VWAP but resistance above. Complex tape. No trade.',
+    'premium-above-yes':'🔵 BUY PUT — premium above VWAP, liquidity clear. Rejection imminent. Enter PUT.',
+    'premium-above-no':'🔴 Premium + overhead resistance = crowded. Do not chase.',
+    'premium-atvwap-yes':'🔵 BUY PUT — premium testing VWAP. Likely rejection zone. Enter PUT on fail.',
+    'premium-atvwap-no':'🔴 Premium at VWAP with overhead resistance. Avoid both sides.',
+    'premium-below-yes':'🔵 BUY PUT — premium, below VWAP, liquidity open. Strong bearish momentum.',
+    'premium-below-no':'🔴 Premium + below VWAP + blocked. Worst combination. No trade.',
+  };
   if(type==='pd'){
     pqPD=val;
-    ['pq-discount','pq-fair','pq-premium'].forEach(id=>{
-      document.getElementById(id).className='pq-pill';
-    });
-    const clsMap={discount:'pq-pill sel-green',fair:'pq-pill sel-warn',premium:'pq-pill sel-red'};
-    document.getElementById('pq-'+val).className=clsMap[val];
-    // Move price dot
-    const dot=document.getElementById('pq-price-dot');
-    const dotPos={discount:'16%',fair:'50%',premium:'84%'};
-    const dotCol={discount:'var(--accent)',fair:'var(--warn)',premium:'var(--danger)'};
-    if(dot){dot.style.left=dotPos[val];dot.style.background=dotCol[val];}
+    ['pq-discount','pq-fair','pq-premium'].forEach(id=>document.getElementById(id).className='pq-opt');
+    const cls={discount:'pq-opt sel-g',fair:'pq-opt sel-y',premium:'pq-opt sel-r'};
+    const numCls={discount:'done-g',fair:'done-y',premium:'done-r'};
+    document.getElementById('pq-'+val).className=cls[val];
+    const n=document.getElementById('pq-num1');
+    n.className='pq-step-num '+numCls[val];n.textContent='✓';
   } else if(type==='vwap'){
     pqVWAP=val;
-    ['pq-above','pq-atvwap','pq-below'].forEach(id=>{
-      document.getElementById(id).className='pq-pill';
-    });
-    const clsMap={above:'pq-pill sel-green',atvwap:'pq-pill sel-warn',below:'pq-pill sel-red'};
-    document.getElementById('pq-'+val).className=clsMap[val];
-    // Move vwap needle + line
-    const needlePos={above:'82%',atvwap:'50%',below:'18%'};
-    const needleCol={above:'var(--accent)',atvwap:'var(--warn)',below:'var(--danger)'};
-    const needle=document.getElementById('pq-vwap-needle');
-    const line=document.getElementById('pq-vwap-line');
-    if(needle){needle.style.left=needlePos[val];needle.style.background=needleCol[val];}
-    if(line){line.style.left=needlePos[val];line.style.background=needleCol[val];}
+    ['pq-above','pq-atvwap','pq-below'].forEach(id=>document.getElementById(id).className='pq-opt');
+    const cls={above:'pq-opt sel-g',atvwap:'pq-opt sel-y',below:'pq-opt sel-r'};
+    const numCls={above:'done-g',atvwap:'done-y',below:'done-r'};
+    document.getElementById('pq-'+val).className=cls[val];
+    const n=document.getElementById('pq-num2');
+    n.className='pq-step-num '+numCls[val];n.textContent='✓';
   } else if(type==='liq'){
     pqLIQ=val;
-    ['pq-liq-yes','pq-liq-no'].forEach(id=>{
-      document.getElementById(id).className='pq-pill';
-    });
-    document.getElementById('pq-liq-'+val).className='pq-pill '+(val==='yes'?'sel-green':'sel-red');
+    ['pq-liq-yes','pq-liq-no'].forEach(id=>document.getElementById(id).className='pq-opt');
+    document.getElementById('pq-liq-'+val).className='pq-opt '+(val==='yes'?'sel-g':'sel-r');
+    const n=document.getElementById('pq-num3');
+    n.className='pq-step-num '+(val==='yes'?'done-g':'done-r');n.textContent='✓';
   }
-  if(pqPD && pqVWAP && pqLIQ) evalPQResult();
+  if(pqPD && pqVWAP && pqLIQ){
+    const key=pqPD+'-'+pqVWAP+'-'+pqLIQ;
+    const v=VERDICTS[key]||'Select all three to see verdict.';
+    const el=document.getElementById('pq-result');
+    const colorMap={'🟢':{'bg':'rgba(0,229,160,.08)','bc':'rgba(0,229,160,.35)','c':'var(--accent)'},
+      '🔵':{'bg':'rgba(124,156,255,.08)','bc':'rgba(124,156,255,.35)','c':'var(--info)'},
+      '🟡':{'bg':'rgba(255,209,102,.08)','bc':'rgba(255,209,102,.35)','c':'var(--warn)'},
+      '🔴':{'bg':'rgba(255,49,92,.08)','bc':'rgba(255,49,92,.35)','c':'var(--danger)'}};
+    const icon=v.substring(0,2);
+    const co=colorMap[icon]||colorMap['🟡'];
+    el.style.display='block';el.style.background=co.bg;
+    el.style.borderColor=co.bc;el.style.color=co.c;
+    el.innerHTML='<strong>'+v.substring(0,2)+'</strong> '+v.substring(3);
+    // liquidity note
+    let liqNote='';
+    if(pqLIQ==='yes') liqNote='<br><span style="font-size:10px;opacity:.75;">⚡ No overhead resistance — premium can move freely. Buyside liquidity will be taken. Valid entry.</span>';
+    else liqNote='<br><span style="color:var(--danger);font-size:10px;opacity:.75;">🧱 Overhead resistance present — premium will struggle to move. Do NOT enter. Wait for resistance to clear.</span>';
+    el.innerHTML+= liqNote;
+  }
 }
 
 function evalPQResult(){
@@ -1391,16 +1365,14 @@ function resetPQ(){
   pqPD=null;pqVWAP=null;pqLIQ=null;
   ['pq-discount','pq-fair','pq-premium','pq-above','pq-atvwap','pq-below','pq-liq-yes','pq-liq-no'].forEach(id=>{
     const el=document.getElementById(id);
-    if(el)el.className='pq-pill';
+    if(el)el.className='pq-opt';
+  });
+  [['pq-num1','1'],['pq-num2','2'],['pq-num3','3']].forEach(([id,n])=>{
+    const el=document.getElementById(id);
+    if(el){el.className='pq-step-num';el.textContent=n;}
   });
   const r=document.getElementById('pq-result');
   if(r)r.style.display='none';
-  const needle=document.getElementById('pq-vwap-needle');
-  const line=document.getElementById('pq-vwap-line');
-  const dot=document.getElementById('pq-price-dot');
-  if(needle){needle.style.left='50%';needle.style.background='var(--text)';}
-  if(line){line.style.left='50%';line.style.background='rgba(255,209,102,.7)';}
-  if(dot){dot.style.left='50%';dot.style.background='var(--muted)';}
 }
 
 let q1=null,q2=null,q3=null;
