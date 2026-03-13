@@ -143,8 +143,7 @@ canvas{width:100%!important;}
 .day-review-date{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:1px;}
 .day-review-body{font-size:12px;color:var(--muted);line-height:1.6;display:none;}
 .day-review-item.open .day-review-body{display:block;}
-.streak-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
-.streak-dot{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Space Mono',monospace;font-weight:700;}
+
 .sync-spinner{display:inline-block;width:10px;height:10px;border:2px solid rgba(0,229,160,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-left:6px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
@@ -220,14 +219,28 @@ canvas{width:100%!important;}
 .wl-bar-val{font-family:'Space Mono',monospace;font-size:11px;min-width:40px;text-align:right;}
 
 /* ── STREAK DOTS ─────────────────────────────────── */
-.streak-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;}
-.streak-dot{
-  width:30px;height:30px;border-radius:7px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-family:'Space Mono',monospace;font-weight:700;
-  transition:transform .15s;cursor:default;
-}
-.streak-dot:hover{transform:scale(1.1);}
+/* ── STREAK TRACKER ──────────────────────────────── */
+.streak-timeline{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+.streak-block{border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;transition:transform .15s;}
+.streak-block:hover{transform:translateX(3px);}
+.streak-block::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.streak-block.sb-win{background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.18);}
+.streak-block.sb-win::before{background:var(--accent);}
+.streak-block.sb-loss{background:rgba(255,49,92,.07);border:1px solid rgba(255,49,92,.18);}
+.streak-block.sb-loss::before{background:var(--danger);}
+.streak-block.sb-current{box-shadow:0 0 14px rgba(0,229,160,.12);}
+.sb-count{font-family:'Space Mono',monospace;font-size:22px;font-weight:800;min-width:32px;line-height:1;}
+.sb-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7;}
+.sb-pnl{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;margin-left:auto;}
+.sb-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px;}
+.sb-dot{width:8px;height:8px;border-radius:2px;}
+.streak-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.streak-stat{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.streak-stat .s-val{font-family:'Space Mono',monospace;font-size:18px;font-weight:800;line-height:1.1;}
+.streak-stat .s-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+.streak-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;}
+.streak-dot{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'Space Mono',monospace;font-weight:700;transition:transform .15s;cursor:default;}
+.streak-dot:hover{transform:scale(1.15);}
 
 /* ── DISCIPLINE BARS ─────────────────────────────── */
 .disc-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
@@ -703,7 +716,7 @@ svg.ring{overflow:visible;}
     </div>
     <div class="card">
       <div class="card-title"><span class="dot"></span>Win/Loss Streak Tracker<span class="badge" id="streak-badge">—</span></div>
-      <div id="streak-stats" style="display:flex;justify-content:space-around;margin-bottom:12px;"></div>
+      <div class="streak-stat-grid" id="streak-stats"></div>
       <div id="streak-wrap"><div class="empty"><span class="empty-icon">🔗</span>Log trades to see streaks</div></div>
     </div>
   </div>
@@ -1501,40 +1514,82 @@ function renderStreak(trades){
   const sEl=document.getElementById('streak-wrap');
   const statsEl=document.getElementById('streak-stats');
   const badge=document.getElementById('streak-badge');
-  if(!closed.length){sEl.innerHTML='<div class="empty"><span class="empty-icon">🔗</span>Log trades to see streaks</div>';statsEl.innerHTML='';badge.textContent='—';return;}
-  // Track best WIN streak and best LOSS streak independently
-  let bestWin=0,bestLoss=0,curType='',cur=0;
+  if(!closed.length){
+    sEl.innerHTML='<div class="empty"><span class="empty-icon">🔗</span>Log trades to see streaks</div>';
+    statsEl.innerHTML='';badge.textContent='—';return;
+  }
+
+  // ── Build streak blocks (group consecutive same-result trades)
+  const blocks=[];
+  let bt=null,bc=0,bpnl=0,bdates=[];
   closed.forEach(t=>{
-    if(t.result===curType){cur++;}else{curType=t.result;cur=1;}
-    if(curType==='WIN'&&cur>bestWin)bestWin=cur;
-    if(curType==='LOSS'&&cur>bestLoss)bestLoss=cur;
+    if(t.result===bt){bc++;bpnl+=(t.totalPnl||0);bdates.push(t.date);}
+    else{if(bt)blocks.push({type:bt,count:bc,pnl:bpnl,dates:[...bdates]});bt=t.result;bc=1;bpnl=(t.totalPnl||0);bdates=[t.date];}
   });
-  // Current active streak
-  const last=closed[closed.length-1];
-  let curStreak=0,curStreakType='';
-  if(last){curStreakType=last.result;for(let i=closed.length-1;i>=0;i--){if(closed[i].result===curStreakType)curStreak++;else break;}}
-  badge.textContent=curStreak+' '+curStreakType;
-  badge.style.color=curStreakType==='WIN'?'var(--accent)':'var(--danger)';
-  badge.style.background=curStreakType==='WIN'?'rgba(0,229,160,.08)':'rgba(255,49,92,.08)';
-  badge.style.borderColor=curStreakType==='WIN'?'rgba(0,229,160,.2)':'rgba(255,49,92,.2)';
-  statsEl.innerHTML=`
-    <div style="text-align:center;">
-      <div class="kpi-label">Current</div>
-      <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:800;color:\${curStreakType==='WIN'?'var(--accent)':'var(--danger)'};">\${curStreak} \${curStreakType}</div>
-    </div>
-    <div style="text-align:center;">
-      <div class="kpi-label">Best Win Streak</div>
-      <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:800;color:var(--accent);">\${bestWin} WIN</div>
-    </div>
-    <div style="text-align:center;">
-      <div class="kpi-label">Worst Loss Streak</div>
-      <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:800;color:var(--danger);">\${bestLoss} LOSS</div>
-    </div>
-  `;
-  sEl.innerHTML=`<div class="streak-row">${closed.slice(-30).map(t=>{
+  if(bt)blocks.push({type:bt,count:bc,pnl:bpnl,dates:[...bdates]});
+
+  // ── Compute stats
+  const winBlocks=blocks.filter(b=>b.type==='WIN');
+  const lossBlocks=blocks.filter(b=>b.type==='LOSS');
+  const bestWin=winBlocks.length?Math.max(...winBlocks.map(b=>b.count)):0;
+  const bestLoss=lossBlocks.length?Math.max(...lossBlocks.map(b=>b.count)):0;
+  const cur=blocks[blocks.length-1];
+  const totalTrades=closed.length;
+  const wins=closed.filter(t=>t.result==='WIN').length;
+
+  // ── Badge
+  badge.textContent=cur.count+' '+cur.type;
+  badge.style.color=cur.type==='WIN'?'var(--accent)':'var(--danger)';
+  badge.style.background=cur.type==='WIN'?'rgba(0,229,160,.08)':'rgba(255,49,92,.08)';
+  badge.style.borderColor=cur.type==='WIN'?'rgba(0,229,160,.2)':'rgba(255,49,92,.2)';
+
+  // ── Stat grid (3 boxes)
+  const statItems=[
+    {val:cur.count+' '+cur.type, lbl:'Current Streak', col:cur.type==='WIN'?'var(--accent)':'var(--danger)'},
+    {val:bestWin+' WIN',          lbl:'Best Win Streak', col:'var(--accent)'},
+    {val:bestLoss+' LOSS',        lbl:'Max Loss Streak', col:'var(--danger)'},
+  ];
+  statsEl.innerHTML=statItems.map(s=>`
+    <div class="streak-stat">
+      <div class="s-val" style="color:${s.col}">${s.val}</div>
+      <div class="s-lbl">${s.lbl}</div>
+    </div>`).join('');
+
+  // ── Streak timeline (last 8 blocks, most recent at top)
+  const recentBlocks=blocks.slice(-8).reverse();
+  const isCurrent=(b,i)=>i===0; // first after reverse = most recent
+  const timeline=recentBlocks.map((b,i)=>{
+    const isW=b.type==='WIN';
+    const col=isW?'var(--accent)':'var(--danger)';
+    const pnlStr=(b.pnl>=0?'+':'')+'₹'+Math.round(b.pnl).toLocaleString('en-IN');
+    const dotCol=isW?'rgba(0,229,160,.6)':'rgba(255,49,92,.6)';
+    const dots=Array(Math.min(b.count,20)).fill(0).map(()=>`<div class="sb-dot" style="background:${dotCol};"></div>`).join('');
+    const curLabel=isCurrent(b,i)?'<span style="font-size:9px;font-family:Space Mono,monospace;color:var(--muted);letter-spacing:1px;"> CURRENT</span>':'';
+    return `<div class="streak-block ${isW?'sb-win':'sb-loss'}${isCurrent(b,i)?' sb-current':''}">
+      <div>
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <div class="sb-count" style="color:${col}">${b.count}</div>
+          <div class="sb-label">${b.type}${curLabel}</div>
+        </div>
+        <div class="sb-dots" style="margin-top:6px;">${dots}${b.count>20?`<span style="font-size:9px;color:var(--muted);font-family:Space Mono,monospace;">+${b.count-20}</span>`:''}
+        </div>
+      </div>
+      <div class="sb-pnl" style="color:${b.pnl>=0?'var(--accent)':'var(--danger)'}">${pnlStr}</div>
+    </div>`;
+  }).join('');
+
+  // ── Mini dot trail (last 40 trades)
+  const dotTrail=closed.slice(-40).map(t=>{
     const isW=t.result==='WIN';
-    return `<div class="streak-dot" style="background:${isW?'rgba(0,229,160,.12)':'rgba(255,49,92,.12)'};color:${isW?'var(--accent)':'var(--danger)'};border:1px solid ${isW?'rgba(0,229,160,.25)':'rgba(255,49,92,.25)'};" title="${t.date} · ₹${Math.round(t.totalPnl||0).toLocaleString('en-IN')}">${isW?'W':'L'}</div>`;
-  }).join('')}</div>`;
+    return `<div class="streak-dot" style="background:${isW?'rgba(0,229,160,.15)':'rgba(255,49,92,.15)'};color:${isW?'var(--accent)':'var(--danger)'};border:1px solid ${isW?'rgba(0,229,160,.3)':'rgba(255,49,92,.3)'};" title="${t.date} · ${isW?'+':''}₹${Math.round(t.totalPnl||0).toLocaleString('en-IN')}">${isW?'W':'L'}</div>`;
+  }).join('');
+
+  sEl.innerHTML=`
+    <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Recent Streak Blocks</div>
+    <div class="streak-timeline">${timeline}</div>
+    <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin:14px 0 6px;">Last ${Math.min(40,closed.length)} Trades</div>
+    <div class="streak-row">${dotTrail}</div>
+  `;
 }
 
 // ══════════════════════════════════════════════════════════════════
