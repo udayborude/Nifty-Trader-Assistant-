@@ -353,6 +353,30 @@ svg.ring{overflow:visible;}
 .an-period-tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:3px;}
 .an-period-tab{padding:6px 14px;border:none;background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;border-radius:6px;transition:all .2s;}
 .an-period-tab.active{background:var(--bg);color:var(--accent);border:1px solid var(--border);}
+
+/* ── ADVANCED DAILY PNL ──────────────────────────── */
+.daily-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;}
+.cal-header{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-align:center;padding:4px 0;text-transform:uppercase;}
+.cal-day{border-radius:7px;min-height:52px;padding:6px 5px;display:flex;flex-direction:column;justify-content:space-between;cursor:default;transition:transform .15s;border:1px solid transparent;position:relative;}
+.cal-day:hover{transform:scale(1.05);z-index:2;}
+.cal-day.cd-win{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.2);}
+.cal-day.cd-loss{background:rgba(255,49,92,.1);border-color:rgba(255,49,92,.2);}
+.cal-day.cd-empty{background:rgba(30,36,48,.3);border-color:transparent;}
+.cal-day.cd-today{box-shadow:0 0 0 2px var(--accent);}
+.cal-dn{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+.cal-pnl{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;line-height:1.2;}
+.cal-trades{font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);}
+.daily-bar-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(30,36,48,.5);}
+.daily-bar-row:last-child{border-bottom:none;}
+.daily-bar-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:62px;}
+.daily-bar-track{flex:1;height:10px;background:var(--dim);border-radius:5px;overflow:hidden;position:relative;}
+.daily-bar-fill{height:100%;border-radius:5px;transition:width .5s ease;}
+.daily-bar-val{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;min-width:72px;text-align:right;}
+.daily-bar-cnt{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);min-width:30px;text-align:right;}
+.dpnl-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.dpnl-kpi{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.dpnl-kpi .dk-val{font-family:'Space Mono',monospace;font-size:14px;font-weight:800;line-height:1.1;}
+.dpnl-kpi .dk-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
 </style>
 </head>
 <body>
@@ -789,6 +813,23 @@ svg.ring{overflow:visible;}
   </div>
 
   <!-- ── ROW 6: ADVANCED STATS ── -->
+
+  <!-- ── ADVANCED DAILY PNL ── -->
+  <div class="section-title">Advanced Daily P&L</div>
+  <div class="row r2" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Daily P&L Bars<span class="badge" id="dpnl-badge">—</span></div>
+      <div class="dpnl-kpi-row" id="dpnl-kpis"></div>
+      <div id="dpnl-bars"></div>
+      <div id="dpnl-empty" class="empty" style="display:none;"><span class="empty-icon">📊</span>Log trades to see daily breakdown</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Monthly Calendar Heatmap<span class="badge" id="dpnl-month-badge">—</span></div>
+      <div id="dpnl-calendar"></div>
+      <div id="dpnl-cal-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Log trades to see calendar</div>
+    </div>
+  </div>
+
   <div class="section-title">Advanced Statistics</div>
   <div class="row r2" style="margin-bottom:32px;">
     <div class="card">
@@ -1267,6 +1308,7 @@ function renderAll(){
   renderMonthly(trades);
   renderDayOfWeek(trades);
   renderRRScatter(trades);
+  renderDailyPnL(trades);
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -1733,6 +1775,123 @@ function renderPerfScore(trades){
       <span class="wl-bar-val" style="color:${r.color}">${r.val}%</span>
     </div>
   `).join('');
+}
+
+
+// ══════════════════════════════════════════════════════════════════
+//  ADVANCED DAILY PNL
+// ══════════════════════════════════════════════════════════════════
+function renderDailyPnL(trades){
+  const barsEl   = document.getElementById('dpnl-bars');
+  const calEl    = document.getElementById('dpnl-calendar');
+  const emptyEl  = document.getElementById('dpnl-empty');
+  const calEmpEl = document.getElementById('dpnl-cal-empty');
+  const kpiEl    = document.getElementById('dpnl-kpis');
+  const badge    = document.getElementById('dpnl-badge');
+  const mBadge   = document.getElementById('dpnl-month-badge');
+
+  // ── Group by date
+  const byDate = {};
+  trades.filter(t=>t.result!=='OPEN').forEach(t=>{
+    if(!byDate[t.date]) byDate[t.date]={pnl:0,count:0,wins:0,losses:0};
+    byDate[t.date].pnl   += (t.totalPnl||0);
+    byDate[t.date].count++;
+    if(t.result==='WIN') byDate[t.date].wins++; else byDate[t.date].losses++;
+  });
+
+  const entries = Object.entries(byDate)
+    .map(([date,d])=>({date,...d}))
+    .sort((a,b)=>{
+      const parse=s=>{const[d,m,y]=s.split('/');return new Date(y,m-1,d);};
+      return parse(a.date)-parse(b.date);
+    });
+
+  if(!entries.length){
+    barsEl.innerHTML='';calEl.innerHTML='';
+    emptyEl.style.display='flex';calEmpEl.style.display='flex';
+    kpiEl.innerHTML='';badge.textContent='—';mBadge.textContent='—';
+    return;
+  }
+  emptyEl.style.display='none';calEmpEl.style.display='none';
+
+  // ── KPIs
+  const totalDays = entries.length;
+  const greenDays = entries.filter(e=>e.pnl>=0).length;
+  const best  = entries.reduce((a,b)=>b.pnl>a.pnl?b:a);
+  const worst = entries.reduce((a,b)=>b.pnl<a.pnl?b:a);
+  const avgDaily = entries.reduce((s,e)=>s+e.pnl,0)/totalDays;
+
+  badge.textContent = greenDays+'/'+totalDays+' green days';
+  mBadge.textContent = new Date().toLocaleString('en-IN',{month:'short',year:'2-digit'});
+
+  kpiEl.innerHTML = [
+    {val:'₹'+Math.round(best.pnl).toLocaleString('en-IN'),  lbl:'Best Day',    col:'var(--accent)'},
+    {val:'₹'+Math.round(worst.pnl).toLocaleString('en-IN'), lbl:'Worst Day',   col:'var(--danger)'},
+    {val:Math.round(avgDaily>=0?avgDaily:-avgDaily).toLocaleString('en-IN')+(avgDaily>=0?' avg':' avg loss'), lbl:'Avg Daily P&L', col:avgDaily>=0?'var(--accent)':'var(--danger)'},
+    {val:greenDays+' / '+totalDays,                         lbl:'Green Days',  col:'var(--accent)'},
+  ].map(k=>`<div class="dpnl-kpi"><div class="dk-val" style="color:${k.col}">${k.val}</div><div class="dk-lbl">${k.lbl}</div></div>`).join('');
+
+  // ── Bar chart (last 30 days)
+  const barEntries = entries.slice(-30);
+  const maxAbs = Math.max(...barEntries.map(e=>Math.abs(e.pnl)),1);
+
+  barsEl.innerHTML = barEntries.map(e=>{
+    const isW = e.pnl >= 0;
+    const col  = isW ? 'var(--accent)' : 'var(--danger)';
+    const pct  = Math.min(100, Math.round(Math.abs(e.pnl)/maxAbs*100));
+    const [d,m,y] = e.date.split('/');
+    const label = d+'/'+m;
+    const pnlStr = (isW?'+':'')+'₹'+Math.round(e.pnl).toLocaleString('en-IN');
+    const wr = e.count>0?Math.round(e.wins/e.count*100)+'%':'—';
+    return `<div class="daily-bar-row">
+      <div class="daily-bar-date">${label}</div>
+      <div class="daily-bar-track"><div class="daily-bar-fill" style="width:${pct}%;background:${col};"></div></div>
+      <div class="daily-bar-val" style="color:${col}">${pnlStr}</div>
+      <div class="daily-bar-cnt">${e.count}T · ${wr}W</div>
+    </div>`;
+  }).join('');
+
+  // ── Calendar heatmap (current month)
+  const now = new Date();
+  const yr = now.getFullYear(), mo = now.getMonth(); // 0-indexed
+  const firstDay = new Date(yr,mo,1).getDay(); // 0=Sun
+  const daysInMonth = new Date(yr,mo+1,0).getDate();
+  const todayD = now.getDate();
+  const pad = firstDay===0?6:firstDay-1; // shift so Mon=0
+
+  // build date->data map for this month
+  const moStr = String(mo+1).padStart(2,'0');
+  const yrStr = String(yr);
+  const calMap = {};
+  entries.forEach(e=>{
+    const[ed,em,ey]=e.date.split('/');
+    if(em===moStr&&ey===yrStr) calMap[parseInt(ed)]=e;
+  });
+
+  const dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  let calHTML = '<div class="daily-cal-grid">';
+  dayNames.forEach(n=>calHTML+=`<div class="cal-header">${n}</div>`);
+  // empty pads
+  for(let i=0;i<pad;i++) calHTML+=`<div class="cal-day cd-empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const e = calMap[d];
+    const isToday = d===todayD;
+    let cls='cal-day cd-empty';
+    let pnlStr='', tradesStr='';
+    if(e){
+      cls = 'cal-day '+(e.pnl>=0?'cd-win':'cd-loss')+(isToday?' cd-today':'');
+      pnlStr = `<div class="cal-pnl" style="color:${e.pnl>=0?'var(--accent)':'var(--danger)'}">${e.pnl>=0?'+':''}₹${Math.round(Math.abs(e.pnl)/1000*10)/10}k</div>`;
+      tradesStr = `<div class="cal-trades">${e.count}T</div>`;
+    } else if(isToday){
+      cls = 'cal-day cd-empty cd-today';
+    }
+    calHTML += `<div class="${cls}" title="${d}/${moStr}/${yrStr}${e?' · ₹'+Math.round(e.pnl).toLocaleString('en-IN'):''}">
+      <div class="cal-dn">${d}</div>
+      ${pnlStr}${tradesStr}
+    </div>`;
+  }
+  calHTML += '</div>';
+  calEl.innerHTML = calHTML;
 }
 
 // ══════════════════════════════════════════════════════════════════
