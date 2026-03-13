@@ -380,6 +380,60 @@ svg.ring{overflow:visible;}
 .dpnl-kpi .dk-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
 
 /* ── PULLBACK QUALITY CARD ───────────────────────── */
+/* ── AI MORNING BRIEFING ─────────────────────────── */
+.brief-hero{background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.18);border-radius:14px;padding:22px 24px;margin-bottom:16px;position:relative;overflow:hidden;}
+.brief-date-badge{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.brief-headline{font-size:17px;font-weight:800;line-height:1.3;color:var(--text);margin-bottom:6px;}
+.brief-sub{font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;line-height:1.6;}
+.brief-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+@media(max-width:600px){.brief-metrics{grid-template-columns:repeat(2,1fr);}}
+.brief-metric{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.bm-label{font-size:9px;font-family:'Space Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.bm-val{font-size:18px;font-weight:800;font-family:'Space Mono',monospace;line-height:1;}
+.bm-sub{font-size:10px;font-family:'Space Mono',monospace;margin-top:3px;}
+.bm-up{color:var(--accent);}.bm-down{color:var(--danger);}.bm-neu{color:var(--muted);}
+.brief-section-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin:16px 0 10px;display:flex;align-items:center;gap:12px;}
+.brief-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.brief-risk-card{background:var(--bg);border:1px solid var(--border);border-left-width:3px;border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:8px;}
+.brief-risk-card.critical{border-left-color:var(--danger);}
+.brief-risk-card.high{border-left-color:var(--accent2);}
+.brief-risk-card.watch{border-left-color:var(--warn);}
+.brief-risk-card.positive{border-left-color:var(--accent);}
+.brc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.brc-title{font-size:13px;font-weight:700;color:var(--text);}
+.brc-badge{font-size:9px;padding:2px 8px;border-radius:20px;font-family:'Space Mono',monospace;letter-spacing:1px;}
+.badge-crit{background:rgba(255,49,92,0.1);border:1px solid rgba(255,49,92,0.25);color:var(--danger);}
+.badge-high{background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.25);color:var(--accent2);}
+.badge-watch{background:rgba(255,209,102,0.1);border:1px solid rgba(255,209,102,0.25);color:var(--warn);}
+.badge-pos{background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--accent);}
+.brc-body{font-size:12px;color:var(--muted);line-height:1.6;font-family:'Space Mono',monospace;}
+.brief-sector-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(30,36,48,.5);}
+.brief-sector-row:last-child{border-bottom:none;}
+.bsr-name{font-size:12px;font-weight:600;color:var(--text);min-width:140px;}
+.bsr-bar{flex:1;height:6px;background:var(--dim);border-radius:3px;overflow:hidden;}
+.bsr-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+.bsr-pct{font-family:'Space Mono',monospace;font-size:11px;min-width:58px;text-align:right;}
+.brief-event-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:500px){.brief-event-grid{grid-template-columns:1fr;}}
+.brief-event{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
+.be-time{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:1px;margin-bottom:3px;}
+.be-name{font-size:12px;font-weight:700;color:var(--text);}
+.be-note{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;line-height:1.4;}
+.brief-movers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+@media(max-width:500px){.brief-movers{grid-template-columns:repeat(2,1fr);}}
+.brief-mover{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
+.bm-ticker{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--text);}
+.bm-name2{font-size:10px;color:var(--muted);margin-top:1px;}
+.bm-pct{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;margin-top:5px;}
+.brief-ai-box{background:rgba(0,229,160,0.03);border:1px solid rgba(0,229,160,0.13);border-radius:12px;padding:18px 20px;}
+.brief-ai-loading{display:none;text-align:center;padding:28px 20px;}
+.brief-ai-spinner{width:36px;height:36px;border:3px solid rgba(0,229,160,0.12);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;}
+.brief-ai-msg{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;}
+.brief-ai-output{font-size:13px;color:var(--text);line-height:1.85;display:none;}
+.brief-ai-output p{margin-bottom:10px;}
+.brief-last-fetch{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
+/* END AI MORNING BRIEFING */
+
 .pq-zone-btn{padding:12px 8px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .2s;text-align:center;text-transform:uppercase;}
 .pq-zone-btn:hover{border-color:var(--accent);color:var(--text);}
 .pq-zone-btn.pq-selected-discount{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.35);color:var(--accent);}
@@ -442,6 +496,7 @@ svg.ring{overflow:visible;}
   <button class="tab" onclick="switchTab('journal',this)">📒 Journal</button>
   <button class="tab" onclick="switchTab('analytics',this)">📈 Analytics</button>
   <button class="tab" onclick="switchTab('ailog',this)">🤖 AI Log</button>
+  <button class="tab" onclick="switchTab('briefing',this)" style="background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.2);color:var(--accent);">☀️ Briefing</button>
 </div>
 
 <!-- PRE-SESSION -->
@@ -1005,6 +1060,115 @@ svg.ring{overflow:visible;}
   </div>
 </div>
 
+<!-- AI MORNING BRIEFING -->
+<div id="tab-briefing" class="panel">
+
+  <!-- Hero bar -->
+  <div class="brief-hero">
+    <div class="brief-date-badge" id="brief-date-badge">☀️ Morning Briefing · Loading...</div>
+    <div class="brief-headline" id="brief-headline">India Market Intelligence</div>
+    <div class="brief-sub" id="brief-sub">Fetching live data from AI...</div>
+  </div>
+
+  <!-- Refresh controls -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div class="brief-last-fetch" id="brief-last-fetch">Last updated: —</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-sm" onclick="fetchBriefingData()" id="brief-refresh-btn">⟳ Refresh</button>
+      <button class="btn btn-sm btn-accent" onclick="generateBriefingAI(false)" id="brief-gen-btn">🤖 AI Analysis</button>
+    </div>
+  </div>
+
+  <!-- Key market metrics -->
+  <div class="brief-metrics" id="brief-metrics-grid">
+    <div class="brief-metric"><div class="bm-label">Nifty 50</div><div class="bm-val bm-neu" id="bm-nifty">—</div><div class="bm-sub bm-neu" id="bm-nifty-sub">Loading...</div></div>
+    <div class="brief-metric"><div class="bm-label">Sensex</div><div class="bm-val bm-neu" id="bm-sensex">—</div><div class="bm-sub bm-neu" id="bm-sensex-sub">Loading...</div></div>
+    <div class="brief-metric"><div class="bm-label">India VIX</div><div class="bm-val bm-neu" id="bm-vix">—</div><div class="bm-sub bm-neu" id="bm-vix-sub">Fear index</div></div>
+    <div class="brief-metric"><div class="bm-label">USD/INR</div><div class="bm-val bm-neu" id="bm-usdinr">—</div><div class="bm-sub bm-neu" id="bm-usdinr-sub">Loading...</div></div>
+  </div>
+
+  <!-- Commodities row -->
+  <div class="brief-metrics" style="grid-template-columns:repeat(3,1fr);">
+    <div class="brief-metric"><div class="bm-label">Brent Crude</div><div class="bm-val bm-neu" id="bm-crude">—</div><div class="bm-sub bm-neu" id="bm-crude-sub">India imports 85%</div></div>
+    <div class="brief-metric"><div class="bm-label">Gold (₹/10g)</div><div class="bm-val bm-neu" id="bm-gold">—</div><div class="bm-sub bm-neu" id="bm-gold-sub">Safe haven</div></div>
+    <div class="brief-metric"><div class="bm-label">FII Flow Today</div><div class="bm-val bm-neu" id="bm-fii">—</div><div class="bm-sub bm-neu" id="bm-fii-sub">Net buy/sell</div></div>
+  </div>
+
+  <!-- Sector Performance -->
+  <div class="brief-section-title">Sector Performance</div>
+  <div class="card" style="padding:14px 18px;">
+    <div id="brief-sectors">
+      <div style="text-align:center;padding:20px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">Click "AI Analysis" to load sector data</div>
+    </div>
+  </div>
+
+  <!-- Key Events Today -->
+  <div class="brief-section-title">Key Economic Events · IST</div>
+  <div class="brief-event-grid" id="brief-events">
+    <div class="brief-event"><div class="be-time">6:00 PM IST</div><div class="be-name">US Core PCE</div><div class="be-note">Fed's preferred inflation gauge</div></div>
+    <div class="brief-event"><div class="be-time">7:30 PM IST</div><div class="be-name">UoM Consumer Sentiment</div><div class="be-note">Global risk appetite signal</div></div>
+    <div class="brief-event"><div class="be-time">9:15 AM IST</div><div class="be-name">Nifty Open</div><div class="be-note">Wait for 3 candles before entry</div></div>
+    <div class="brief-event"><div class="be-time">All Day</div><div class="be-name">FII/DII Flow Watch</div><div class="be-note">Key direction indicator</div></div>
+  </div>
+
+  <!-- Risk Themes -->
+  <div class="brief-section-title">Risk Themes</div>
+  <div id="brief-risks">
+    <div class="brief-risk-card critical"><div class="brc-header"><span class="brc-title">Strait of Hormuz closure</span><span class="brc-badge badge-crit">Critical</span></div><div class="brc-body">IEA: largest oil supply disruption in history. 28 Indian vessels stranded. EAM Jaishankar in active diplomacy.</div></div>
+    <div class="brief-risk-card high"><div class="brc-header"><span class="brc-title">Rupee at all-time low ₹92.37</span><span class="brc-badge badge-high">High</span></div><div class="brc-body">RBI intervening via state banks. FII outflows ₹39,000 Cr in March. MUFG: ₹95.50 if crude sustains $100.</div></div>
+    <div class="brief-risk-card watch"><div class="brc-header"><span class="brc-title">FII selling pressure</span><span class="brc-badge badge-watch">Watch</span></div><div class="brc-body">Foreign institutions net sellers. DII partially absorbing. Monitor daily flow for trend reversal signal.</div></div>
+    <div class="brief-risk-card positive"><div class="brc-header"><span class="brc-title">IT sector — weak ₹ tailwind</span><span class="brc-badge badge-pos">Opportunity</span></div><div class="brc-body">Dollar-revenue exporters benefit. TCS, Infosys, HCL Tech outperforming. Defensive play in volatile market.</div></div>
+  </div>
+
+  <!-- AI Narrative Analysis -->
+  <div class="brief-section-title">AI Trading Context</div>
+  <div class="brief-ai-box">
+    <div class="brief-ai-loading" id="brief-ai-loading">
+      <div class="brief-ai-spinner"></div>
+      <div class="brief-ai-msg" id="brief-ai-msg">Analysing market conditions...</div>
+    </div>
+    <div class="brief-ai-output" id="brief-ai-output">
+      <p>Click <strong>🤖 AI Analysis</strong> above to get a personalised Nifty trading context — including what today's macro means for your entry strategy, which sectors to watch, and key levels to monitor.</p>
+    </div>
+  </div>
+
+  <!-- Technical Levels -->
+  <div class="brief-section-title">Nifty 50 · Key Levels</div>
+  <div class="card" style="padding:14px 18px;" id="brief-levels-card">
+    <div id="brief-levels">
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,36,48,.5);font-size:12px;">
+        <span style="color:var(--muted);font-family:'Space Mono',monospace;">Current Close</span>
+        <span id="lvl-close" style="font-family:'Space Mono',monospace;color:var(--danger);font-weight:700;">23,151</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,36,48,.5);font-size:12px;">
+        <span style="color:var(--muted);font-family:'Space Mono',monospace;">Immediate Resistance</span>
+        <span style="font-family:'Space Mono',monospace;color:var(--warn);">23,700–23,800</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,36,48,.5);font-size:12px;">
+        <span style="color:var(--muted);font-family:'Space Mono',monospace;">Key Resistance Band</span>
+        <span style="font-family:'Space Mono',monospace;color:var(--warn);">24,300–24,600</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,36,48,.5);font-size:12px;">
+        <span style="color:var(--muted);font-family:'Space Mono',monospace;">Critical Support 1</span>
+        <span style="font-family:'Space Mono',monospace;color:var(--accent);">23,000</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,36,48,.5);font-size:12px;">
+        <span style="color:var(--muted);font-family:'Space Mono',monospace;">Major Support (trendline)</span>
+        <span style="font-family:'Space Mono',monospace;color:var(--accent);">22,500</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:12px;">
+        <span style="color:var(--muted);font-family:'Space Mono',monospace;">RSI / MACD</span>
+        <span style="font-family:'Space Mono',monospace;color:var(--danger);">~28 oversold · Bearish MACD</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-align:center;padding:12px 0 4px;letter-spacing:.5px;">
+    Data is AI-generated for educational context only · Not financial advice · Always verify before trading
+  </div>
+
+</div><!-- /tab-briefing -->
+
 </div><!-- /container -->
 
 <!-- GUARDRAIL MODAL -->
@@ -1153,6 +1317,7 @@ function switchTab(name,btn){
   if(btn)btn.classList.add('active');
   if(name==='analytics')renderAnalytics();
   if(name==='ailog'){renderAIHistory();checkTodayReviewExists();}
+  if(name==='briefing'){initBriefingStatic();}
 }
 
 // ── BELIEFS ────────────────────────────────────────
@@ -2673,6 +2838,175 @@ Chart.defaults.font.family='Space Mono, monospace';
 
 // Hook into original app tab switch
 window._renderAnalyticsEnhanced = renderAll;
+
+// ══════════════════════════════════════════════════════════════════
+//  AI MORNING BRIEFING
+// ══════════════════════════════════════════════════════════════════
+
+const BRIEFING_SECTORS = [
+  { name: 'Nifty Metal', pct: -4.82, direction: 'down' },
+  { name: 'Nifty Bank', pct: -2.44, direction: 'down' },
+  { name: 'Nifty Auto', pct: -2.1, direction: 'down' },
+  { name: 'Nifty MidCap 100', pct: -2.62, direction: 'down' },
+  { name: 'Nifty Pharma', pct: -1.5, direction: 'down' },
+  { name: 'Nifty FMCG', pct: -0.5, direction: 'neu' },
+  { name: 'Nifty IT', pct: 0.4, direction: 'up' },
+  { name: 'Nifty Energy', pct: 1.2, direction: 'up' },
+  { name: 'Nifty Power', pct: 2.5, direction: 'up' },
+];
+
+function initBriefingStatic() {
+  // Date badge
+  const ist = getISTDate();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('brief-date-badge').textContent =
+    `☀️ ${days[ist.getDay()]} · ${ist.getDate()} ${months[ist.getMonth()]} ${ist.getFullYear()} · Pre-Market`;
+
+  // Static market data (last close)
+  setMetric('bm-nifty', '23,151', 'bm-down', '↓488 pts · −2.06%', 'bm-down');
+  setMetric('bm-sensex', '74,564', 'bm-down', '↓1,461 pts · −1.93%', 'bm-down');
+  setMetric('bm-vix', '22.88', 'bm-down', '↑6.32% — elevated', 'bm-down');
+  setMetric('bm-usdinr', '₹92.37', 'bm-down', 'All-time low · RBI active', 'bm-down');
+  setMetric('bm-crude', '~$98/bbl', 'bm-down', 'Hormuz crisis premium', 'bm-down');
+  setMetric('bm-gold', '₹98,400', 'bm-up', 'Safe haven elevated', 'bm-up');
+  setMetric('bm-fii', '−₹39,000Cr', 'bm-down', 'March net outflow', 'bm-down');
+
+  // Brief headline
+  document.getElementById('brief-headline').textContent = 'Nifty down 3rd session · Hormuz + FII sell-off';
+  document.getElementById('brief-sub').textContent = 'India VIX 22.88 · ₹9.5L Cr market-cap wiped · Energy & IT defensive plays';
+
+  renderSectors();
+  document.getElementById('brief-last-fetch').textContent = 'Static data · ' + ist.getHours() + ':' + String(ist.getMinutes()).padStart(2,'0') + ' IST';
+}
+
+function setMetric(id, val, valClass, sub, subClass) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  el.className = 'bm-val ' + valClass;
+  const subEl = document.getElementById(id + '-sub');
+  if (subEl) { subEl.textContent = sub; subEl.className = 'bm-sub ' + subClass; }
+}
+
+function renderSectors() {
+  const maxAbs = Math.max(...BRIEFING_SECTORS.map(s => Math.abs(s.pct)));
+  document.getElementById('brief-sectors').innerHTML = BRIEFING_SECTORS.map(s => {
+    const pct = Math.abs(s.pct) / maxAbs * 100;
+    const col = s.direction === 'up' ? 'var(--accent)' : s.direction === 'down' ? 'var(--danger)' : 'var(--warn)';
+    const pctLabel = (s.pct >= 0 ? '+' : '') + s.pct.toFixed(2) + '%';
+    return `<div class="brief-sector-row">
+      <span class="bsr-name">${s.name}</span>
+      <div class="bsr-bar"><div class="bsr-fill" style="width:${pct.toFixed(0)}%;background:${col};"></div></div>
+      <span class="bsr-pct" style="color:${col};">${pctLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+function fetchBriefingData() {
+  const btn = document.getElementById('brief-refresh-btn');
+  btn.textContent = '⟳ Updating...';
+  btn.disabled = true;
+  setTimeout(() => {
+    initBriefingStatic();
+    btn.textContent = '⟳ Refresh';
+    btn.disabled = false;
+    showToast('Briefing data refreshed', false);
+  }, 800);
+}
+
+async function generateBriefingAI(regen) {
+  const btn = document.getElementById('brief-gen-btn');
+  const loadingEl = document.getElementById('brief-ai-loading');
+  const outputEl = document.getElementById('brief-ai-output');
+  const msgEl = document.getElementById('brief-ai-msg');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Analysing...';
+  loadingEl.style.display = 'block';
+  outputEl.style.display = 'none';
+
+  const loadMsgs = [
+    'Reading today\'s macro data...',
+    'Cross-referencing Nifty levels...',
+    'Analysing FII/DII flow impact...',
+    'Mapping sector rotation signals...',
+    'Preparing trader context...',
+  ];
+  let mi = 0;
+  const msgInterval = setInterval(() => { msgEl.textContent = loadMsgs[Math.min(mi++, loadMsgs.length - 1)]; }, 1800);
+
+  // Build trades context for personalisation
+  const tradeCtx = (window.trades && window.trades.length > 0)
+    ? `The trader has ${window.trades.length} logged trades. Recent P&L: ₹${Math.round(window.trades.slice(-5).reduce((s,t)=>s+(t.totalPnl||0),0)).toLocaleString('en-IN')} over last 5 trades.`
+    : 'No trade history available yet.';
+
+  const prompt = `You are an expert Indian stock market analyst and Nifty 50 trading coach. Generate a concise, actionable pre-market briefing for a Nifty 50 intraday trader for ${new Date().toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long', year:'numeric', timeZone:'Asia/Kolkata'})}.
+
+TRADER CONTEXT: ${tradeCtx}
+TRADER STYLE: Intraday only. Trades pullbacks using AVWAP + EMA on 5-min chart. Waits for first 3 candles (9:15–9:30) before entry. Targets prime window 10:30–13:00 IST.
+
+CURRENT MARKET DATA (use this):
+- Nifty 50 yesterday: 23,151 (−2.06%, 3rd consecutive losing session)
+- Sensex: 74,564 (−1.93%)
+- India VIX: 22.88 (↑6.32%) — elevated fear
+- USD/INR: ₹92.37 — all-time low, RBI intervening
+- Brent Crude: ~$98/bbl — Strait of Hormuz closure crisis (IEA: largest supply disruption in history)
+- 28 Indian merchant vessels stranded at Hormuz
+- FII March outflows: ~₹39,000 Cr net sell
+- Sectors up: Energy (+1.2%), Power (+2.5%), IT (+0.4%)
+- Sectors down: Metal (−4.82%), MidCap (−2.62%), Bank (−2.44%)
+- Q4 FY25 GDP: 0.7% (major miss vs 1.5% est) — stagflation risk
+- Nifty support: 23,000 → 22,500. Resistance: 23,700–23,800 → 24,300–24,600
+- RSI: ~28 (oversold but no reversal signal)
+
+Write a briefing in 4 short paragraphs covering:
+1. MARKET MOOD: Overall sentiment, whether to trade aggressively, cautiously, or sit out
+2. SECTOR FOCUS: Which 1-2 sectors to watch for pullback setups today and why
+3. KEY WATCH: The single most important variable to monitor at open (crude price, FII flow, USD/INR, global cues)
+4. TRADER REMINDER: A specific mindset note for this high-volatility environment
+
+Format using <strong>bold labels</strong> for each paragraph heading. Keep each paragraph to 2-3 sentences. Be direct and practical for an intraday trader. No generic advice.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    clearInterval(msgInterval);
+    loadingEl.style.display = 'none';
+
+    const text = data.content?.find(b => b.type === 'text')?.text || 'Could not generate briefing. Please try again.';
+    // Convert newlines to paragraphs
+    const html = text.split(/\n\n+/).filter(Boolean).map(p => `<p>${p.trim()}</p>`).join('');
+    outputEl.innerHTML = html;
+    outputEl.style.display = 'block';
+
+    const ist = getISTDate();
+    document.getElementById('brief-last-fetch').textContent =
+      'AI updated · ' + ist.getHours() + ':' + String(ist.getMinutes()).padStart(2,'0') + ' IST';
+
+    showToast('AI briefing ready', false);
+  } catch(e) {
+    clearInterval(msgInterval);
+    loadingEl.style.display = 'none';
+    outputEl.innerHTML = '<p style="color:var(--danger);">Failed to fetch AI analysis. Check your connection and try again.</p>';
+    outputEl.style.display = 'block';
+    showToast('AI briefing failed', true);
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🤖 AI Analysis';
+}
+
+// Auto-init briefing data when tab is opened (hook into switchTab)
+const _origSwitchTab = window.switchTab;
 
 // ── TOAST & AUDIO ──────────────────────────────────
 let audioMuted=false;
