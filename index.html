@@ -567,7 +567,7 @@ svg.ring{overflow:visible;}
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
       <div class="pq-zone-btn" id="pq-discount" onclick="selectPQ('pd','discount')">
         <div style="font-size:18px;margin-bottom:4px;">🟢</div>
-        Discount<div style="font-size:9px;margin-top:3px;color:var(--accent);">BUY ZONE</div>
+        Discount<div style="font-size:9px;margin-top:3px;color:var(--accent);">BUY CALL</div>
       </div>
       <div class="pq-zone-btn" id="pq-fair" onclick="selectPQ('pd','fair')">
         <div style="font-size:18px;margin-bottom:4px;">🟡</div>
@@ -575,7 +575,7 @@ svg.ring{overflow:visible;}
       </div>
       <div class="pq-zone-btn" id="pq-premium" onclick="selectPQ('pd','premium')">
         <div style="font-size:18px;margin-bottom:4px;">🔴</div>
-        Premium<div style="font-size:9px;margin-top:3px;color:var(--danger);">RISKY BUY</div>
+        Premium<div style="font-size:9px;margin-top:3px;color:var(--info);">BUY PUT</div>
       </div>
     </div>
 
@@ -1265,33 +1265,36 @@ function evalPQResult(){
   el.style.display='block';
 
   const combos={
-    'discount-above': {col:'var(--accent)',bg:'rgba(0,229,160,.07)',bc:'rgba(0,229,160,.25)',
-      icon:'🟢', title:'HIGH QUALITY SETUP',
-      msg:'Price is at a discount AND above daily VWAP — strongest buy zone. Pullback into discount is your ideal entry.'},
+    // ── DISCOUNT = BUY CALL ──────────────────────────
+    'discount-above': {col:'var(--accent)',bg:'rgba(0,229,160,.07)',bc:'rgba(0,229,160,.3)',
+      icon:'🟢', title:'BUY CALL — PRIME SETUP',
+      msg:'Discount price + above VWAP = strongest CALL zone. Market has pulled back into value and is bullish. Enter CALL on AVWAP confirmation.'},
     'discount-atvwap':{col:'var(--accent)',bg:'rgba(0,229,160,.06)',bc:'rgba(0,229,160,.2)',
-      icon:'🟢', title:'GOOD SETUP',
-      msg:'Discount zone with price testing VWAP — watch for VWAP hold and bounce. Valid entry if AVWAP confirms.'},
+      icon:'🟢', title:'BUY CALL — GOOD SETUP',
+      msg:'Discount zone + price testing VWAP from above. VWAP is acting as support. Wait for VWAP hold and AVWAP bounce — then enter CALL.'},
     'discount-below': {col:'var(--warn)',bg:'rgba(255,209,102,.06)',bc:'rgba(255,209,102,.2)',
-      icon:'🟡', title:'CAUTION — BELOW VWAP',
-      msg:'Discount price but below daily VWAP — market is still bearish overall. Wait for VWAP reclaim before CALL entry.'},
+      icon:'🟡', title:'WAIT — VWAP NOT RECLAIMED',
+      msg:'Discount price but still below VWAP. Potential CALL setup forming — but do NOT enter yet. Wait for price to close above VWAP first, then enter CALL.'},
+    // ── FAIR VALUE = WAIT ────────────────────────────
     'fair-above':     {col:'var(--warn)',bg:'rgba(255,209,102,.06)',bc:'rgba(255,209,102,.2)',
-      icon:'🟡', title:'NEUTRAL — FAIR VALUE',
-      msg:'Fair value above VWAP — not ideal for a buy. Prefer waiting for a deeper pullback into discount zone.'},
+      icon:'🟡', title:'WAIT — NOT ENOUGH DISCOUNT',
+      msg:'Fair value above VWAP — the move has already happened. No edge here. Wait for a pullback into discount zone before entering CALL.'},
     'fair-atvwap':    {col:'var(--warn)',bg:'rgba(255,209,102,.06)',bc:'rgba(255,209,102,.2)',
-      icon:'🟡', title:'DECISION POINT',
-      msg:'Price is exactly at fair value and VWAP — market is at a crossroads. Wait for direction before committing.'},
-    'fair-below':     {col:'var(--danger)',bg:'rgba(255,49,92,.06)',bc:'rgba(255,49,92,.2)',
-      icon:'🔴', title:'AVOID CALL ENTRY',
-      msg:'Fair value with price below VWAP — bearish context. Not a valid CALL setup. Look for PUT or stay out.'},
-    'premium-above':  {col:'var(--danger)',bg:'rgba(255,49,92,.06)',bc:'rgba(255,49,92,.2)',
-      icon:'🔴', title:'DO NOT CHASE',
-      msg:'Price at premium above VWAP — you are late to the move. Chasing here breaks your rules. Wait for pullback.'},
-    'premium-atvwap': {col:'var(--danger)',bg:'rgba(255,49,92,.06)',bc:'rgba(255,49,92,.2)',
-      icon:'🔴', title:'HIGH RISK — SKIP',
-      msg:'Premium price at VWAP — likely rejection zone. Very poor risk:reward. Do not enter.'},
-    'premium-below':  {col:'var(--danger)',bg:'rgba(255,49,92,.07)',bc:'rgba(255,49,92,.3)',
-      icon:'🔴', title:'DO NOT TRADE',
-      msg:'Premium price AND below VWAP — worst possible combination. Strong bearish signal. No CALL entry today.'},
+      icon:'🟡', title:'WAIT — DECISION POINT',
+      msg:'Price at fair value AND VWAP. Market is at equilibrium — could break either way. No trade until a clear direction develops.'},
+    'fair-below':     {col:'var(--info)',bg:'rgba(124,156,255,.06)',bc:'rgba(124,156,255,.2)',
+      icon:'🔵', title:'BUY PUT — CONSIDER SETUP',
+      msg:'Fair value with price below VWAP — bearish context developing. Look for pullback to VWAP from below, then enter PUT on rejection.'},
+    // ── PREMIUM = BUY PUT ────────────────────────────
+    'premium-above':  {col:'var(--info)',bg:'rgba(124,156,255,.07)',bc:'rgba(124,156,255,.25)',
+      icon:'🔵', title:'BUY PUT — PRIME SETUP',
+      msg:'Premium price + above VWAP = strongest PUT zone. Price is overextended. Look for rejection and pullback — enter PUT on AVWAP confirmation from above.'},
+    'premium-atvwap': {col:'var(--info)',bg:'rgba(124,156,255,.06)',bc:'rgba(124,156,255,.2)',
+      icon:'🔵', title:'BUY PUT — GOOD SETUP',
+      msg:'Premium price testing VWAP from above. VWAP likely to act as resistance. Wait for VWAP rejection candle, then enter PUT.'},
+    'premium-below':  {col:'var(--info)',bg:'rgba(124,156,255,.07)',bc:'rgba(124,156,255,.3)',
+      icon:'🔵', title:'BUY PUT — STRONG SETUP',
+      msg:'Premium price AND below VWAP — bearish momentum confirmed. Price rejected at premium and lost VWAP. Enter PUT on next pullback to VWAP from below.'},
   };
 
   const key=pqPD+'-'+pqVWAP;
