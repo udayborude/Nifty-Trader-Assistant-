@@ -587,6 +587,7 @@ svg.ring{overflow:visible;}
       <div class="field-label">FOLLOWED RULES?</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="Waited for pullback"    style="font-size:11px;padding:7px 10px;">Waited for pullback</button>
+        <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="Waited 5min candle close" style="font-size:11px;padding:7px 10px;">Waited 5min candle close</button>
         <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="AVWAP confirmed"        style="font-size:11px;padding:7px 10px;">AVWAP confirmed</button>
         <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="HTF checked"            style="font-size:11px;padding:7px 10px;">HTF checked</button>
         <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="EMA terrain followed"   style="font-size:11px;padding:7px 10px;">EMA terrain followed</button>
@@ -1491,11 +1492,14 @@ function renderStreak(trades){
   const statsEl=document.getElementById('streak-stats');
   const badge=document.getElementById('streak-badge');
   if(!closed.length){sEl.innerHTML='<div class="empty"><span class="empty-icon">🔗</span>Log trades to see streaks</div>';statsEl.innerHTML='';badge.textContent='—';return;}
-  let longest=0,longestType='',curType='',cur=0;
+  // Track best WIN streak and best LOSS streak independently
+  let bestWin=0,bestLoss=0,curType='',cur=0;
   closed.forEach(t=>{
-    if(t.result===curType)cur++;else{curType=t.result;cur=1;}
-    if(cur>longest){longest=cur;longestType=curType;}
+    if(t.result===curType){cur++;}else{curType=t.result;cur=1;}
+    if(curType==='WIN'&&cur>bestWin)bestWin=cur;
+    if(curType==='LOSS'&&cur>bestLoss)bestLoss=cur;
   });
+  // Current active streak
   const last=closed[closed.length-1];
   let curStreak=0,curStreakType='';
   if(last){curStreakType=last.result;for(let i=closed.length-1;i>=0;i--){if(closed[i].result===curStreakType)curStreak++;else break;}}
@@ -1506,11 +1510,15 @@ function renderStreak(trades){
   statsEl.innerHTML=`
     <div style="text-align:center;">
       <div class="kpi-label">Current</div>
-      <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:800;color:${curStreakType==='WIN'?'var(--accent)':'var(--danger)'};">${curStreak} ${curStreakType}</div>
+      <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:800;color:\${curStreakType==='WIN'?'var(--accent)':'var(--danger)'};">\${curStreak} \${curStreakType}</div>
     </div>
     <div style="text-align:center;">
-      <div class="kpi-label">Best Ever</div>
-      <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:800;color:var(--accent);">${longest} ${longestType}</div>
+      <div class="kpi-label">Best Win Streak</div>
+      <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:800;color:var(--accent);">\${bestWin} WIN</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="kpi-label">Worst Loss Streak</div>
+      <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:800;color:var(--danger);">\${bestLoss} LOSS</div>
     </div>
   `;
   sEl.innerHTML=`<div class="streak-row">${closed.slice(-30).map(t=>{
@@ -1524,7 +1532,7 @@ function renderStreak(trades){
 // ══════════════════════════════════════════════════════════════════
 function renderEdgeTable(trades){
   const tagMap={};
-  const goodRules=['Waited for pullback','AVWAP confirmed','HTF checked','EMA terrain followed'];
+  const goodRules=['Waited for pullback','Waited 5min candle close','AVWAP confirmed','HTF checked','EMA terrain followed'];
   trades.forEach(t=>{
     (t.rules||[]).forEach(r=>{
       if(!tagMap[r])tagMap[r]={trades:0,wins:0,pnl:0};
