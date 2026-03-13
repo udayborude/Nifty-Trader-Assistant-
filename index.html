@@ -466,7 +466,7 @@ svg.ring{overflow:visible;}
     </div>
   </div>
   <div class="card">
-    <div class="card-title">Two Critical Questions</div>
+    <div class="card-title">Three Critical Questions</div>
     <div class="question-block">
       <div class="question-num">Question 01</div>
       <div class="question-text">Can AVWAP fail here?</div>
@@ -481,6 +481,14 @@ svg.ring{overflow:visible;}
       <div class="answer-btns">
         <button class="ans-btn" onclick="answerQ(2,'yes')">YES — SL is clean</button>
         <button class="ans-btn" onclick="answerQ(2,'no')">NO — Too much noise</button>
+      </div>
+    </div>
+    <div class="question-block">
+      <div class="question-num">Question 03</div>
+      <div class="question-text">Is the 5-min candle closed?</div>
+      <div class="answer-btns">
+        <button class="ans-btn" onclick="answerQ(3,'yes')">YES — Candle confirmed</button>
+        <button class="ans-btn" onclick="answerQ(3,'no')">NO — Still forming</button>
       </div>
     </div>
     <div id="trade-verdict"></div>
@@ -971,10 +979,10 @@ function runBreath(){const s=breathSteps[bIdx];document.getElementById('breath-t
 runBreath();
 
 // ── TWO QUESTIONS ──────────────────────────────────
-let q1=null,q2=null;
-function answerQ(n,v){const block=document.querySelectorAll('.question-block')[n-1];block.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));const btns=block.querySelectorAll('.ans-btn');if(n===1){q1=v;if(v==='no')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}else{q2=v;if(v==='yes')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}evalVerdict();}
-function evalVerdict(){if(q1===null||q2===null)return;const v=document.getElementById('trade-verdict');v.style.display='block';const ok=q1==='no'&&q2==='yes';if(ok){v.className='verdict-go';v.innerHTML='🟢 TRADE VALID<div class="verdict-sub">Both conditions met. Execute your plan.</div>';}else if(q1!=='no'){v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">AVWAP may fail. Wait for a cleaner setup.</div>';}else{v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">SL cannot hold here. Too much noise.</div>';}}
-function resetQuestions(){q1=null;q2=null;document.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));document.getElementById('trade-verdict').style.display='none';}
+let q1=null,q2=null,q3=null;
+function answerQ(n,v){const block=document.querySelectorAll('.question-block')[n-1];block.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));const btns=block.querySelectorAll('.ans-btn');if(n===1){q1=v;if(v==='no')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}else if(n===2){q2=v;if(v==='yes')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}else{q3=v;if(v==='yes')btns[0].classList.add('selected-yes');else btns[1].classList.add('selected-no');}evalVerdict();}
+function evalVerdict(){if(q1===null||q2===null||q3===null)return;const v=document.getElementById('trade-verdict');v.style.display='block';const ok=q1==='no'&&q2==='yes'&&q3==='yes';if(ok){v.className='verdict-go';v.innerHTML='🟢 TRADE VALID<div class="verdict-sub">All 3 conditions met. Execute your plan.</div>';}else if(q1!=='no'){v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">AVWAP may fail. Wait for a cleaner setup.</div>';}else if(q2!=='yes'){v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">SL cannot hold here. Too much noise.</div>';}else{v.className='verdict-no';v.innerHTML='🔴 DO NOT TRADE<div class="verdict-sub">5-min candle not closed yet. Wait for confirmation.</div>';}}
+function resetQuestions(){q1=null;q2=null;q3=null;document.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));document.getElementById('trade-verdict').style.display='none';}
 
 // ── CHECKLIST ──────────────────────────────────────
 function toggleCheck(el){el.classList.toggle('checked');const items=document.querySelectorAll('#tab-checklist .check-item');const checked=document.querySelectorAll('#tab-checklist .check-item.checked').length;document.getElementById('check-progress').style.width=Math.round((checked/items.length)*100)+'%';document.getElementById('check-label').textContent=`${checked} / ${items.length} checks complete`;}
