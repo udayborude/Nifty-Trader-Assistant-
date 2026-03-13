@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trading Assistant</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0c0f'/%3E%3Cpolyline points='2,24 8,16 13,20 19,10 24,14 30,6' fill='none' stroke='%2300e5a0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='19' cy='10' r='2' fill='%2300e5a0'/%3E%3C/svg%3E">
+<title>Nifty Trading Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0c0f;--panel:#111418;--panel2:#13171c;--border:#1e2430;--border2:#252d3a;--accent:#00e5a0;--accent2:#ff6b35;--warn:#ffd166;--danger:#ff3a5c;--info:#7c9cff;--text:#e8edf5;--muted:#4a5568;--dim:#2d3748;}
@@ -963,13 +962,43 @@ svg.ring{overflow:visible;}
 
 <!-- AI LOG -->
 <div id="tab-ailog" class="panel">
+
+  <!-- Streak / insight strip -->
+  <div id="ai-meta-strip" style="display:none;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;">
+    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
+      <span style="color:var(--text);font-weight:700;" id="ai-meta-count">0</span> reviews saved
+    </div>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
+      Streak: <span style="color:var(--accent);font-weight:700;" id="ai-meta-streak">—</span>
+    </div>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
+      Last: <span style="color:var(--text);" id="ai-meta-last">—</span>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-title">🤖 AI Daily Review · Generate & Save</div>
     <div style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7;">The AI reads your trades, studies your patterns over time, and saves a coaching note for today.</div>
-    <button class="btn btn-accent" onclick="generateDailyReview()" style="width:100%;justify-content:center;padding:14px;margin-bottom:12px;">🔍 Generate Today's AI Review</button>
-    <div id="ai-loading" style="display:none;text-align:center;padding:20px;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:1px;"><div style="margin-bottom:10px;font-size:22px;">⏳</div>Studying your trading patterns...</div>
-    <div id="ai-today" style="font-size:13px;line-height:1.8;color:var(--text);"></div>
+
+    <!-- Generate / Regenerate buttons -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <button id="ai-gen-btn" class="btn btn-accent" onclick="generateDailyReview(false)" style="flex:1;justify-content:center;padding:14px;">🔍 Generate Today's AI Review</button>
+      <button id="ai-regen-btn" class="btn" onclick="generateDailyReview(true)" style="display:none;padding:14px 16px;" title="Regenerate a fresh review for today">↺ Regen</button>
+    </div>
+
+    <!-- Animated loading -->
+    <div id="ai-loading" style="display:none;text-align:center;padding:24px 20px;">
+      <div style="width:40px;height:40px;border:3px solid rgba(0,229,160,0.15);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;"></div>
+      <div id="ai-loading-msg" style="color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:1px;transition:opacity 0.4s;">Reading your trades...</div>
+    </div>
+
+    <!-- Today's result -->
+    <div id="ai-today-wrap" style="display:none;">
+      <div id="ai-today" style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px;"></div>
+      <button class="btn btn-sm" onclick="copyAIReview()" style="color:var(--accent);border-color:var(--accent);">📋 Copy Review</button>
+    </div>
   </div>
+
   <div class="card" id="ai-history-card" style="display:none;">
     <div class="card-title">📅 Day-by-Day Review Log</div>
     <div id="ai-history-log"></div>
@@ -1077,9 +1106,16 @@ async function saveAIReview(dateStr, summary, full) {
 
 async function loadAIReviews() {
   try {
-    const rows = await dbFetch('ai_reviews?select=data&order=id.desc&limit=30');
-    return rows.map(r => r.data);
+    const rows = await dbFetch('ai_reviews?select=id,data&order=id.desc&limit=30');
+    return rows.map(r => ({ ...r.data, _id: r.id }));
   } catch(e) { return []; }
+}
+
+async function deleteAIReview(id) {
+  if (!confirm('Delete this review?')) return;
+  await dbFetch('ai_reviews?id=eq.' + id, { method: 'DELETE', headers: { ...HEADERS, 'Prefer': 'return=minimal' } });
+  renderAIHistory();
+  showToast('Review deleted', true);
 }
 
 // ══════════════════════════════════════════════════
@@ -1116,7 +1152,7 @@ function switchTab(name,btn){
   document.getElementById('tab-'+name).classList.add('active');
   if(btn)btn.classList.add('active');
   if(name==='analytics')renderAnalytics();
-  if(name==='ailog')renderAIHistory();
+  if(name==='ailog'){renderAIHistory();checkTodayReviewExists();}
 }
 
 // ── BELIEFS ────────────────────────────────────────
@@ -1507,18 +1543,78 @@ function exportCSV(){
 }
 
 // ── AI REVIEW ──────────────────────────────────────
-async function generateDailyReview(){
-  if(!trades.length){showToast('Log some trades first!',true);return;}
-  const loadEl=document.getElementById('ai-loading'),todayEl=document.getElementById('ai-today');
-  todayEl.innerHTML='';loadEl.style.display='block';
-  const today=todayStr();
-  const prevReviews=await loadAIReviews();
-  let histContext='';
-  if(prevReviews.length){histContext='\n\nPREVIOUS AI REVIEWS:\n'+prevReviews.slice(0,3).map(r=>`[${r.date}]: ${r.summary}`).join('\n');}
-  const todayTrades=trades.filter(t=>t.date===today);
-  const allSummary=trades.slice(0,30).map((t,i)=>`Trade ${i+1} (${t.date}): ${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Time:${t.entryTime}→${t.exitTime}, Tags:[${t.rules.join(', ')}]${t.note?', Note:'+t.note:''}`).join('\n');
-  const prompt=`You are a strict but caring trading coach for an Indian Nifty options trader. Today is ${today}.
-TODAY'S TRADES: ${todayTrades.length?todayTrades.map(t=>`${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Tags:[${t.rules.join(', ')}]`).join('\n'):'No trades today.'}
+// ── CHECK IF TODAY ALREADY HAS A REVIEW ─────────────
+async function checkTodayReviewExists() {
+  const reviews = await loadAIReviews();
+  const today = todayStr();
+  const existing = reviews.find(r => r.date === today);
+  const regenBtn = document.getElementById('ai-regen-btn');
+  if (existing && regenBtn) {
+    regenBtn.style.display = 'inline-flex';
+    // Also show the saved review
+    const todayEl = document.getElementById('ai-today');
+    const todayWrap = document.getElementById('ai-today-wrap');
+    if (todayEl && !todayEl.innerHTML) {
+      todayEl.innerHTML = existing.full.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+      todayWrap.style.display = 'block';
+    }
+  }
+}
+
+// ── AI LOADING MESSAGES ─────────────────────────────
+const AI_LOADING_MSGS = [
+  'Reading your last 30 trades...',
+  'Spotting recurring patterns...',
+  'Comparing to previous sessions...',
+  'Writing your coaching note...',
+  'Almost ready...'
+];
+let _aiLoadingTimer = null;
+
+function startAILoadingAnim() {
+  let i = 0;
+  const el = document.getElementById('ai-loading-msg');
+  if (el) el.textContent = AI_LOADING_MSGS[0];
+  _aiLoadingTimer = setInterval(() => {
+    i = (i + 1) % AI_LOADING_MSGS.length;
+    if (el) { el.style.opacity = '0'; setTimeout(() => { el.textContent = AI_LOADING_MSGS[i]; el.style.opacity = '1'; }, 250); }
+  }, 1800);
+}
+function stopAILoadingAnim() { clearInterval(_aiLoadingTimer); _aiLoadingTimer = null; }
+
+// ── COPY REVIEW ──────────────────────────────────────
+function copyAIReview() {
+  const el = document.getElementById('ai-today');
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('Review copied to clipboard ✅', false)).catch(() => showToast('Copy failed — select text manually', true));
+}
+
+// ── GENERATE DAILY REVIEW ───────────────────────────
+let _lastAIReviewText = '';
+
+async function generateDailyReview(isRegen = false) {
+  if (!trades.length) { showToast('Log some trades first!', true); return; }
+  const loadEl = document.getElementById('ai-loading');
+  const todayWrap = document.getElementById('ai-today-wrap');
+  const todayEl = document.getElementById('ai-today');
+  const regenBtn = document.getElementById('ai-regen-btn');
+  const genBtn = document.getElementById('ai-gen-btn');
+
+  todayWrap.style.display = 'none';
+  loadEl.style.display = 'block';
+  genBtn.disabled = true;
+  if (regenBtn) regenBtn.disabled = true;
+  startAILoadingAnim();
+
+  const today = todayStr();
+  const prevReviews = await loadAIReviews();
+  let histContext = '';
+  if (prevReviews.length) { histContext = '\n\nPREVIOUS AI REVIEWS:\n' + prevReviews.slice(0, 3).map(r => `[${r.date}]: ${r.summary}`).join('\n'); }
+  const todayTrades = trades.filter(t => t.date === today);
+  const allSummary = trades.slice(0, 30).map((t, i) => `Trade ${i+1} (${t.date}): ${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Time:${t.entryTime}→${t.exitTime}, Tags:[${t.rules.join(', ')}]${t.note?', Note:'+t.note:''}`).join('\n');
+  const prompt = `You are a strict but caring trading coach for an options trader. Today is ${today}.
+TODAY'S TRADES: ${todayTrades.length ? todayTrades.map(t => `${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Tags:[${t.rules.join(', ')}]`).join('\n') : 'No trades today.'}
 ALL RECENT TRADES: ${allSummary}
 ${histContext}
 RULES: No trades in first 3 candles. Only buy pullbacks via AVWAP. SL=10pts max. Always check Daily EMA. Follow 5-min EMA terrain.
@@ -1529,28 +1625,93 @@ Provide coaching with these sections:
 **ONE THING TO FIX** — Single most important improvement
 **TOMORROW'S INTENTION** — One sentence for tomorrow morning
 Under 250 words. Be direct. Reference actual data.`;
-  try{
+
+  try {
     const OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
-    const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENROUTER_KEY,'HTTP-Referer':window.location.origin,'X-Title':'Nifty Trader'},body:JSON.stringify({model:'anthropic/claude-sonnet-4-5',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    if(data.error){throw new Error(data.error.message);}
-    const text=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
-    loadEl.style.display='none';
-    todayEl.innerHTML=text.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
-    await saveAIReview(today, text.substring(0,300), text);
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': window.location.origin, 'X-Title': 'Trading Assistant' }, body: JSON.stringify({ model: 'anthropic/claude-sonnet-4-5', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] }) });
+    const data = await res.json();
+    if (data.error) { throw new Error(data.error.message); }
+    const text = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
+    _lastAIReviewText = text;
+
+    stopAILoadingAnim();
+    loadEl.style.display = 'none';
+    todayEl.innerHTML = text.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+    todayWrap.style.display = 'block';
+    if (regenBtn) regenBtn.style.display = 'inline-flex';
+
+    await saveAIReview(today, text.substring(0, 300), text);
     renderAIHistory();
-    showToast('AI review saved to Supabase ✅',false);
-  }catch(e){loadEl.style.display='none';todayEl.innerHTML='<span style="color:var(--danger);">Could not connect to AI.</span>';}
+    showToast(isRegen ? 'Review regenerated ✅' : 'AI review saved ✅', false);
+  } catch(e) {
+    stopAILoadingAnim();
+    loadEl.style.display = 'none';
+    todayEl.innerHTML = '<span style="color:var(--danger);">Could not connect to AI. Check your API key.</span>';
+    todayWrap.style.display = 'block';
+  }
+  genBtn.disabled = false;
+  if (regenBtn) regenBtn.disabled = false;
 }
 
-async function renderAIHistory(){
-  const card=document.getElementById('ai-history-card'),log=document.getElementById('ai-history-log');
-  const reviews=await loadAIReviews();
-  if(!reviews.length){card.style.display='none';return;}
-  card.style.display='block';
-  log.innerHTML=reviews.map(r=>{
-    const html=r.full.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
-    return `<div class="day-review-item" onclick="this.classList.toggle('open')"><div class="day-review-header"><span class="day-review-date">📅 ${r.date}</span><span style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">tap to expand ▾</span></div><div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">${r.summary.substring(0,100)}...</div><div class="day-review-body" style="margin-top:12px;font-size:13px;line-height:1.8;color:var(--text);">${html}</div></div>`;
+async function renderAIHistory() {
+  const card = document.getElementById('ai-history-card'), log = document.getElementById('ai-history-log');
+  const reviews = await loadAIReviews();
+
+  // Update meta strip
+  const strip = document.getElementById('ai-meta-strip');
+  const countEl = document.getElementById('ai-meta-count');
+  const streakEl = document.getElementById('ai-meta-streak');
+  const lastEl = document.getElementById('ai-meta-last');
+  if (reviews.length) {
+    strip.style.display = 'flex';
+    countEl.textContent = reviews.length;
+    lastEl.textContent = reviews[0].date || '—';
+    // Calculate streak: consecutive days with reviews
+    let streak = 0;
+    const today = getISTDate();
+    for (let i = 0; i < reviews.length; i++) {
+      const parts = reviews[i].date ? reviews[i].date.split('/') : null;
+      if (!parts) break;
+      const d = new Date(parts[2], parts[1]-1, parts[0]);
+      const diff = Math.round((today - d) / 86400000);
+      if (diff === i) streak++; else break;
+    }
+    streakEl.textContent = streak + (streak === 1 ? ' day' : ' days');
+  } else {
+    strip.style.display = 'none';
+  }
+
+  if (!reviews.length) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+
+  // Calculate per-day P&L for badges
+  log.innerHTML = reviews.map(r => {
+    const html = r.full.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--accent);">$1</strong>').replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+    // Try to derive P&L badge from trades data
+    let pnlBadge = '';
+    if (window.trades && r.date) {
+      const dayTrades = window.trades.filter(t => t.date === r.date);
+      if (dayTrades.length) {
+        const pnl = dayTrades.reduce((sum, t) => sum + (t.totalPnl || 0), 0);
+        const color = pnl >= 0 ? 'var(--accent)' : 'var(--danger)';
+        const bg = pnl >= 0 ? 'rgba(0,229,160,0.1)' : 'rgba(255,49,92,0.1)';
+        pnlBadge = `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:${bg};color:${color};font-family:'Space Mono',monospace;border:1px solid ${color};margin-left:8px;">${pnl >= 0 ? '+' : ''}₹${Math.round(pnl)}</span>`;
+      }
+    }
+    const deleteId = r._id || '';
+    return `<div class="day-review-item">
+      <div class="day-review-header" onclick="this.parentElement.classList.toggle('open')" style="cursor:pointer;">
+        <span class="day-review-date">📅 ${r.date}${pnlBadge}</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">tap to expand ▾</span>
+          ${deleteId ? `<button onclick="event.stopPropagation();deleteAIReview(${deleteId})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:2px 4px;line-height:1;" title="Delete this review">🗑</button>` : ''}
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">${r.summary.substring(0, 100)}...</div>
+      <div class="day-review-body" style="margin-top:12px;font-size:13px;line-height:1.8;color:var(--text);">${html}
+        <button class="btn btn-sm" onclick="navigator.clipboard.writeText(this.closest('.day-review-item').querySelector('.day-review-body').innerText).then(()=>showToast('Copied ✅',false))" style="margin-top:12px;color:var(--accent);border-color:var(--accent);">📋 Copy</button>
+      </div>
+    </div>`;
   }).join('');
 }
 
