@@ -839,7 +839,10 @@ async function loadTrades() {
   try {
     const rows = await dbFetch('trades?select=id,data&order=id.desc');
     trades = rows.map(r => ({ ...r.data, _dbid: r.id }));
+    window.trades = trades;
     renderLog(); updateStats(); renderGuardrailBanner();
+    // Re-render analytics if that tab is currently visible
+    if(document.getElementById('tab-analytics').classList.contains('active'))renderAll();
     setDbStatus('connected');
   } catch(e) {
     setDbStatus('error');
@@ -871,6 +874,7 @@ async function deleteSingleTrade(tradeId) {
   try {
     await dbFetch('trades?id=eq.' + tradeId, { method: 'DELETE' });
     trades = trades.filter(t => t.id !== tradeId);
+    window.trades = trades;
     renderLog(); updateStats(); renderGuardrailBanner();
     showToast('Trade deleted', true);
   } catch(e) {
@@ -976,7 +980,7 @@ function toggleCheck(el){el.classList.toggle('checked');const items=document.que
 // ══════════════════════════════════════════════════
 //  JOURNAL — SUPABASE-BACKED
 // ══════════════════════════════════════════════════
-let trades=[], tradeType=null, ruleTags=[];
+window.trades=[]; let trades=window.trades, tradeType=null, ruleTags=[];
 const BAD=['Chased breakout','Ignored SL','Traded first 3 candles','Revenge trade'];
 let guardrailOverride=false, pendingTrade=null;
 
@@ -1045,6 +1049,7 @@ async function commitTrade(trade){
   try {
     await saveTrade(trade);
     trades.unshift(trade);
+    window.trades = trades;
     renderLog();updateStats();resetTradeForm();renderGuardrailBanner();
     showToast('✅ Trade saved to Supabase',false);
     setDbStatus('connected');
@@ -1110,7 +1115,7 @@ function renderLog(){
 
 async function clearTrades(){
   if(!confirm('Delete ALL trades permanently from Supabase? This cannot be undone.'))return;
-  try{await deleteAllTrades();trades=[];renderLog();updateStats();renderGuardrailBanner();showToast('All trades deleted',true);}
+  try{await deleteAllTrades();trades=[];window.trades=trades;renderLog();updateStats();renderGuardrailBanner();showToast('All trades deleted',true);}
   catch(e){showToast('Delete failed',true);console.error(e);}
 }
 
@@ -1809,7 +1814,7 @@ function setRRMode(mode,btn){
   document.querySelectorAll('.rr-mode-btn').forEach(b=>{b.classList.remove('active');b.style.color='var(--muted)';b.style.background='transparent';});
   btn.classList.add('active');
   // Re-render just this chart
-  const raw=window.trades||[]; // swap with window.trades in real app
+  const raw=window.trades||[];
   const trades=filterTradesAn(raw).slice().reverse();
   renderRRScatter(trades);
 }
