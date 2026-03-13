@@ -67,6 +67,7 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 .breath-circle{width:80px;height:80px;border-radius:50%;border:2px solid var(--accent);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:1px;background:rgba(0,229,160,0.05);}
 .emotion-btn{padding:12px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;text-align:center;}
 .emotion-btn .emoji{font-size:20px;display:block;margin-bottom:4px;}
+.temp-sub{font-size:9px;margin-top:3px;font-family:'Space Mono',monospace;letter-spacing:1px;}
 .emotion-btn:hover{border-color:var(--accent);color:var(--text);}
 .emotion-btn.selected{border-color:var(--accent);background:rgba(0,229,160,0.08);color:var(--accent);}
 .emotion-btn.selected-bad{border-color:var(--danger);background:rgba(255,49,92,0.08);color:var(--danger);}
@@ -453,29 +454,71 @@ svg.ring{overflow:visible;}
   </div>
   <div class="card">
     <div class="card-title">Temperature Check · Pre-Session</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">What is your mental temperature right now?</div>
-    <div style="position:relative;height:10px;border-radius:10px;background:linear-gradient(90deg,#00e5a0,#ffd166,#ff6b35,#ff3a5c);margin-bottom:20px;">
-      <div id="temp-indicator" style="position:absolute;top:-5px;left:5%;width:20px;height:20px;background:#fff;border-radius:50%;border:3px solid #111;transition:left 0.5s ease;transform:translateX(-50%);box-shadow:0 0 10px rgba(255,255,255,0.3);"></div>
+
+    <!-- STATE SELECTOR -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;">
+      <div class="emotion-btn" onclick="selectTemp(this,'zen')">
+        <span class="emoji">🧘</span>Zen<div class="temp-sub" style="color:#7c9cff;">PEAK</div>
+      </div>
+      <div class="emotion-btn" onclick="selectTemp(this,'cold')">
+        <span class="emoji">🧊</span>Calm<div class="temp-sub" style="color:var(--accent);">IDEAL</div>
+      </div>
+      <div class="emotion-btn" onclick="selectTemp(this,'warm')">
+        <span class="emoji">🌤️</span>Focused<div class="temp-sub" style="color:var(--warn);">GOOD</div>
+      </div>
+      <div class="emotion-btn" onclick="selectTemp(this,'hot')">
+        <span class="emoji">🔥</span>Heated<div class="temp-sub" style="color:var(--accent2);">CAUTION</div>
+      </div>
+      <div class="emotion-btn" onclick="selectTemp(this,'burnt')">
+        <span class="emoji">💀</span>Burnt<div class="temp-sub" style="color:var(--danger);">SKIP DAY</div>
+      </div>
     </div>
-    <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:-12px;margin-bottom:18px;">
-      <span style="color:var(--accent)">COLD</span><span style="color:var(--warn)">WARM</span><span style="color:var(--accent2)">HOT</span><span style="color:var(--danger)">BURNT</span>
+
+    <!-- ADVICE BAR -->
+    <div id="emotion-advice" style="display:none;padding:10px 14px;border-radius:8px;font-size:12px;font-family:'Space Mono',monospace;line-height:1.6;margin-bottom:14px;"></div>
+
+    <!-- TEMP GRADIENT BAR -->
+    <div style="position:relative;height:6px;border-radius:6px;background:linear-gradient(90deg,#7c9cff,#00e5a0,#ffd166,#ff6b35,#ff3a5c);margin-bottom:6px;">
+      <div id="temp-indicator" style="position:absolute;top:-7px;width:20px;height:20px;background:var(--text);border-radius:50%;border:3px solid var(--bg);transition:left 0.4s ease;transform:translateX(-50%);left:10%;"></div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-      <div class="emotion-btn" onclick="selectTemp(this,0,'cold')"><span class="emoji">🧊</span>Cold & Calm<div style="font-size:10px;color:var(--accent);margin-top:3px;font-family:'Space Mono',monospace;">IDEAL</div></div>
-      <div class="emotion-btn" onclick="selectTemp(this,35,'warm')"><span class="emoji">🌤️</span>Warm & Focused<div style="font-size:10px;color:var(--warn);margin-top:3px;font-family:'Space Mono',monospace;">GOOD</div></div>
-      <div class="emotion-btn" onclick="selectTemp(this,67,'hot')"><span class="emoji">🔥</span>Overheated<div style="font-size:10px;color:var(--accent2);margin-top:3px;font-family:'Space Mono',monospace;">CAUTION</div></div>
-      <div class="emotion-btn" onclick="selectTemp(this,100,'burnt')"><span class="emoji">💀</span>Burnt Out<div style="font-size:10px;color:var(--danger);margin-top:3px;font-family:'Space Mono',monospace;">DO NOT TRADE</div></div>
+    <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;margin-bottom:18px;">
+      <span style="color:#7c9cff">ZEN</span><span style="color:var(--accent)">CALM</span><span style="color:var(--warn)">FOCUSED</span><span style="color:var(--accent2)">HEATED</span><span style="color:var(--danger)">BURNT</span>
     </div>
-    <div id="emotion-advice" style="margin-top:14px;padding:14px;border-radius:8px;font-size:13px;line-height:1.6;display:none;"></div>
-    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
-    <div class="card-title" style="margin-bottom:14px;">Pre-Session Conditions</div>
-    <div class="check-item" onclick="toggleTempCheck(this)" id="tc-sleep"><div class="check-box">✓</div><div class="check-label">Last night's sleep was good quality</div><span class="check-tag tag-mind">SLEEP</span></div>
-    <div class="check-item" onclick="toggleTempCheck(this)" id="tc-focus"><div class="check-box">✓</div><div class="check-label">Morning focus quality is sharp & clear</div><span class="check-tag tag-mind">FOCUS</span></div>
-    <div class="check-item" onclick="toggleTempCheck(this)" id="tc-social"><div class="check-box">✓</div><div class="check-label">No social media scrolling this morning</div><span class="check-tag tag-time">CLEAN</span></div>
-    <div class="check-item" onclick="toggleTempCheck(this)" id="tc-yt"><div class="check-box">✓</div><div class="check-label">No YouTube or content consumption today</div><span class="check-tag tag-time">CLEAN</span></div>
-    <div class="progress-bar"><div class="progress-fill" id="temp-check-progress" style="width:0%"></div></div>
-    <div class="progress-label" id="temp-check-label">0 / 4 conditions met</div>
-    <div id="temp-check-warning" style="display:none;margin-top:12px;padding:12px 14px;border-radius:8px;background:rgba(255,49,92,0.07);border:1px solid rgba(255,49,92,0.2);font-size:12px;color:var(--danger);font-family:'Space Mono',monospace;line-height:1.6;"></div>
+
+    <!-- READINESS SCORE + CONDITIONS -->
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+      <!-- Score ring -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="32" fill="none" stroke="var(--dim)" stroke-width="7"/>
+          <circle id="tc-ring" cx="40" cy="40" r="32" fill="none" stroke="var(--accent)" stroke-width="7"
+            stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round"
+            transform="rotate(-90 40 40)" style="transition:stroke-dashoffset .5s ease,stroke .3s ease;"/>
+          <text x="40" y="37" text-anchor="middle" font-family="Space Mono,monospace" font-size="16" font-weight="700" fill="var(--text)" id="tc-score-txt">0</text>
+          <text x="40" y="50" text-anchor="middle" font-family="Space Mono,monospace" font-size="8" fill="var(--muted)">/ 100</text>
+        </svg>
+        <div id="tc-grade" style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;">READINESS</div>
+      </div>
+      <!-- Conditions list -->
+      <div>
+        <div style="font-size:10px;font-family:'Space Mono',monospace;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;">Mind & Body</div>
+        <div class="check-item tc-cond" onclick="toggleTempCheck(this)" id="tc-sleep" data-w="15"><div class="check-box">✓</div><div class="check-label" style="font-size:13px;">Good sleep last night</div><span class="check-tag tag-mind">SLEEP</span></div>
+        <div class="check-item tc-cond" onclick="toggleTempCheck(this)" id="tc-hydrate" data-w="10"><div class="check-box">✓</div><div class="check-label" style="font-size:13px;">Hydrated & had breakfast</div><span class="check-tag tag-mind">BODY</span></div>
+        <div class="check-item tc-cond" onclick="toggleTempCheck(this)" id="tc-focus" data-w="15"><div class="check-box">✓</div><div class="check-label" style="font-size:13px;">Mind is sharp & clear</div><span class="check-tag tag-mind">FOCUS</span></div>
+        <div style="font-size:10px;font-family:'Space Mono',monospace;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin:10px 0 8px;">Environment</div>
+        <div class="check-item tc-cond" onclick="toggleTempCheck(this)" id="tc-social" data-w="15"><div class="check-box">✓</div><div class="check-label" style="font-size:13px;">No social media this morning</div><span class="check-tag tag-time">CLEAN</span></div>
+        <div class="check-item tc-cond" onclick="toggleTempCheck(this)" id="tc-yt" data-w="10"><div class="check-box">✓</div><div class="check-label" style="font-size:13px;">No distracting content</div><span class="check-tag tag-time">CLEAN</span></div>
+        <div class="check-item tc-cond" onclick="toggleTempCheck(this)" id="tc-space" data-w="10"><div class="check-box">✓</div><div class="check-label" style="font-size:13px;">Trading space is quiet & set up</div><span class="check-tag tag-time">SPACE</span></div>
+        <div style="font-size:10px;font-family:'Space Mono',monospace;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin:10px 0 8px;">Emotional State</div>
+        <div class="check-item tc-cond" onclick="toggleTempCheck(this)" id="tc-bias" data-w="15"><div class="check-box">✓</div><div class="check-label" style="font-size:13px;">No directional bias — fresh eyes</div><span class="check-tag" style="background:rgba(0,229,160,.1);color:var(--accent);border:1px solid rgba(0,229,160,.2);">MIND</span></div>
+        <div class="check-item tc-cond" onclick="toggleTempCheck(this)" id="tc-revenge" data-w="10"><div class="check-box">✓</div><div class="check-label" style="font-size:13px;">No urge to recover yesterday's loss</div><span class="check-tag" style="background:rgba(255,49,92,.1);color:var(--danger);border:1px solid rgba(255,49,92,.2);">EGO</span></div>
+      </div>
+    </div>
+
+    <!-- OVERALL VERDICT -->
+    <div id="tc-verdict" style="margin-top:16px;padding:14px 16px;border-radius:10px;font-family:'Space Mono',monospace;font-size:12px;line-height:1.7;display:none;border:1px solid;"></div>
+    <div class="progress-bar" style="margin-top:12px;"><div class="progress-fill" id="temp-check-progress" style="width:0%"></div></div>
+    <div class="progress-label" id="temp-check-label">0 / 8 conditions met · Readiness: 0%</div>
   </div>
 </div>
 
@@ -1006,10 +1049,108 @@ function switchTab(name,btn){
 function toggleBelief(el){el.classList.toggle('checked');const items=document.querySelectorAll('.belief-item');const checked=document.querySelectorAll('.belief-item.checked').length;const pct=Math.round((checked/items.length)*100);document.getElementById('belief-progress').style.width=pct+'%';document.getElementById('belief-label').textContent=`${checked} / ${items.length} beliefs acknowledged`;if(checked===items.length)showToast('✅ All beliefs aligned. You are ready.',false);}
 
 // ── TEMP CHECK ─────────────────────────────────────
-const tempData={cold:{pct:5,cls:'selected',bg:'rgba(0,229,160,0.05)',border:'rgba(0,229,160,0.2)',msg:'🧊 Ice cold — perfect trading state.'},warm:{pct:35,cls:'selected',bg:'rgba(255,209,102,0.05)',border:'rgba(255,209,102,0.2)',msg:'🌤️ Warm and focused — solid state.'},hot:{pct:67,cls:'selected-bad',bg:'rgba(255,107,53,0.05)',border:'rgba(255,107,53,0.2)',msg:'🔥 Overheated — halve your size. Breathe.'},burnt:{pct:97,cls:'selected-bad',bg:'rgba(255,49,92,0.05)',border:'rgba(255,49,92,0.2)',msg:'💀 Burnt out — observe only today.'}};
-function selectTemp(el,pct,state){document.querySelectorAll('.emotion-btn').forEach(b=>b.classList.remove('selected','selected-bad'));const d=tempData[state];el.classList.add(d.cls);document.getElementById('temp-indicator').style.left=d.pct+'%';const a=document.getElementById('emotion-advice');a.style.display='block';a.innerHTML=d.msg;a.style.background=d.bg;a.style.borderColor=d.border;}
-const tcWarnings={'tc-sleep':'😴 Poor sleep degrades decision-making.','tc-focus':'🧠 Low focus means you will misread the EMA terrain.','tc-social':'📱 Social media primes the brain for noise.','tc-yt':'📺 Content consumption scatters attention.'};
-function toggleTempCheck(el){el.classList.toggle('checked');const items=document.querySelectorAll('#tab-meditation .check-item');const checked=document.querySelectorAll('#tab-meditation .check-item.checked').length;document.getElementById('temp-check-progress').style.width=Math.round((checked/items.length)*100)+'%';document.getElementById('temp-check-label').textContent=`${checked} / ${items.length} conditions met`;const warns=[];items.forEach(i=>{if(!i.classList.contains('checked'))warns.push(tcWarnings[i.id]);});const box=document.getElementById('temp-check-warning');if(warns.length){box.style.display='block';box.innerHTML='⚠️ UNMET CONDITIONS:<br><br>'+warns.join('<br><br>');}else box.style.display='none';}
+// ── TEMPERATURE CHECK ──────────────────────────────
+const tempData={
+  zen:   {pct:5,  cls:'selected',     col:'#7c9cff', bg:'rgba(124,156,255,0.06)',border:'rgba(124,156,255,0.2)', score:25, msg:'🧘 Peak state — clear mind, zero noise. Trade with full size.'},
+  cold:  {pct:25, cls:'selected',     col:'var(--accent)', bg:'rgba(0,229,160,0.06)',border:'rgba(0,229,160,0.2)', score:20, msg:'🧊 Ice cold — disciplined and patient. Ideal trading state.'},
+  warm:  {pct:50, cls:'selected',     col:'var(--warn)', bg:'rgba(255,209,102,0.06)',border:'rgba(255,209,102,0.2)', score:10, msg:'🌤️ Warm and focused — solid. Watch for slight impatience.'},
+  hot:   {pct:75, cls:'selected-bad', col:'var(--accent2)', bg:'rgba(255,107,53,0.06)',border:'rgba(255,107,53,0.2)', score:0,  msg:'🔥 Overheated — reduce size by 50%. Breathe before entry.'},
+  burnt: {pct:95, cls:'selected-bad', col:'var(--danger)', bg:'rgba(255,49,92,0.06)',border:'rgba(255,49,92,0.2)', score:-20, msg:'💀 Burnt out — do NOT trade today. Protect your capital.'},
+};
+let currentTempScore=0, currentTempState=null;
+
+function selectTemp(el,state){
+  document.querySelectorAll('.emotion-btn').forEach(b=>b.classList.remove('selected','selected-bad'));
+  const d=tempData[state];
+  el.classList.add(d.cls);
+  document.getElementById('temp-indicator').style.left=d.pct+'%';
+  const a=document.getElementById('emotion-advice');
+  a.style.display='block';a.innerHTML=d.msg;
+  a.style.background=d.bg;a.style.border='1px solid '+d.border;a.style.color=d.col;
+  currentTempScore=d.score;
+  currentTempState=state;
+  updateReadinessScore();
+}
+
+const tcWarnings={
+  'tc-sleep':   '😴 Poor sleep — reaction time and patience are degraded.',
+  'tc-hydrate': '💧 Fuel your brain — dehydration causes cloudy thinking.',
+  'tc-focus':   '🧠 Low focus — you will misread price action and EMA terrain.',
+  'tc-social':  '📱 Social media primes the brain for dopamine, not discipline.',
+  'tc-yt':      '📺 Content consumption scatters attention — your edge needs full focus.',
+  'tc-space':   '🖥️ Messy environment creates cognitive load — tidy up first.',
+  'tc-bias':    '⚖️ Directional bias kills objectivity — wipe the slate clean.',
+  'tc-revenge': '🎯 Revenge mindset leads to oversized positions and emotional entries.',
+};
+
+function toggleTempCheck(el){
+  el.classList.toggle('checked');
+  updateReadinessScore();
+}
+
+function updateReadinessScore(){
+  const conds=document.querySelectorAll('.tc-cond');
+  let condScore=0,total=0;
+  conds.forEach(c=>{
+    const w=parseInt(c.dataset.w||10);
+    total+=w;
+    if(c.classList.contains('checked'))condScore+=w;
+  });
+  const condPct=total>0?Math.round(condScore/total*100):0;
+  const raw=Math.max(0,Math.min(100,condPct+currentTempScore));
+  const score=raw;
+  const checked=document.querySelectorAll('.tc-cond.checked').length;
+  const totalC=conds.length;
+
+  // Ring
+  const ring=document.getElementById('tc-ring');
+  const circ=201;
+  const offset=circ-(circ*score/100);
+  if(ring){
+    ring.style.strokeDashoffset=offset;
+    ring.style.stroke=score>=70?'var(--accent)':score>=40?'var(--warn)':'var(--danger)';
+  }
+  const txt=document.getElementById('tc-score-txt');
+  if(txt)txt.textContent=score;
+
+  // Grade label
+  const grade=document.getElementById('tc-grade');
+  if(grade){
+    if(score>=85)     grade.textContent='ELITE';
+    else if(score>=70)grade.textContent='READY';
+    else if(score>=50)grade.textContent='CAUTION';
+    else if(score>=30)grade.textContent='RISKY';
+    else              grade.textContent='SKIP DAY';
+    grade.style.color=score>=70?'var(--accent)':score>=40?'var(--warn)':'var(--danger)';
+  }
+
+  // Progress bar
+  document.getElementById('temp-check-progress').style.width=condPct+'%';
+  document.getElementById('temp-check-label').textContent=`${checked} / ${totalC} conditions met · Readiness: ${score}%`;
+
+  // Verdict
+  const vEl=document.getElementById('tc-verdict');
+  if(vEl && currentTempState!==null){
+    vEl.style.display='block';
+    const warns=[];
+    conds.forEach(c=>{if(!c.classList.contains('checked')&&tcWarnings[c.id])warns.push(tcWarnings[c.id]);});
+    if(currentTempState==='burnt'){
+      vEl.style.background='rgba(255,49,92,0.07)';vEl.style.borderColor='rgba(255,49,92,0.25)';vEl.style.color='var(--danger)';
+      vEl.innerHTML='🔴 DO NOT TRADE TODAY<br><span style="opacity:.7">Burnt state overrides everything. Rest, recover, return tomorrow.</span>';
+    } else if(score>=70){
+      vEl.style.background='rgba(0,229,160,0.06)';vEl.style.borderColor='rgba(0,229,160,0.2)';vEl.style.color='var(--accent)';
+      vEl.innerHTML='🟢 CLEARED TO TRADE<br><span style="opacity:.7">Mental state and conditions aligned. Execute your plan.</span>';
+    } else if(score>=40){
+      vEl.style.background='rgba(255,209,102,0.06)';vEl.style.borderColor='rgba(255,209,102,0.2)';vEl.style.color='var(--warn)';
+      const top2=warns.slice(0,2).join(' ');
+      vEl.innerHTML='🟡 TRADE WITH CAUTION<br><span style="opacity:.7">Address: '+top2+'</span>';
+    } else {
+      vEl.style.background='rgba(255,49,92,0.06)';vEl.style.borderColor='rgba(255,49,92,0.2)';vEl.style.color='var(--danger)';
+      const top=warns.slice(0,2).join(' ');
+      vEl.innerHTML='🔴 HIGH RISK — CONSIDER SKIPPING<br><span style="opacity:.7">'+top+'</span>';
+    }
+  }
+}
 
 // ── BREATHING ──────────────────────────────────────
 const breathTimers={pre:null,post:null};const CIRC=427;
