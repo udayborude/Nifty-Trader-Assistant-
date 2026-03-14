@@ -399,88 +399,71 @@ svg.ring{overflow:visible;}
 .pq-result{margin-top:14px;padding:12px 16px;border-radius:10px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.8;display:none;border:1px solid;}
 .pq-section-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
 
-/* ── BRIEFING TAB ─────────────────────────────────── */
-.brief-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
-.brief-date-badge{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:5px 12px;letter-spacing:1.5px;}
-.brief-status-pill{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:700;}
-.brief-status-draft{background:rgba(249,168,37,.12);border:1px solid rgba(249,168,37,.3);color:var(--warn);}
-.brief-status-ready{background:rgba(38,166,154,.12);border:1px solid rgba(38,166,154,.3);color:var(--tv-teal);}
-
-/* Gap indicator */
-.gap-display{display:flex;align-items:center;justify-content:center;flex-direction:column;padding:18px 0 12px;}
-.gap-value{font-family:'Space Mono',monospace;font-size:36px;font-weight:800;line-height:1;letter-spacing:-1px;}
-.gap-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;margin-top:5px;}
-.gap-bar-track{height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;margin:10px 0 4px;}
-.gap-bar-fill{height:100%;border-radius:3px;transition:width .6s ease;}
-
-/* Key Levels table */
-.level-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
-.level-row:last-child{border-bottom:none;}
-.level-name{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;min-width:90px;text-transform:uppercase;}
-.level-val{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;flex:1;}
-.level-input{background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:6px 9px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;outline:none;width:110px;transition:border-color .15s;text-align:right;}
-.level-input:focus{border-color:var(--accent);}
-.level-tag{font-size:9px;padding:2px 7px;border-radius:20px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.5px;white-space:nowrap;}
-.ltag-r{background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.25);color:var(--danger);}
-.ltag-s{background:rgba(38,166,154,.12);border:1px solid rgba(38,166,154,.25);color:var(--tv-teal);}
-.ltag-n{background:rgba(66,165,245,.12);border:1px solid rgba(66,165,245,.25);color:var(--info);}
-.ltag-w{background:rgba(249,168,37,.12);border:1px solid rgba(249,168,37,.25);color:var(--warn);}
-.ltag-p{background:rgba(171,71,188,.12);border:1px solid rgba(171,71,188,.25);color:#ab47bc;}
-
-/* Bias selector */
-.bias-btn{flex:1;padding:12px 6px;border-radius:3px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;letter-spacing:.5px;}
-.bias-btn .bias-icon{font-size:22px;display:block;margin-bottom:5px;}
-.bias-btn:hover{border-color:var(--tv-blue);color:var(--text);}
-.bias-btn.bias-bull{background:rgba(38,166,154,.12);border-color:rgba(38,166,154,.4);color:var(--tv-teal);}
-.bias-btn.bias-bear{background:rgba(239,83,80,.12);border-color:rgba(239,83,80,.35);color:var(--danger);}
-.bias-btn.bias-range{background:rgba(249,168,37,.12);border-color:rgba(249,168,37,.35);color:var(--warn);}
-.bias-btn.bias-wait{background:rgba(66,165,245,.12);border-color:rgba(66,165,245,.35);color:var(--info);}
-.bias-advice{margin-top:12px;padding:11px 14px;border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;display:none;border:1px solid;}
-
-/* Market structure */
-.mstr-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
-.mstr-row:last-child{border-bottom:none;}
-.mstr-label{font-size:12px;font-weight:600;flex:1;color:var(--text);}
-.mstr-sub{font-size:10px;color:var(--muted);margin-top:2px;}
-.mstr-toggle{display:flex;gap:5px;}
-.mt-btn{padding:4px 10px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;transition:all .15s;letter-spacing:.5px;}
-.mt-btn.mt-bull{background:rgba(38,166,154,.12);border-color:rgba(38,166,154,.4);color:var(--tv-teal);}
-.mt-btn.mt-bear{background:rgba(239,83,80,.12);border-color:rgba(239,83,80,.35);color:var(--danger);}
-.mt-btn.mt-range{background:rgba(249,168,37,.12);border-color:rgba(249,168,37,.35);color:var(--warn);}
-
-/* News items */
-.news-item{padding:10px 12px;border-radius:3px;margin-bottom:7px;border-left:3px solid transparent;background:var(--panel2);cursor:pointer;transition:all .15s;}
-.news-item:last-child{margin-bottom:0;}
-.news-item:hover{background:var(--bg);}
-.news-item.ni-danger{border-left-color:var(--danger);}
-.news-item.ni-warn{border-left-color:var(--warn);}
-.news-item.ni-info{border-left-color:var(--info);}
-.news-time{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:3px;}
-.news-text{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;}
-.news-impact{font-size:9px;font-weight:700;letter-spacing:.5px;padding:1px 6px;border-radius:10px;display:inline-block;margin-top:4px;}
-.ni-danger .news-impact{background:rgba(239,83,80,.12);color:var(--danger);}
-.ni-warn .news-impact{background:rgba(249,168,37,.12);color:var(--warn);}
-.ni-info .news-impact{background:rgba(66,165,245,.12);color:var(--info);}
-
-/* Scenario planner */
-.scenario-card{border:1px solid var(--border);border-radius:3px;padding:12px 14px;margin-bottom:8px;background:var(--panel2);}
-.scenario-card:last-child{margin-bottom:0;}
-.sc-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.sc-icon{font-size:16px;}
-.sc-name{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;}
-.sc-trigger{font-size:11px;color:var(--muted);line-height:1.5;}
-.sc-action{font-size:11px;font-weight:600;margin-top:6px;padding:7px 10px;border-radius:3px;font-family:'Space Mono',monospace;}
-.sc-bull .sc-action{background:rgba(38,166,154,.08);color:var(--tv-teal);}
-.sc-bear .sc-action{background:rgba(239,83,80,.08);color:var(--danger);}
-.sc-range .sc-action{background:rgba(249,168,37,.08);color:var(--warn);}
-
-/* Readiness banner */
-.brief-ready-banner{padding:16px;border-radius:3px;text-align:center;display:none;animation:pop .25s ease;}
-.brb-go{background:rgba(38,166,154,.08);border:2px solid var(--tv-teal);}
-.brb-warn{background:rgba(249,168,37,.06);border:2px solid var(--warn);}
-.brb-no{background:rgba(239,83,80,.08);border:2px solid var(--danger);}
-.brb-title{font-family:'Space Mono',monospace;font-size:14px;font-weight:800;letter-spacing:1px;}
-.brb-sub{font-family:'Space Mono',monospace;font-size:10px;opacity:.7;margin-top:5px;letter-spacing:.5px;line-height:1.6;}
+/* ── AI BRIEFING TAB ─────────────────────────────── */
+.briefing-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.briefing-ts{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
+.briefing-refresh{background:none;border:1px solid var(--border);border-radius:3px;padding:5px 12px;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:1px;transition:all .2s;}
+.briefing-refresh:hover{border-color:var(--accent);color:var(--accent);}
+.briefing-refresh:disabled{opacity:.4;cursor:not-allowed;}
+.market-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px;}
+@media(max-width:640px){.market-grid{grid-template-columns:repeat(2,1fr);}}
+.mkt-tile{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:12px 10px;position:relative;overflow:hidden;transition:border-color .2s;}
+.mkt-tile:hover{border-color:var(--border2);}
+.mkt-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--tile-accent,var(--border));}
+.mkt-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-bottom:5px;font-family:'Space Mono',monospace;}
+.mkt-val{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:var(--text);line-height:1;}
+.mkt-chg{font-family:'Space Mono',monospace;font-size:11px;margin-top:4px;}
+.mkt-chg.up{color:var(--tv-teal);}.mkt-chg.dn{color:var(--danger);}
+.mkt-sub{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:.5px;}
+.mkt-status{font-family:'Space Mono',monospace;font-size:9px;padding:2px 6px;border-radius:20px;position:absolute;top:10px;right:8px;font-weight:700;letter-spacing:.5px;}
+.mkt-status.open{background:rgba(38,166,154,.15);color:var(--tv-teal);border:1px solid rgba(38,166,154,.25);}
+.mkt-status.closed{background:rgba(120,123,134,.1);color:var(--muted);border:1px solid rgba(120,123,134,.2);}
+.mkt-status.loading{background:rgba(41,98,255,.1);color:var(--accent);border:1px solid rgba(41,98,255,.2);}
+.mkt-loading{width:40px;height:8px;background:var(--border);border-radius:3px;animation:shimmer 1.2s infinite;}
+@keyframes shimmer{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+.events-list{display:flex;flex-direction:column;gap:0;}
+.event-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.event-row:last-child{border-bottom:none;}
+.event-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:52px;letter-spacing:.5px;line-height:1.4;}
+.event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.event-dot.high{background:var(--danger);box-shadow:0 0 6px rgba(239,83,80,.5);}
+.event-dot.med{background:var(--warn);}
+.event-dot.low{background:var(--muted);}
+.event-name{font-size:12px;font-weight:600;color:var(--text);flex:1;line-height:1.4;}
+.event-impact{font-size:9px;padding:2px 7px;border-radius:20px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.5px;flex-shrink:0;}
+.event-impact.high{background:rgba(239,83,80,.12);color:var(--danger);border:1px solid rgba(239,83,80,.25);}
+.event-impact.med{background:rgba(249,168,37,.12);color:var(--warn);border:1px solid rgba(249,168,37,.25);}
+.event-impact.low{background:rgba(120,123,134,.1);color:var(--muted);border:1px solid rgba(120,123,134,.2);}
+.news-list{display:flex;flex-direction:column;gap:0;}
+.news-item{padding:12px 0;border-bottom:1px solid var(--border);cursor:default;}
+.news-item:last-child{border-bottom:none;}
+.news-headline{font-size:12px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:5px;}
+.news-meta{display:flex;align-items:center;gap:8px;}
+.news-src{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.5px;}
+.news-tag{font-size:9px;padding:1px 6px;border-radius:20px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.3px;}
+.news-tag.bull{background:rgba(38,166,154,.12);color:var(--tv-teal);border:1px solid rgba(38,166,154,.2);}
+.news-tag.bear{background:rgba(239,83,80,.12);color:var(--danger);border:1px solid rgba(239,83,80,.2);}
+.news-tag.neut{background:rgba(120,123,134,.1);color:var(--muted);border:1px solid rgba(120,123,134,.2);}
+.vix-bar{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--tv-teal),var(--warn),var(--danger));position:relative;margin:14px 0 6px;}
+.vix-needle{position:absolute;top:-7px;width:24px;height:24px;background:var(--text);border-radius:50%;border:3px solid var(--bg);transform:translateX(-50%);transition:left .6s ease;box-shadow:0 2px 8px rgba(0,0,0,.4);}
+.vix-zones{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.5px;}
+.briefing-ai-output{font-size:13px;line-height:1.9;color:var(--text);font-family:'Space Mono',monospace;}
+.briefing-ai-output p{margin-bottom:12px;}
+.briefing-ai-output .section-hdr{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin:18px 0 8px;display:flex;align-items:center;gap:10px;}
+.briefing-ai-output .section-hdr::after{content:'';flex:1;height:1px;background:var(--border);}
+.briefing-ai-output .bullet{display:flex;gap:8px;margin-bottom:6px;font-size:12px;line-height:1.6;}
+.briefing-ai-output .bullet-dot{color:var(--accent);flex-shrink:0;margin-top:1px;}
+.briefing-ai-output .verdict-box{padding:12px 14px;border-radius:3px;margin-top:14px;font-size:12px;line-height:1.7;border-left:3px solid;}
+.briefing-ai-output .verdict-box.bull{background:rgba(38,166,154,.08);border-color:var(--tv-teal);color:var(--tv-teal);}
+.briefing-ai-output .verdict-box.bear{background:rgba(239,83,80,.08);border-color:var(--danger);color:var(--danger);}
+.briefing-ai-output .verdict-box.neut{background:rgba(249,168,37,.08);border-color:var(--warn);color:var(--warn);}
+.bias-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
+.bias-pill.bull{background:rgba(38,166,154,.12);border:1px solid rgba(38,166,154,.3);color:var(--tv-teal);}
+.bias-pill.bear{background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.3);color:var(--danger);}
+.bias-pill.neut{background:rgba(249,168,37,.12);border:1px solid rgba(249,168,37,.3);color:var(--warn);}
+.briefing-score{font-family:'Space Mono',monospace;font-size:32px;font-weight:800;line-height:1;}
+.score-bar{height:6px;border-radius:3px;background:var(--panel2);margin:8px 0 4px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:3px;transition:width .8s ease;}
 </style>
 </head>
 <body>
@@ -526,279 +509,12 @@ svg.ring{overflow:visible;}
 
 <div class="tabs">
   <button class="tab active" onclick="switchTab('meditation',this)">🧘 Pre-Session</button>
-  <button class="tab" onclick="switchTab('briefing',this)">📋 Briefing</button>
   <button class="tab" onclick="switchTab('checklist',this)">✅ Pre-Entry</button>
   <button class="tab" onclick="switchTab('session',this)">📊 Session</button>
   <button class="tab" onclick="switchTab('journal',this)">📒 Journal</button>
   <button class="tab" onclick="switchTab('analytics',this)">📈 Analytics</button>
   <button class="tab" onclick="switchTab('ailog',this)">🤖 AI Log</button>
-</div>
-
-<!-- BRIEFING -->
-<div id="tab-briefing" class="panel">
-
-  <!-- Header Row -->
-  <div class="brief-header-row">
-    <div>
-      <div class="card-title" style="border:none;padding:0;margin:0;font-size:12px;">📋 Morning Briefing</div>
-      <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:3px;letter-spacing:1px;">Fill before 9:15 IST · Lock your context before market opens</div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <div id="brief-date-badge" class="brief-date-badge">—</div>
-      <div id="brief-status" class="brief-status-pill brief-status-draft">DRAFT</div>
-    </div>
-  </div>
-
-  <!-- ROW 1: Gap + Market Sentiment -->
-  <div class="row r2">
-
-    <!-- Gap Analysis -->
-    <div class="card">
-      <div class="card-title">Gap Analysis · Today's Open</div>
-      <div class="gap-display">
-        <div id="brief-gap-value" class="gap-value" style="color:var(--muted);">— pts</div>
-        <div class="gap-label" id="brief-gap-label">Enter prev close & expected open</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-        <div>
-          <div class="pq-section-lbl">Prev Close (₹)</div>
-          <input id="brief-prev-close" type="number" class="level-input" style="width:100%;" placeholder="e.g. 24580" oninput="briefCalcGap()">
-        </div>
-        <div>
-          <div class="pq-section-lbl">Expected Open (₹)</div>
-          <input id="brief-exp-open" type="number" class="level-input" style="width:100%;" placeholder="e.g. 24620" oninput="briefCalcGap()">
-        </div>
-      </div>
-      <div class="gap-bar-track"><div id="brief-gap-bar" class="gap-bar-fill" style="width:50%;background:var(--muted);"></div></div>
-      <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:3px;">
-        <span style="color:var(--danger)">BIG GAP DOWN</span><span>FLAT</span><span style="color:var(--tv-teal)">BIG GAP UP</span>
-      </div>
-      <!-- Gap type buttons -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px;">
-        <div class="pq-zone-btn" id="bg-gapup" onclick="setBriefGapType('up')"><div style="font-size:14px;margin-bottom:3px;">⬆️</div>Gap Up<div style="font-size:9px;margin-top:2px;color:var(--tv-teal);">BULLISH OPEN</div></div>
-        <div class="pq-zone-btn" id="bg-flat" onclick="setBriefGapType('flat')"><div style="font-size:14px;margin-bottom:3px;">↔️</div>Flat<div style="font-size:9px;margin-top:2px;color:var(--warn);">NEUTRAL</div></div>
-        <div class="pq-zone-btn" id="bg-gapdown" onclick="setBriefGapType('down')"><div style="font-size:14px;margin-bottom:3px;">⬇️</div>Gap Down<div style="font-size:9px;margin-top:2px;color:var(--danger);">BEARISH OPEN</div></div>
-      </div>
-    </div>
-
-    <!-- Daily Bias -->
-    <div class="card">
-      <div class="card-title">Daily Bias · HTF Directional View</div>
-      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-bottom:10px;">Based on Daily chart + EMA + SGX Nifty</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
-        <button class="bias-btn" id="bias-bull" onclick="setBias('bull')"><span class="bias-icon">📈</span>BULLISH<div style="font-size:9px;margin-top:3px;color:var(--tv-teal);">ABOVE EMA · HIGHER HIGH</div></button>
-        <button class="bias-btn" id="bias-bear" onclick="setBias('bear')"><span class="bias-icon">📉</span>BEARISH<div style="font-size:9px;margin-top:3px;color:var(--danger);">BELOW EMA · LOWER LOW</div></button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-        <button class="bias-btn" id="bias-range" onclick="setBias('range')"><span class="bias-icon">🔄</span>RANGING<div style="font-size:9px;margin-top:3px;color:var(--warn);">INSIDE PRIOR CANDLE</div></button>
-        <button class="bias-btn" id="bias-wait" onclick="setBias('wait')"><span class="bias-icon">⏳</span>WAIT<div style="font-size:9px;margin-top:3px;color:var(--info);">NO CLEAR BIAS</div></button>
-      </div>
-      <div class="bias-advice" id="bias-advice-box"></div>
-      <!-- Conviction slider -->
-      <div style="margin-top:14px;">
-        <div class="pq-section-lbl" style="display:flex;justify-content:space-between;"><span>Conviction Level</span><span id="brief-conviction-label" style="color:var(--accent);">—</span></div>
-        <input type="range" id="brief-conviction" min="1" max="5" value="3" oninput="briefUpdateConviction()" style="width:100%;accent-color:var(--accent);cursor:pointer;margin-top:4px;">
-        <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;"><span>LOW</span><span>MEDIUM</span><span>HIGH</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Key Levels -->
-  <div class="card">
-    <div class="card-title">Key Levels · Mark Before Open</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
-      <div>
-        <!-- Resistance levels -->
-        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--danger);text-transform:uppercase;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border);">▲ Resistance</div>
-        <div class="level-row">
-          <div><div class="level-name">Resistance 1</div></div>
-          <input class="level-input" id="brief-r1" type="number" placeholder="—" oninput="briefUpdateLevels()">
-          <span class="level-tag ltag-r">R1</span>
-        </div>
-        <div class="level-row">
-          <div><div class="level-name">Resistance 2</div></div>
-          <input class="level-input" id="brief-r2" type="number" placeholder="—" oninput="briefUpdateLevels()">
-          <span class="level-tag ltag-r">R2</span>
-        </div>
-        <div class="level-row" style="border-bottom:none;">
-          <div><div class="level-name">Weekly High</div></div>
-          <input class="level-input" id="brief-wh" type="number" placeholder="—" oninput="briefUpdateLevels()">
-          <span class="level-tag ltag-p">WK-H</span>
-        </div>
-      </div>
-      <div style="border-left:1px solid var(--border);padding-left:14px;margin-left:14px;">
-        <!-- Support levels -->
-        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--tv-teal);text-transform:uppercase;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border);">▼ Support</div>
-        <div class="level-row">
-          <div><div class="level-name">Support 1</div></div>
-          <input class="level-input" id="brief-s1" type="number" placeholder="—" oninput="briefUpdateLevels()">
-          <span class="level-tag ltag-s">S1</span>
-        </div>
-        <div class="level-row">
-          <div><div class="level-name">Support 2</div></div>
-          <input class="level-input" id="brief-s2" type="number" placeholder="—" oninput="briefUpdateLevels()">
-          <span class="level-tag ltag-s">S2</span>
-        </div>
-        <div class="level-row" style="border-bottom:none;">
-          <div><div class="level-name">Weekly Low</div></div>
-          <input class="level-input" id="brief-wl" type="number" placeholder="—" oninput="briefUpdateLevels()">
-          <span class="level-tag ltag-p">WK-L</span>
-        </div>
-      </div>
-    </div>
-    <!-- Pivot / VWAP / EMA row -->
-    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-      <div>
-        <div class="pq-section-lbl">Daily Pivot (₹)</div>
-        <input class="level-input" id="brief-pivot" type="number" placeholder="—" style="width:100%;" oninput="briefUpdateLevels()">
-      </div>
-      <div>
-        <div class="pq-section-lbl">20 EMA (Daily)</div>
-        <input class="level-input" id="brief-ema" type="number" placeholder="—" style="width:100%;" oninput="briefUpdateLevels()">
-      </div>
-      <div>
-        <div class="pq-section-lbl">Prev Day High</div>
-        <input class="level-input" id="brief-pdh" type="number" placeholder="—" style="width:100%;" oninput="briefUpdateLevels()">
-      </div>
-    </div>
-  </div>
-
-  <!-- Market Structure + News Events -->
-  <div class="row r2">
-
-    <!-- Market Structure -->
-    <div class="card">
-      <div class="card-title">Market Structure · Multi-Timeframe</div>
-      <div class="mstr-row">
-        <div style="flex:1;"><div class="mstr-label">Daily Chart</div><div class="mstr-sub">Trend direction · EMA position · Recent swing</div></div>
-        <div class="mstr-toggle">
-          <button class="mt-btn" id="ms-daily-bull" onclick="setMStr('daily','bull')">▲ BULL</button>
-          <button class="mt-btn" id="ms-daily-range" onclick="setMStr('daily','range')">↔ RANGE</button>
-          <button class="mt-btn" id="ms-daily-bear" onclick="setMStr('daily','bear')">▼ BEAR</button>
-        </div>
-      </div>
-      <div class="mstr-row">
-        <div style="flex:1;"><div class="mstr-label">15-Min Chart</div><div class="mstr-sub">Intraday structure · VWAP relationship</div></div>
-        <div class="mstr-toggle">
-          <button class="mt-btn" id="ms-15m-bull" onclick="setMStr('15m','bull')">▲ BULL</button>
-          <button class="mt-btn" id="ms-15m-range" onclick="setMStr('15m','range')">↔ RANGE</button>
-          <button class="mt-btn" id="ms-15m-bear" onclick="setMStr('15m','bear')">▼ BEAR</button>
-        </div>
-      </div>
-      <div class="mstr-row" style="border-bottom:none;">
-        <div style="flex:1;"><div class="mstr-label">5-Min Chart</div><div class="mstr-sub">Execution TF · EMA terrain · Current phase</div></div>
-        <div class="mstr-toggle">
-          <button class="mt-btn" id="ms-5m-bull" onclick="setMStr('5m','bull')">▲ BULL</button>
-          <button class="mt-btn" id="ms-5m-range" onclick="setMStr('5m','range')">↔ RANGE</button>
-          <button class="mt-btn" id="ms-5m-bear" onclick="setMStr('5m','bear')">▼ BEAR</button>
-        </div>
-      </div>
-      <!-- Alignment indicator -->
-      <div id="ms-alignment" style="margin-top:12px;padding:10px 12px;border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;border:1px solid var(--border);background:var(--bg);display:none;"></div>
-    </div>
-
-    <!-- News & Events -->
-    <div class="card">
-      <div class="card-title">News & Events · High Impact</div>
-      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-bottom:10px;">Mark events that could affect session volatility</div>
-
-      <div id="brief-news-list">
-        <div class="news-item ni-danger" onclick="toggleNewsItem(this)">
-          <div class="news-time">08:00 IST</div>
-          <div class="news-text">RBI Policy / Rate Decision</div>
-          <div class="news-impact">HIGH IMPACT</div>
-        </div>
-        <div class="news-item ni-warn" onclick="toggleNewsItem(this)">
-          <div class="news-time">06:30 IST</div>
-          <div class="news-text">US CPI / Fed Minutes (overnight)</div>
-          <div class="news-impact">MEDIUM IMPACT</div>
-        </div>
-        <div class="news-item ni-warn" onclick="toggleNewsItem(this)">
-          <div class="news-time">Pre-Market</div>
-          <div class="news-text">Nifty/Bank Nifty F&O Expiry</div>
-          <div class="news-impact">MEDIUM IMPACT</div>
-        </div>
-        <div class="news-item ni-info" onclick="toggleNewsItem(this)">
-          <div class="news-time">Pre-Market</div>
-          <div class="news-text">SGX Nifty Indication</div>
-          <div class="news-impact">LOW IMPACT</div>
-        </div>
-        <div class="news-item ni-info" onclick="toggleNewsItem(this)">
-          <div class="news-time">Pre-Market</div>
-          <div class="news-text">FII/DII Data (prev session)</div>
-          <div class="news-impact">LOW IMPACT</div>
-        </div>
-      </div>
-      <!-- Custom news note -->
-      <div style="margin-top:10px;">
-        <textarea id="brief-news-note" rows="2" class="j-input" style="width:100%;resize:none;font-size:11px;" placeholder="Any other event today... e.g. Infosys results, Budget, Elections..."></textarea>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scenario Planner -->
-  <div class="card">
-    <div class="card-title">Scenario Planner · If/Then Decision Tree</div>
-    <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-bottom:12px;">Write your plan for each scenario before market opens — commit to it</div>
-    <div id="brief-scenarios">
-      <div class="scenario-card sc-bull">
-        <div class="sc-header"><span class="sc-icon">📈</span><span class="sc-name" style="color:var(--tv-teal);">Bull Scenario</span></div>
-        <div class="pq-section-lbl">IF this happens:</div>
-        <input class="level-input" style="width:100%;margin-bottom:8px;" placeholder="e.g. Price holds above 24550 and makes HH after 9:30..." id="sc-bull-if">
-        <div class="pq-section-lbl">THEN I will:</div>
-        <input class="level-input" style="width:100%;" placeholder="e.g. Buy CALL on pullback to AVWAP, SL below the low..." id="sc-bull-then">
-      </div>
-      <div class="scenario-card sc-bear" style="margin-top:8px;">
-        <div class="sc-header"><span class="sc-icon">📉</span><span class="sc-name" style="color:var(--danger);">Bear Scenario</span></div>
-        <div class="pq-section-lbl">IF this happens:</div>
-        <input class="level-input" style="width:100%;margin-bottom:8px;" placeholder="e.g. Price breaks below 24500 and tests S1 with momentum..." id="sc-bear-if">
-        <div class="pq-section-lbl">THEN I will:</div>
-        <input class="level-input" style="width:100%;" placeholder="e.g. Buy PUT on pullback to AVWAP, SL above last swing..." id="sc-bear-then">
-      </div>
-      <div class="scenario-card sc-range" style="margin-top:8px;">
-        <div class="sc-header"><span class="sc-icon">🔄</span><span class="sc-name" style="color:var(--warn);">Range / No-Trade Scenario</span></div>
-        <div class="pq-section-lbl">IF this happens:</div>
-        <input class="level-input" style="width:100%;margin-bottom:8px;" placeholder="e.g. Price chops between 24500–24620 with no clear direction..." id="sc-range-if">
-        <div class="pq-section-lbl">THEN I will:</div>
-        <input class="level-input" style="width:100%;" placeholder="e.g. Step aside. No trades. Watch. Wait for breakout with volume..." id="sc-range-then">
-      </div>
-    </div>
-  </div>
-
-  <!-- Briefing Notes -->
-  <div class="card">
-    <div class="card-title">Briefing Notes · Free-Form Context</div>
-    <textarea id="brief-notes" rows="4" class="j-input" style="width:100%;resize:none;font-size:12px;line-height:1.6;" placeholder="Write anything relevant: sector news, global markets, overnight price action, what happened yesterday, your mental note for today..."></textarea>
-  </div>
-
-  <!-- Lock Briefing & Verdict -->
-  <div class="card">
-    <div class="card-title">Briefing Readiness</div>
-
-    <!-- Readiness checklist -->
-    <div id="brief-readiness-list" style="margin-bottom:14px;">
-      <div class="check-item" onclick="toggleCheck(this)" id="brc-gap"><div class="check-box">✓</div><div class="check-label">Gap size noted — open type identified</div><span class="check-tag tag-htf">CONTEXT</span></div>
-      <div class="check-item" onclick="toggleCheck(this)" id="brc-levels"><div class="check-box">✓</div><div class="check-label">Key S/R levels marked on chart</div><span class="check-tag tag-entry">LEVELS</span></div>
-      <div class="check-item" onclick="toggleCheck(this)" id="brc-bias"><div class="check-box">✓</div><div class="check-label">Daily bias selected based on HTF</div><span class="check-tag tag-htf">HTF</span></div>
-      <div class="check-item" onclick="toggleCheck(this)" id="brc-mstr"><div class="check-box">✓</div><div class="check-label">Multi-timeframe structure assessed</div><span class="check-tag tag-htf">MTF</span></div>
-      <div class="check-item" onclick="toggleCheck(this)" id="brc-news"><div class="check-box">✓</div><div class="check-label">High-impact events checked for today</div><span class="check-tag tag-time">NEWS</span></div>
-      <div class="check-item" onclick="toggleCheck(this)" id="brc-scenarios"><div class="check-box">✓</div><div class="check-label">If/Then scenarios written and committed</div><span class="check-tag tag-entry">PLAN</span></div>
-      <div class="check-item" onclick="toggleCheck(this)" id="brc-bias2"><div class="check-box">✓</div><div class="check-label">No directional bias — ready to follow the market</div><span class="check-tag tag-mind">MIND</span></div>
-    </div>
-
-    <div class="progress-bar"><div class="progress-fill" id="brief-progress-fill" style="width:0%"></div></div>
-    <div class="progress-label" id="brief-progress-label">0 / 7 items complete · Briefing incomplete</div>
-
-    <!-- Verdict banner -->
-    <div id="brief-verdict" class="brief-ready-banner" style="margin-top:14px;"></div>
-
-    <!-- Lock button -->
-    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn btn-accent" onclick="lockBriefing()" style="flex:1;justify-content:center;padding:12px;">🔒 Lock Briefing & Move to Pre-Session</button>
-      <button class="btn" onclick="resetBriefing()" style="color:var(--muted);">↺ Reset</button>
-    </div>
-  </div>
-
+  <button class="tab" onclick="switchTab('briefing',this)" id="briefing-tab-btn">🌐 Briefing</button>
 </div>
 
 <!-- PRE-SESSION -->
@@ -1630,6 +1346,150 @@ function renderAIReview(data) {
   </div>
 </div>
 
+<!-- AI BRIEFING TAB -->
+<div id="tab-briefing" class="panel">
+
+  <div class="briefing-header">
+    <div>
+      <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:1px;">MARKET INTELLIGENCE · <span id="briefing-date-label" style="color:var(--text);">—</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span id="briefing-ts" class="briefing-ts">Not loaded</span>
+      <button class="briefing-refresh" id="briefing-refresh-btn" onclick="loadBriefing()">⟳ Refresh</button>
+    </div>
+  </div>
+
+  <!-- MARKET SNAPSHOT ROW -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="card-title">Global Markets · Live Snapshot</div>
+    <div class="market-grid" id="market-tiles-row1">
+      <!-- US Markets -->
+      <div class="mkt-tile" style="--tile-accent:#2962ff;">
+        <div class="mkt-label">S&P 500</div>
+        <div class="mkt-val" id="mkt-sp500"><div class="mkt-loading"></div></div>
+        <div class="mkt-chg" id="mkt-sp500-chg">—</div>
+        <div class="mkt-sub">Yesterday Close</div>
+        <div class="mkt-status closed" id="mkt-sp500-status">CLOSED</div>
+      </div>
+      <div class="mkt-tile" style="--tile-accent:#f9a825;">
+        <div class="mkt-label">NASDAQ</div>
+        <div class="mkt-val" id="mkt-nas"><div class="mkt-loading"></div></div>
+        <div class="mkt-chg" id="mkt-nas-chg">—</div>
+        <div class="mkt-sub">Yesterday Close</div>
+        <div class="mkt-status closed" id="mkt-nas-status">CLOSED</div>
+      </div>
+      <div class="mkt-tile" style="--tile-accent:#ef5350;">
+        <div class="mkt-label">DOW JONES</div>
+        <div class="mkt-val" id="mkt-dow"><div class="mkt-loading"></div></div>
+        <div class="mkt-chg" id="mkt-dow-chg">—</div>
+        <div class="mkt-sub">Yesterday Close</div>
+        <div class="mkt-status closed" id="mkt-dow-status">CLOSED</div>
+      </div>
+      <div class="mkt-tile" style="--tile-accent:#ab47bc;">
+        <div class="mkt-label">VIX (Fear)</div>
+        <div class="mkt-val" id="mkt-vix-us"><div class="mkt-loading"></div></div>
+        <div class="mkt-chg" id="mkt-vix-us-chg">—</div>
+        <div class="mkt-sub">US Volatility Index</div>
+        <div class="mkt-status closed" id="mkt-vix-us-status">CLOSED</div>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:12px 0;"></div>
+    <div class="market-grid" id="market-tiles-row2">
+      <!-- Asian Markets -->
+      <div class="mkt-tile" style="--tile-accent:#ef5350;">
+        <div class="mkt-label">NIKKEI 225</div>
+        <div class="mkt-val" id="mkt-nikkei"><div class="mkt-loading"></div></div>
+        <div class="mkt-chg" id="mkt-nikkei-chg">—</div>
+        <div class="mkt-sub">Japan · Today</div>
+        <div class="mkt-status" id="mkt-nikkei-status">—</div>
+      </div>
+      <div class="mkt-tile" style="--tile-accent:#26a69a;">
+        <div class="mkt-label">HANG SENG</div>
+        <div class="mkt-val" id="mkt-hsi"><div class="mkt-loading"></div></div>
+        <div class="mkt-chg" id="mkt-hsi-chg">—</div>
+        <div class="mkt-sub">Hong Kong · Today</div>
+        <div class="mkt-status" id="mkt-hsi-status">—</div>
+      </div>
+      <div class="mkt-tile" style="--tile-accent:#42a5f5;">
+        <div class="mkt-label">SGX NIFTY</div>
+        <div class="mkt-val" id="mkt-sgx"><div class="mkt-loading"></div></div>
+        <div class="mkt-chg" id="mkt-sgx-chg">—</div>
+        <div class="mkt-sub">Singapore · Gap Indicator</div>
+        <div class="mkt-status" id="mkt-sgx-status">—</div>
+      </div>
+      <div class="mkt-tile" style="--tile-accent:#f9a825;">
+        <div class="mkt-label">INDIA VIX</div>
+        <div class="mkt-val" id="mkt-india-vix"><div class="mkt-loading"></div></div>
+        <div class="mkt-chg" id="mkt-india-vix-chg">—</div>
+        <div class="mkt-sub">Fear · Nifty Volatility</div>
+        <div class="mkt-status" id="mkt-india-vix-status">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TWO COLUMN: VIX + EVENTS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+    <!-- INDIA VIX DETAIL -->
+    <div class="card">
+      <div class="card-title">India VIX · Volatility Meter</div>
+      <div style="text-align:center;">
+        <div class="briefing-score" id="vix-big">—</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:4px;" id="vix-label">Loading...</div>
+      </div>
+      <div class="vix-bar"><div class="vix-needle" id="vix-needle" style="left:20%;"></div></div>
+      <div class="vix-zones">
+        <span style="color:var(--tv-teal)">LOW &lt;12</span>
+        <span style="color:var(--warn)">ELEVATED 16–20</span>
+        <span style="color:var(--danger)">EXTREME &gt;24</span>
+      </div>
+      <div id="vix-advice" style="margin-top:14px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;color:var(--muted);padding:10px;background:var(--panel2);border-radius:3px;border:1px solid var(--border);">Select a VIX range to see strategy advice.</div>
+    </div>
+
+    <!-- EVENTS THIS WEEK -->
+    <div class="card">
+      <div class="card-title">Key Events · This Week</div>
+      <div class="events-list" id="events-list">
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);padding:20px 0;text-align:center;">Loading events...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWS -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="card-title">Global News · Impact on Nifty</div>
+    <div class="news-list" id="briefing-news">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);padding:20px 0;text-align:center;">Loading news...</div>
+    </div>
+  </div>
+
+  <!-- AI BRIEFING -->
+  <div class="card">
+    <div class="card-title">🤖 AI Daily Briefing · Market Intelligence</div>
+    <!-- Status / Loading -->
+    <div id="briefing-loading" style="display:none;text-align:center;padding:28px 0;">
+      <div style="width:36px;height:36px;border:3px solid rgba(41,98,255,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;"></div>
+      <div id="briefing-loading-msg" style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;transition:opacity .3s;">Fetching market data...</div>
+    </div>
+    <!-- Output -->
+    <div id="briefing-ai-out" style="display:none;">
+      <div id="briefing-bias-row" style="margin-bottom:12px;"></div>
+      <div class="briefing-ai-output" id="briefing-ai-content"></div>
+    </div>
+    <!-- Empty / prompt to generate -->
+    <div id="briefing-empty" style="text-align:center;padding:24px 0;">
+      <div style="font-size:28px;margin-bottom:10px;opacity:.5;">🌐</div>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:18px;">Generate today's AI market briefing before the session opens.</div>
+      <button class="btn btn-accent" onclick="loadBriefing()" style="margin:0 auto;">🔍 Generate Briefing</button>
+    </div>
+    <!-- Last generated note -->
+    <div id="briefing-footer" style="display:none;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);" id="briefing-gen-time">Generated: —</div>
+      <button class="btn btn-sm" onclick="loadBriefing(true)" style="color:var(--accent);border-color:rgba(41,98,255,.3);">↺ Regenerate</button>
+    </div>
+  </div>
+
+</div><!-- /tab-briefing -->
+
 </div><!-- /container -->
 
 <!-- GUARDRAIL MODAL -->
@@ -1778,6 +1638,7 @@ function switchTab(name,btn){
   if(btn)btn.classList.add('active');
   if(name==='analytics')renderAnalytics();
   if(name==='ailog'){renderAIHistory();checkTodayReviewExists();}
+  if(name==='briefing'){initBriefingTab();}
 }
 
 // ── BELIEFS ────────────────────────────────────────
@@ -3320,223 +3181,394 @@ setInterval(()=>{const ist=getISTDate();const h=ist.getHours(),m=ist.getMinutes(
 
 // ── INIT ────────────────────────────────────────────
 // loadTrades() is called after successful auth login
-
-// ── BRIEFING TAB ────────────────────────────────────
-let briefState = {
-  gapType: null, bias: null, conviction: 3,
-  msDaily: null, ms15m: null, ms5m: null,
-  locked: false
-};
-
-// Init briefing date badge
-(function initBriefDate(){
-  const el = document.getElementById('brief-date-badge');
-  if(!el) return;
-  const ist = getISTDate ? getISTDate() : new Date();
-  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  el.textContent = days[ist.getDay()]+' '+ist.getDate()+' '+months[ist.getMonth()]+' '+ist.getFullYear();
-})();
-
-function briefCalcGap(){
-  const pc = parseFloat(document.getElementById('brief-prev-close').value);
-  const eo = parseFloat(document.getElementById('brief-exp-open').value);
-  const valEl = document.getElementById('brief-gap-value');
-  const lblEl = document.getElementById('brief-gap-label');
-  const barEl = document.getElementById('brief-gap-bar');
-  if(isNaN(pc)||isNaN(eo)){
-    valEl.textContent='— pts'; valEl.style.color='var(--muted)';
-    lblEl.textContent='Enter prev close & expected open';
-    barEl.style.width='50%'; barEl.style.background='var(--muted)';
-    return;
-  }
-  const diff = eo - pc;
-  const pct = (diff/pc*100);
-  const absPct = Math.abs(pct);
-  const isUp = diff >= 0;
-  valEl.textContent = (diff>=0?'+':'')+diff.toFixed(0)+' pts ('+pct.toFixed(2)+'%)';
-  valEl.style.color = diff>0?'var(--tv-teal)':diff<0?'var(--danger)':'var(--muted)';
-  lblEl.textContent = absPct>0.75?(isUp?'🟢 Gap Up — wait for first 3 candles':'🔴 Gap Down — wait for first 3 candles'):'🟡 Flat open — range likely early on';
-  // Bar position: 0%=big gap down, 50%=flat, 100%=big gap up
-  const pos = Math.min(Math.max(50 + (pct/0.5)*25, 2), 98);
-  barEl.style.width=pos+'%';
-  barEl.style.background=isUp?'var(--tv-teal)':'var(--danger)';
-}
-
-function setBriefGapType(type){
-  ['up','flat','down'].forEach(t=>{
-    const el=document.getElementById('bg-'+( t==='up'?'gapup':t==='down'?'gapdown':'flat'));
-    if(el) el.className='pq-zone-btn'+(t===type?(' pq-selected-'+(t==='up'?'above':t==='down'?'below':'fair')):'');
-  });
-  briefState.gapType = type;
-  briefCheckReadiness();
-}
-
-const biasData = {
-  bull: {
-    cls:'bias-bull', bg:'rgba(38,166,154,.08)', border:'rgba(38,166,154,.3)', color:'var(--tv-teal)',
-    txt:'📈 BULLISH BIAS · Buy CALL options on pullbacks to AVWAP. Wait for the dip — the market will give you the best price. Only trade in direction of daily EMA. Avoid PUT setups unless major S/R breaks.'
-  },
-  bear: {
-    cls:'bias-bear', bg:'rgba(239,83,80,.08)', border:'rgba(239,83,80,.3)', color:'var(--danger)',
-    txt:'📉 BEARISH BIAS · Buy PUT options on pullbacks. Watch for AVWAP retest as entry. Daily EMA is trending down. Avoid CALL setups unless major level holds. Be extra cautious about gap-fill rallies.'
-  },
-  range: {
-    cls:'bias-range', bg:'rgba(249,168,37,.08)', border:'rgba(249,168,37,.3)', color:'var(--warn)',
-    txt:'🔄 RANGE BIAS · Market is inside prior candle. Reduce size. Wait for breakout with volume before entering. Trade only the extremes of the range. Both CALL at support and PUT at resistance valid but conviction must be HIGH.'
-  },
-  wait: {
-    cls:'bias-wait', bg:'rgba(66,165,245,.08)', border:'rgba(66,165,245,.3)', color:'var(--info)',
-    txt:'⏳ NO CLEAR BIAS · Do not force a view. Watch the first 3 candles carefully. Let the market show direction. If no clear setup by 10:30 IST, consider sitting out. Protecting capital > missing a trade.'
-  }
-};
-
-function setBias(type){
-  Object.keys(biasData).forEach(k=>{
-    const el=document.getElementById('bias-'+k);
-    if(!el)return;
-    el.className='bias-btn'+(k===type?' '+biasData[k].cls:'');
-  });
-  briefState.bias = type;
-  const d=biasData[type];
-  const box=document.getElementById('bias-advice-box');
-  box.style.display='block';
-  box.style.background=d.bg; box.style.borderColor=d.border; box.style.color=d.color;
-  box.textContent=d.txt;
-  briefCheckReadiness();
-}
-
-function briefUpdateConviction(){
-  const val=parseInt(document.getElementById('brief-conviction').value);
-  briefState.conviction=val;
-  const labels=['','Very Low','Low','Medium','High','Very High'];
-  const colors=['','var(--danger)','var(--warn)','var(--muted)','var(--accent)','var(--tv-teal)'];
-  const el=document.getElementById('brief-conviction-label');
-  el.textContent=labels[val]; el.style.color=colors[val];
-}
-
-const mstrCls = {bull:'mt-bull', bear:'mt-bear', range:'mt-range'};
-function setMStr(tf, val){
-  ['bull','range','bear'].forEach(v=>{
-    const el=document.getElementById('ms-'+tf+'-'+v);
-    if(el) el.className='mt-btn'+(v===val?' '+mstrCls[v]:'');
-  });
-  briefState['ms'+tf.replace('-','')] = val;
-  briefUpdateMSAlignment();
-  briefCheckReadiness();
-}
-
-function briefUpdateMSAlignment(){
-  const d=briefState.msdaily, f=briefState.ms15m, five=briefState.ms5m;
-  const el=document.getElementById('ms-alignment');
-  if(!d||!f||!five){el.style.display='none';return;}
-  el.style.display='block';
-  if(d===f && f===five){
-    const isB=d==='bull';
-    el.style.background=isB?'rgba(38,166,154,.08)':'d'===d?'rgba(239,83,80,.08)':'rgba(249,168,37,.08)';
-    el.style.borderColor=isB?'rgba(38,166,154,.3)':'rgba(239,83,80,.3)';
-    el.style.color=isB?'var(--tv-teal)':'var(--danger)';
-    el.textContent='✅ All 3 timeframes aligned '+d.toUpperCase()+' — HIGHEST conviction setups today. Only trade in this direction.';
-  } else if(d===f || f===five || d===five){
-    el.style.background='rgba(249,168,37,.06)'; el.style.borderColor='rgba(249,168,37,.3)'; el.style.color='var(--warn)';
-    el.textContent='⚡ Partial alignment — proceed with caution. Reduce size. Wait for confirmation from all TFs before entering.';
-  } else {
-    el.style.background='rgba(239,83,80,.06)'; el.style.borderColor='rgba(239,83,80,.25)'; el.style.color='var(--muted)';
-    el.textContent='⚠️ No alignment across timeframes — mixed signals. Best approach: sit on hands until picture clears.';
-  }
-}
-
-function toggleNewsItem(el){
-  el.style.opacity = el.style.opacity==='0.38'?'1':'0.38';
-  el.style.textDecoration = el.style.textDecoration==='line-through'?'none':'line-through';
-}
-
-function briefUpdateLevels(){ briefCheckReadiness(); }
-
-function briefCheckReadiness(){
-  // count filled readiness check items
-  const checks = document.querySelectorAll('#brief-readiness-list .check-item');
-  let done=0;
-  checks.forEach(c=>{if(c.classList.contains('checked'))done++;});
-  const total=checks.length;
-  const pct=Math.round(done/total*100);
-  document.getElementById('brief-progress-fill').style.width=pct+'%';
-  document.getElementById('brief-progress-label').textContent=done+' / '+total+' items complete · '+(pct<100?'Briefing incomplete':'Briefing ready');
-  // update status pill
-  const pill=document.getElementById('brief-status');
-  if(pct===100){
-    pill.className='brief-status-pill brief-status-ready'; pill.textContent='READY';
-  } else {
-    pill.className='brief-status-pill brief-status-draft'; pill.textContent='DRAFT';
-  }
-  // Verdict banner
-  const v=document.getElementById('brief-verdict');
-  if(done>=6){
-    v.style.display='block'; v.className='brief-ready-banner brb-go';
-    v.innerHTML='<div class="brb-title" style="color:var(--tv-teal);">✅ BRIEFING COMPLETE — YOU ARE PREPARED</div><div class="brb-sub" style="color:var(--tv-teal);">Context locked. Levels marked. Plan written. Now go execute with patience.</div>';
-  } else if(done>=4){
-    v.style.display='block'; v.className='brief-ready-banner brb-warn';
-    v.innerHTML='<div class="brb-title" style="color:var(--warn);">⚡ ALMOST THERE — COMPLETE ALL ITEMS</div><div class="brb-sub" style="color:var(--warn);">Don\'t skip steps. A half-prepared trader takes half-informed trades.</div>';
-  } else {
-    v.style.display='none';
-  }
-}
-
-function lockBriefing(){
-  const checks = document.querySelectorAll('#brief-readiness-list .check-item');
-  let done=0;
-  checks.forEach(c=>{if(c.classList.contains('checked'))done++;});
-  if(done<5){showToast('⚠️ Complete at least 5 briefing items first.',true);return;}
-  briefState.locked=true;
-  showToast('📋 Briefing locked. Proceed to Pre-Session ritual.',false);
-  // Switch to Pre-Session tab
-  const preBtn=document.querySelector('.tab');
-  if(preBtn){preBtn.click();}
-}
-
-function resetBriefing(){
-  if(!confirm('Reset all briefing data for today?'))return;
-  briefState={gapType:null,bias:null,conviction:3,msdaily:null,ms15m:null,ms5m:null,locked:false};
-  // reset inputs
-  ['brief-prev-close','brief-exp-open','brief-r1','brief-r2','brief-wh','brief-s1','brief-s2','brief-wl','brief-pivot','brief-ema','brief-pdh','brief-notes','brief-news-note','sc-bull-if','sc-bull-then','sc-bear-if','sc-bear-then','sc-range-if','sc-range-then'].forEach(id=>{
-    const el=document.getElementById(id); if(el)el.value='';
-  });
-  document.getElementById('brief-conviction').value=3;
-  briefUpdateConviction();
-  briefCalcGap();
-  // reset bias
-  document.querySelectorAll('.bias-btn').forEach(b=>b.className='bias-btn');
-  document.getElementById('bias-advice-box').style.display='none';
-  // reset gap btns
-  ['bg-gapup','bg-flat','bg-gapdown'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='pq-zone-btn';});
-  // reset mstr
-  document.querySelectorAll('.mt-btn').forEach(b=>b.className='mt-btn');
-  document.getElementById('ms-alignment').style.display='none';
-  // reset checks
-  document.querySelectorAll('#brief-readiness-list .check-item').forEach(c=>{
-    c.classList.remove('checked');
-    const box=c.querySelector('.check-box'); if(box)box.textContent='✓';
-    const lbl=c.querySelector('.check-label'); if(lbl)lbl.style.textDecoration='';
-  });
-  // reset news
-  document.querySelectorAll('#brief-news-list .news-item').forEach(n=>{n.style.opacity='1';n.style.textDecoration='none';});
-  document.getElementById('brief-gap-value').textContent='— pts';
-  document.getElementById('brief-gap-value').style.color='var(--muted)';
-  document.getElementById('brief-verdict').style.display='none';
-  document.getElementById('brief-status').className='brief-status-pill brief-status-draft';
-  document.getElementById('brief-status').textContent='DRAFT';
-  document.getElementById('brief-progress-fill').style.width='0%';
-  document.getElementById('brief-progress-label').textContent='0 / 7 items complete · Briefing incomplete';
-  showToast('Briefing reset.',false);
-}
-
-// Init conviction label on load
-document.addEventListener('DOMContentLoaded',()=>{briefUpdateConviction();});
-// Also call it directly since DOM is likely ready
-briefUpdateConviction();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+// ── AI BRIEFING TAB ─────────────────────────────────────────────────────────
+let _briefingLoaded = false;
+let _briefingData   = null;
+
+function initBriefingTab() {
+  const ist = getISTDate();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el = document.getElementById('briefing-date-label');
+  if (el) el.textContent = `${days[ist.getDay()]} ${ist.getDate()} ${months[ist.getMonth()]} ${ist.getFullYear()}`;
+  renderWeeklyEvents();
+  if (!_briefingLoaded) {
+    // Auto-load on first open
+    loadBriefing();
+  }
+}
+
+// ── WEEKLY EVENTS (static, curated for Indian market context) ─────────────
+function renderWeeklyEvents() {
+  const ist = getISTDate();
+  const day = ist.getDay(); // 0=Sun
+  const date = ist.getDate();
+  const m = ist.getMonth()+1;
+
+  // Generate a week of relevant events — AI will contextualize, these are always-present markers
+  const events = [
+    { offset:1, name:'RBI MPC Minutes / Policy Decision', impact:'high', when:'Mon' },
+    { offset:2, name:'US CPI / Core Inflation Data', impact:'high', when:'Tue' },
+    { offset:2, name:'India Industrial Production (IIP)', impact:'med', when:'Tue' },
+    { offset:3, name:'FOMC Meeting Minutes Release', impact:'high', when:'Wed' },
+    { offset:3, name:'Nifty F&O Expiry Watch', impact:'med', when:'Wed' },
+    { offset:4, name:'US Initial Jobless Claims', impact:'med', when:'Thu' },
+    { offset:4, name:'ECB Interest Rate Decision', impact:'med', when:'Thu' },
+    { offset:5, name:'US Non-Farm Payrolls (NFP)', impact:'high', when:'Fri' },
+    { offset:5, name:'India FII/DII Flow Report', impact:'low', when:'Fri' },
+    { offset:5, name:'Weekly Options Expiry (Thu/Fri)', impact:'high', when:'Fri' },
+  ];
+
+  // Always show this week's events starting from today
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const shown = events.slice(0, 6);
+
+  const html = shown.map(e => {
+    const d = new Date(ist);
+    d.setDate(d.getDate() + (e.offset - day + (e.offset >= day ? 0 : 7)));
+    const dayName = dayNames[d.getDay()];
+    return `
+      <div class="event-row">
+        <div class="event-date">${dayName} ${d.getDate()}/${m}</div>
+        <div class="event-dot ${e.impact}"></div>
+        <div class="event-name">${e.name}</div>
+        <span class="event-impact ${e.impact}">${e.impact.toUpperCase()}</span>
+      </div>`;
+  }).join('');
+
+  const el = document.getElementById('events-list');
+  if (el) el.innerHTML = html;
+}
+
+// ── MARKET TILE RENDERER ──────────────────────────────────────────────────
+function renderMarketTile(id, val, chg, status) {
+  const valEl  = document.getElementById('mkt-'+id);
+  const chgEl  = document.getElementById('mkt-'+id+'-chg');
+  const statEl = document.getElementById('mkt-'+id+'-status');
+  if (!valEl) return;
+
+  if (val === null || val === undefined) {
+    valEl.innerHTML = '<div class="mkt-loading"></div>';
+    if (chgEl) chgEl.textContent = '—';
+    return;
+  }
+
+  const numVal = parseFloat(val);
+  const numChg = parseFloat(chg);
+  const isUp   = numChg >= 0;
+
+  // Format value
+  valEl.textContent = numVal > 10000
+    ? numVal.toLocaleString('en-IN', {maximumFractionDigits: 0})
+    : numVal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  if (chgEl) {
+    const sign = isUp ? '+' : '';
+    const chgPct = parseFloat(chg);
+    chgEl.textContent = `${sign}${chgPct.toFixed(2)}%`;
+    chgEl.className = 'mkt-chg ' + (isUp ? 'up' : 'dn');
+  }
+
+  if (statEl && status) {
+    statEl.textContent = status;
+    statEl.className = 'mkt-status ' + (status === 'OPEN' ? 'open' : status === 'LOADING' ? 'loading' : 'closed');
+  }
+}
+
+// ── VIX RENDERER ─────────────────────────────────────────────────────────
+function renderVixGauge(vixVal) {
+  const v = parseFloat(vixVal);
+  if (isNaN(v)) return;
+
+  const bigEl   = document.getElementById('vix-big');
+  const lblEl   = document.getElementById('vix-label');
+  const advEl   = document.getElementById('vix-advice');
+  const needle  = document.getElementById('vix-needle');
+
+  if (bigEl) { bigEl.textContent = v.toFixed(2); bigEl.style.color = v > 20 ? 'var(--danger)' : v > 15 ? 'var(--warn)' : 'var(--tv-teal)'; }
+
+  // Needle position: 0=left(low=8), 100=right(extreme=32), clamp
+  const pct = Math.min(100, Math.max(0, ((v - 8) / (32 - 8)) * 100));
+  if (needle) needle.style.left = pct + '%';
+
+  let label, advice;
+  if (v < 12) {
+    label = 'LOW VOLATILITY';
+    advice = '🟢 VIX below 12 — very low fear. Market is calm. Options premiums are cheap. Ideal conditions for directional trades. Hold positions confidently.';
+  } else if (v < 16) {
+    label = 'NORMAL RANGE';
+    advice = '🔵 VIX 12–16 — normal market conditions. Good environment for systematic trading. Follow your plan. No special adjustments needed.';
+  } else if (v < 20) {
+    label = 'ELEVATED · CAUTION';
+    advice = '🟡 VIX 16–20 — elevated uncertainty. Premiums are higher. Pullbacks may be sharper. Be patient with entries, consider tighter position sizing.';
+  } else if (v < 24) {
+    label = 'HIGH · REDUCE SIZE';
+    advice = '🟠 VIX 20–24 — high volatility. Wide swings expected. Reduce position size by 30-50%. Widen SL slightly. Be extra selective — only A+ setups.';
+  } else {
+    label = 'EXTREME · DEFENSIVE';
+    advice = '🔴 VIX above 24 — extreme fear. Market is unstable. Consider skipping the day. If trading: tiny size, wide stops, no FOMO. Capital preservation > profit.';
+  }
+
+  if (lblEl) { lblEl.textContent = label; lblEl.style.color = v > 20 ? 'var(--danger)' : v > 15 ? 'var(--warn)' : 'var(--tv-teal)'; }
+  if (advEl) advEl.textContent = advice;
+}
+
+// ── NEWS RENDERER ──────────────────────────────────────────────────────────
+function renderNews(newsItems) {
+  const el = document.getElementById('briefing-news');
+  if (!el || !newsItems || !newsItems.length) {
+    if (el) el.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:11px;color:var(--muted);padding:20px 0;text-align:center;">No news data available.</div>';
+    return;
+  }
+
+  el.innerHTML = newsItems.map(n => `
+    <div class="news-item">
+      <div class="news-headline">${n.headline}</div>
+      <div class="news-meta">
+        <span class="news-src">${n.source || 'Global'}</span>
+        <span class="news-tag ${n.sentiment || 'neut'}">${(n.sentiment || 'NEUT').toUpperCase()}</span>
+        ${n.impact ? `<span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);">· ${n.impact}</span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// ── MAIN BRIEFING LOADER ───────────────────────────────────────────────────
+async function loadBriefing(force = false) {
+  const ist = getISTDate();
+  const todayKey = todayStr();
+
+  // Show loading state
+  document.getElementById('briefing-empty').style.display    = 'none';
+  document.getElementById('briefing-ai-out').style.display   = 'none';
+  document.getElementById('briefing-footer').style.display   = 'none';
+  document.getElementById('briefing-loading').style.display  = 'block';
+
+  const btn = document.getElementById('briefing-refresh-btn');
+  if (btn) { btn.disabled = true; }
+
+  const msgs = ['Scanning global markets...','Checking Asia open...','Reading India VIX...','Scanning key news...','Analysing impact on Nifty...','Building your briefing...'];
+  let mi = 0;
+  const msgEl = document.getElementById('briefing-loading-msg');
+  const msgIv = setInterval(() => {
+    mi = (mi + 1) % msgs.length;
+    if (msgEl) { msgEl.style.opacity = '0'; setTimeout(() => { msgEl.textContent = msgs[mi]; msgEl.style.opacity = '1'; }, 200); }
+  }, 1800);
+
+  try {
+    // Build context for AI
+    const h = ist.getHours(), m = ist.getMinutes();
+    const sessionPhase = h < 9 ? 'pre-market' : h === 9 && m < 30 ? 'market just opened' : h < 10 ? 'early session' : h < 13 ? 'prime session' : h < 14 ? 'lunch hour' : h < 15 ? 'late session' : 'market closed';
+
+    const dow = ist.getDay();
+    const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dow];
+    const isExpiry = dow === 4; // Thursday = weekly expiry day
+    const isFriday = dow === 5;
+
+    const prompt = `You are a sharp, data-driven market intelligence analyst specializing in Indian equity markets and Nifty50 options trading. Generate a concise, actionable pre-session briefing for a Nifty intraday options trader.
+
+Today: ${dayName}, ${todayStr()} IST
+Current session phase: ${sessionPhase}
+${isExpiry ? '⚡ TODAY IS WEEKLY EXPIRY DAY — Options decay is extreme. Extra caution required.' : ''}
+${isFriday ? '📅 Friday — watch for weekend gap risk in your positions.' : ''}
+
+Generate a complete briefing in JSON format ONLY (no markdown, no backticks):
+{
+  "bias": "bullish|bearish|neutral",
+  "confidence": <integer 1-100>,
+  "bias_reason": "<one crisp sentence why>",
+  "us_close": {
+    "summary": "<2-3 sentences on how US markets closed yesterday and what it signals for India today>",
+    "sp500_change": "<+/-X.XX%>",
+    "nasdaq_change": "<+/-X.XX%>",
+    "key_driver": "<main driver of US move>"
+  },
+  "asia_open": {
+    "summary": "<2 sentences on Asian market opens today — Nikkei, Hang Seng, SGX Nifty>",
+    "sgx_nifty_gap": "<gap up/down/flat and approximate points>",
+    "dominant_tone": "bullish|bearish|mixed"
+  },
+  "india_vix": {
+    "level": <number — current approximate India VIX>,
+    "change": <number — approximate % change>,
+    "interpretation": "<1 sentence what current VIX means for today's trading>"
+  },
+  "macro_events": [
+    { "event": "<event name>", "impact": "high|med|low", "nifty_effect": "<bullish|bearish|neutral>", "note": "<brief 1-line note>" }
+  ],
+  "top_news": [
+    { "headline": "<concise news headline>", "source": "<Bloomberg/Reuters/ET/etc>", "sentiment": "bull|bear|neut", "impact": "<brief impact on Nifty>" }
+  ],
+  "key_levels": {
+    "nifty_support": "<key support level>",
+    "nifty_resistance": "<key resistance level>",
+    "note": "<1 sentence on why these levels matter today>"
+  },
+  "session_notes": [
+    "<actionable note 1 for today's session, max 15 words>",
+    "<actionable note 2>",
+    "<actionable note 3>"
+  ],
+  "risk_factors": [
+    "<risk factor 1 that could invalidate the bias>",
+    "<risk factor 2>"
+  ],
+  "overall_verdict": "<2-3 sentences wrapping up the day's outlook and what the trader should focus on>"
+}
+
+Use your training knowledge of recent market conditions (as of early 2025). Be specific with approximate numbers where possible. Focus on what directly moves Nifty50.`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1800,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    const raw = (data.content?.[0]?.text || '').trim();
+    const clean = raw.replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
+    const parsed = JSON.parse(clean);
+
+    _briefingData = parsed;
+    _briefingLoaded = true;
+
+    renderBriefingOutput(parsed);
+
+    // Update market tiles with AI data
+    if (parsed.us_close) {
+      renderMarketTile('sp500', parsed.us_close.sp500_approximate || '—', parsed.us_close.sp500_change?.replace('%','') || 0, 'CLOSED');
+      renderMarketTile('nas', '—', parsed.us_close.nasdaq_change?.replace('%','') || 0, 'CLOSED');
+    }
+    if (parsed.india_vix) {
+      renderMarketTile('india-vix', parsed.india_vix.level, parsed.india_vix.change, 'LIVE');
+      renderVixGauge(parsed.india_vix.level);
+    }
+    if (parsed.top_news) renderNews(parsed.top_news);
+
+    // Footer
+    const now = getISTDate();
+    const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} IST`;
+    const footerEl = document.getElementById('briefing-gen-time');
+    if (footerEl) footerEl.textContent = `Generated: ${ts}`;
+    const tsEl = document.getElementById('briefing-ts');
+    if (tsEl) tsEl.textContent = `Updated ${ts}`;
+
+    document.getElementById('briefing-footer').style.display = 'flex';
+
+  } catch(e) {
+    console.error('Briefing error:', e);
+    document.getElementById('briefing-ai-content').innerHTML =
+      `<div style="padding:12px;border:1px solid var(--danger);border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;color:var(--danger);">⚠️ Could not generate briefing. Check connection and try again.<br><span style="opacity:.6;font-size:10px;">${e.message || ''}</span></div>`;
+    document.getElementById('briefing-ai-out').style.display = 'block';
+    document.getElementById('briefing-bias-row').innerHTML = '';
+  } finally {
+    clearInterval(msgIv);
+    document.getElementById('briefing-loading').style.display = 'none';
+    if (btn) btn.disabled = false;
+  }
+}
+
+function renderBriefingOutput(d) {
+  // Bias pill
+  const biasEl = document.getElementById('briefing-bias-row');
+  if (biasEl && d.bias) {
+    const icons = { bullish: '▲', bearish: '▼', neutral: '◆' };
+    const conf = d.confidence || 0;
+    biasEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+        <span class="bias-pill ${d.bias === 'bullish' ? 'bull' : d.bias === 'bearish' ? 'bear' : 'neut'}">
+          ${icons[d.bias] || '◆'} ${d.bias.toUpperCase()} BIAS
+        </span>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">Confidence:
+          <span style="color:${conf >= 65 ? 'var(--tv-teal)' : conf >= 40 ? 'var(--warn)' : 'var(--danger)'};">
+            ${conf}%
+          </span>
+        </div>
+        <div style="font-size:12px;color:var(--text);flex:1;min-width:200px;">${d.bias_reason || ''}</div>
+      </div>
+      <div class="score-bar" style="margin-bottom:16px;">
+        <div class="score-bar-fill" style="width:${conf}%;background:${conf >= 65 ? 'var(--tv-teal)' : conf >= 40 ? 'var(--warn)' : 'var(--danger)'};"></div>
+      </div>`;
+  }
+
+  let html = '';
+
+  // US Close
+  if (d.us_close) {
+    html += `<div class="section-hdr">🇺🇸 US Markets · Yesterday Close</div>`;
+    html += `<div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:8px;">${d.us_close.summary}</div>`;
+    if (d.us_close.key_driver) html += `<div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">KEY DRIVER: <span style="color:var(--text);">${d.us_close.key_driver}</span></div>`;
+  }
+
+  // Asia Open
+  if (d.asia_open) {
+    html += `<div class="section-hdr">🌏 Asian Markets · Today Open</div>`;
+    html += `<div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:8px;">${d.asia_open.summary}</div>`;
+    if (d.asia_open.sgx_nifty_gap) html += `<div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">SGX NIFTY GAP: <span style="color:var(--text);">${d.asia_open.sgx_nifty_gap}</span> · Tone: <span style="color:${d.asia_open.dominant_tone==='bullish'?'var(--tv-teal)':d.asia_open.dominant_tone==='bearish'?'var(--danger)':'var(--warn)'}">${(d.asia_open.dominant_tone||'').toUpperCase()}</span></div>`;
+  }
+
+  // Key Levels
+  if (d.key_levels) {
+    html += `<div class="section-hdr">📐 Key Levels · Nifty50</div>`;
+    html += `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;">
+      <div style="background:rgba(38,166,154,.08);border:1px solid rgba(38,166,154,.2);border-radius:3px;padding:8px 16px;font-family:'Space Mono',monospace;">
+        <div style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:3px;">SUPPORT</div>
+        <div style="font-size:16px;font-weight:700;color:var(--tv-teal);">${d.key_levels.nifty_support}</div>
+      </div>
+      <div style="background:rgba(239,83,80,.08);border:1px solid rgba(239,83,80,.2);border-radius:3px;padding:8px 16px;font-family:'Space Mono',monospace;">
+        <div style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:3px;">RESISTANCE</div>
+        <div style="font-size:16px;font-weight:700;color:var(--danger);">${d.key_levels.nifty_resistance}</div>
+      </div>
+    </div>`;
+    if (d.key_levels.note) html += `<div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:12px;">${d.key_levels.note}</div>`;
+  }
+
+  // Macro Events
+  if (d.macro_events && d.macro_events.length) {
+    html += `<div class="section-hdr">📅 Macro Events · Watch List</div>`;
+    html += d.macro_events.map(e => `
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+        <div class="event-dot ${e.impact}" style="margin-top:4px;flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;color:var(--text);">${e.event}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;">${e.note}</div>
+        </div>
+        <span style="font-size:9px;padding:2px 6px;border-radius:20px;font-family:'Space Mono',monospace;font-weight:700;background:${e.nifty_effect==='bullish'?'rgba(38,166,154,.12)':e.nifty_effect==='bearish'?'rgba(239,83,80,.12)':'rgba(249,168,37,.1)'};color:${e.nifty_effect==='bullish'?'var(--tv-teal)':e.nifty_effect==='bearish'?'var(--danger)':'var(--warn)'};border:1px solid ${e.nifty_effect==='bullish'?'rgba(38,166,154,.2)':e.nifty_effect==='bearish'?'rgba(239,83,80,.2)':'rgba(249,168,37,.2)'};">${(e.nifty_effect||'NEUT').toUpperCase()}</span>
+      </div>`).join('');
+    html += '<div style="height:12px;"></div>';
+  }
+
+  // Session Notes
+  if (d.session_notes && d.session_notes.length) {
+    html += `<div class="section-hdr">📋 Today's Session Notes</div>`;
+    html += d.session_notes.map(n => `<div class="bullet"><span class="bullet-dot">›</span><span>${n}</span></div>`).join('');
+    html += '<div style="height:8px;"></div>';
+  }
+
+  // Risk Factors
+  if (d.risk_factors && d.risk_factors.length) {
+    html += `<div class="section-hdr">⚠️ Risk Factors · Watch For</div>`;
+    html += d.risk_factors.map(r => `<div class="bullet"><span class="bullet-dot" style="color:var(--danger);">›</span><span style="color:var(--muted);">${r}</span></div>`).join('');
+    html += '<div style="height:8px;"></div>';
+  }
+
+  // Overall Verdict
+  if (d.overall_verdict) {
+    const cls = d.bias === 'bullish' ? 'bull' : d.bias === 'bearish' ? 'bear' : 'neut';
+    html += `<div class="verdict-box ${cls}"><strong>OUTLOOK:</strong> ${d.overall_verdict}</div>`;
+  }
+
+  document.getElementById('briefing-ai-content').innerHTML = html;
+  document.getElementById('briefing-ai-out').style.display = 'block';
+}
+</script>
+
 <script>
 // ── SUPABASE AUTH ──────────────────────────────────
 const _supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
