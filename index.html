@@ -1431,149 +1431,123 @@ function renderAIReview(data) {
 </div>
 
 <!-- ══════════════════════════════════════════════════════ -->
-<!-- MORNING BRIEFING TAB                                   -->
-<!-- ══════════════════════════════════════════════════════ -->
+<!-- MORNING BRIEFING TAB -->
 <div id="tab-briefing" class="panel">
 
 <style>
-/* ── BRIEFING TERMINAL STYLES (scoped) ─────────────────── */
-.mb-terminal{background:#0c0e0d;border:1px solid #1a2018;border-radius:6px;overflow:hidden;margin-bottom:12px;}
-.mb-titlebar{background:#131714;padding:9px 14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #1a1f1c;}
-.mb-dot{width:10px;height:10px;border-radius:50%;}
-.mb-dot-r{background:#3a1414;}.mb-dot-y{background:#2e2a14;}.mb-dot-g{background:#0F6E56;}
-.mb-dot-g.live{background:#1D9E75;box-shadow:0 0 6px #1D9E7566;animation:mbGlow 2s infinite;}
-@keyframes mbGlow{0%,100%{opacity:1;}50%{opacity:0.4;}}
-.mb-tbtxt{font-size:10px;color:#2d4035;margin-left:4px;letter-spacing:0.5px;font-family:'Space Mono',monospace;}
-.mb-tbr{margin-left:auto;display:flex;align-items:center;gap:14px;}
-.mb-clock{font-size:11px;color:#1D9E75;letter-spacing:1px;font-family:'Space Mono',monospace;}
-.mb-body{padding:16px;}
-.mb-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #161b18;flex-wrap:wrap;gap:10px;}
-.mb-logo{font-size:15px;font-weight:600;color:#1D9E75;letter-spacing:1px;font-family:'Space Mono',monospace;}
-.mb-logo span{color:#2d5040;}
-.mb-sub{font-size:9px;color:#2d4035;margin-top:3px;letter-spacing:0.5px;font-family:'Space Mono',monospace;}
-.mb-hdr-right{display:flex;align-items:center;gap:10px;}
-.mb-run-btn{background:#0F6E56;color:#9FE1CB;border:none;border-radius:3px;padding:9px 20px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Space Mono',monospace;letter-spacing:0.8px;transition:background 0.2s;text-transform:uppercase;}
-.mb-run-btn:hover{background:#1D9E75;color:#E1F5EE;}
-.mb-run-btn:disabled{background:#1a2018;color:#2d4038;cursor:not-allowed;}
-.mb-warn{background:#1a1006;border:1px solid #3d2800;border-radius:4px;padding:9px 14px;margin-bottom:12px;font-size:11px;color:#EF9F27;display:flex;align-items:flex-start;gap:8px;line-height:1.6;font-family:'Space Mono',monospace;}
-.mb-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-.mb-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
-@media(max-width:700px){.mb-grid2,.mb-grid3{grid-template-columns:1fr;}}
-.mb-panel{background:#0f1210;border:1px solid #1a1f1c;border-radius:4px;padding:12px 14px;}
-.mb-panel.rb{border-color:#3a1010;}.mb-panel.ab{border-color:#3a2800;}.mb-panel.gb{border-color:#0a2a1a;}
-.mb-lbl{font-size:8.5px;letter-spacing:1.5px;color:#2d5040;text-transform:uppercase;margin-bottom:9px;font-family:'Space Mono',monospace;}
-.mb-row{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:1px solid #131714;gap:8px;}
-.mb-row:last-child{border-bottom:none;}
-.mb-rkey{font-size:11px;color:#3a5a48;flex-shrink:0;font-family:'Space Mono',monospace;}
-.mb-rval{font-size:11px;color:#9FE1CB;font-weight:500;text-align:right;font-family:'Space Mono',monospace;}
-.mb-rval.red{color:#F09595;}.mb-rval.amber{color:#FAC775;}.mb-rval.green{color:#5DCAA5;}.mb-rval.dim{color:#3a5040;}
-.mb-bullet{font-size:11px;color:#5DCAA5;line-height:2;display:block;font-family:'Space Mono',monospace;}
-.mb-bullet::before{content:"• ";color:#1D9E75;}
-.mb-bullet.red{color:#F09595;}.mb-bullet.red::before{color:#E24B4A;}
-.mb-bullet.amber{color:#FAC775;}.mb-bullet.amber::before{color:#EF9F27;}
-.mb-badge-red{display:inline-block;font-size:9px;padding:2px 8px;border-radius:3px;font-weight:600;letter-spacing:0.5px;background:#2a0a0a;color:#F09595;border:1px solid #3a1010;}
-.mb-badge-green{display:inline-block;font-size:9px;padding:2px 8px;border-radius:3px;font-weight:600;background:#0a2018;color:#5DCAA5;border:1px solid #0a3020;}
-.mb-mpc-box{background:#0a1a12;border:1px solid #0F6E56;border-radius:4px;padding:8px 12px;margin-top:6px;}
-.mb-mpc-date{font-size:15px;color:#1D9E75;font-weight:600;font-family:'Space Mono',monospace;}
-.mb-mpc-sub{font-size:9px;color:#2d5040;margin-top:2px;letter-spacing:0.5px;font-family:'Space Mono',monospace;}
-.mb-skeleton{background:#1a2018;border-radius:3px;height:12px;margin:5px 0;animation:mbSkPulse 1.5s infinite;}
-@keyframes mbSkPulse{0%,100%{opacity:0.3;}50%{opacity:0.7;}}
-.mb-skeleton.w70{width:70%;}.mb-skeleton.w50{width:50%;}.mb-skeleton.w85{width:85%;}
-.mb-err{color:#E24B4A;font-size:11px;font-family:'Space Mono',monospace;}
-.mb-footer{display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px solid #161b18;margin-top:6px;flex-wrap:wrap;}
-.mb-ftag{font-size:8px;padding:2px 7px;border-radius:3px;background:#0f1210;color:#2d5040;border:1px solid #1a1f1c;letter-spacing:0.5px;font-family:'Space Mono',monospace;}
-.mb-ftime{font-size:9px;color:#2d4035;margin-left:auto;font-family:'Space Mono',monospace;}
-.mb-prompt{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:10px;color:#2d5040;font-family:'Space Mono',monospace;}
-.mb-prompt span{color:#1D9E75;}
-.mb-cursor{display:inline-block;width:7px;height:13px;background:#1D9E75;animation:mbBlink 1s infinite;vertical-align:middle;margin-left:2px;}
-@keyframes mbBlink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
-.mb-api-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-.mb-api-input{flex:1;background:#0a0c0b;border:1px solid #1a2018;border-radius:3px;padding:8px 10px;color:#9FE1CB;font-family:'Space Mono',monospace;font-size:11px;outline:none;transition:border-color 0.15s;}
-.mb-api-input:focus{border-color:#1D9E75;}
-.mb-api-input::placeholder{color:#2d4035;}
+/* ── BRIEFING: native app theme extensions ── */
+.mb-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.mb-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:640px){.mb-grid2,.mb-grid3{grid-template-columns:1fr;}}
+.mb-sec-card{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:14px;}
+.mb-sec-card.accent-teal{border-left:3px solid var(--tv-teal);}
+.mb-sec-card.accent-blue{border-left:3px solid var(--tv-blue);}
+.mb-sec-card.accent-red{border-left:3px solid var(--tv-red);}
+.mb-sec-card.accent-warn{border-left:3px solid var(--warn);}
+.mb-sec-lbl{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.mb-data-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid rgba(54,60,78,0.5);gap:8px;}
+.mb-data-row:last-child{border-bottom:none;}
+.mb-data-key{font-size:11px;color:var(--muted);flex-shrink:0;font-family:'Space Mono',monospace;}
+.mb-data-val{font-size:11px;color:var(--text);font-weight:600;text-align:right;font-family:'Space Mono',monospace;}
+.mb-data-val.green{color:var(--tv-teal);}
+.mb-data-val.red{color:var(--tv-red);}
+.mb-data-val.amber{color:var(--warn);}
+.mb-data-val.dim{color:var(--muted);}
+.mb-bullet{font-size:12px;color:var(--text);line-height:1.9;display:flex;align-items:flex-start;gap:6px;}
+.mb-bullet::before{content:'▸';color:var(--tv-blue);flex-shrink:0;font-size:10px;margin-top:2px;}
+.mb-bullet.green{color:var(--tv-teal);}
+.mb-bullet.green::before{color:var(--tv-teal);}
+.mb-bullet.red{color:var(--tv-red);}
+.mb-bullet.red::before{color:var(--tv-red);}
+.mb-bullet.amber{color:var(--warn);}
+.mb-bullet.amber::before{color:var(--warn);}
+.mb-mpc-highlight{background:rgba(41,98,255,0.08);border:1px solid rgba(41,98,255,0.2);border-radius:3px;padding:10px 14px;margin-bottom:10px;}
+.mb-mpc-date{font-size:18px;font-weight:700;font-family:'Space Mono',monospace;color:var(--tv-blue);}
+.mb-mpc-sub{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.mb-warn-bar{background:rgba(249,168,37,0.08);border:1px solid rgba(249,168,37,0.25);border-radius:3px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--warn);display:flex;align-items:flex-start;gap:10px;line-height:1.6;}
+.mb-skeleton{background:var(--panel2);border-radius:2px;height:11px;margin:6px 0;animation:mbPulse 1.4s ease-in-out infinite;}
+@keyframes mbPulse{0%,100%{opacity:.25;}50%{opacity:.55;}}
+.mb-skeleton.w80{width:80%;}.mb-skeleton.w60{width:60%;}.mb-skeleton.w90{width:90%;}
+.mb-err-text{color:var(--tv-red);font-size:11px;font-family:'Space Mono',monospace;}
+.mb-status-bar{display:flex;align-items:center;gap:8px;padding:8px 0 2px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.5px;}
+.mb-live-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);transition:background 0.3s;}
+.mb-live-dot.active{background:var(--tv-teal);box-shadow:0 0 6px rgba(38,166,154,0.5);animation:mbDotPulse 1.5s infinite;}
+@keyframes mbDotPulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.mb-last-run{margin-left:auto;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;}
+.mb-tag{font-size:9px;padding:2px 7px;border-radius:3px;background:var(--panel2);color:var(--muted);border:1px solid var(--border);letter-spacing:0.5px;font-weight:700;}
 </style>
 
-<div class="mb-terminal">
-  <div class="mb-titlebar">
-    <div class="mb-dot mb-dot-r"></div>
-    <div class="mb-dot mb-dot-y"></div>
-    <div class="mb-dot mb-dot-g" id="mb-liveDot"></div>
-    <span class="mb-tbtxt">NSE/BSE MORNING TERMINAL — PRE-MARKET</span>
-    <div class="mb-tbr">
-      <span class="mb-clock" id="mb-clockDisplay"></span>
+<!-- Header card: date + run button -->
+<div class="card" style="margin-bottom:12px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:0.3px;">📰 NSE/BSE Morning Briefing</div>
+      <div id="mb-dateDisplay" style="font-size:10px;color:var(--muted);margin-top:3px;font-family:'Space Mono',monospace;letter-spacing:0.5px;"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="check-tag tag-risk" id="mb-warBadge" style="display:none;">⚠ MACRO RISK</span>
+      <button class="btn btn-accent btn-sm" id="mb-runBtn" onclick="mbRunBriefing()">▶ Run Briefing</button>
     </div>
   </div>
-
-  <div class="mb-body">
-    <div class="mb-hdr">
-      <div>
-        <div class="mb-logo">NSE<span>/</span>BSE <span style="font-weight:400;font-size:12px;">MORNING TERMINAL</span></div>
-        <div class="mb-sub" id="mb-dateDisplay"></div>
-      </div>
-      <div class="mb-hdr-right">
-        <span class="mb-badge-red" id="mb-warBadge" style="display:none;">⚠ WAR RISK ACTIVE</span>
-        <button class="mb-run-btn" id="mb-runBtn" onclick="mbRunBriefing()">▶ RUN BRIEFING</button>
-      </div>
-    </div>
-
-    <!-- API Key row -->
-    <div class="mb-api-row">
-      <span style="font-size:9px;color:#2d5040;letter-spacing:1px;font-family:'Space Mono',monospace;white-space:nowrap;">OPENROUTER KEY</span>
-      <input class="mb-api-input" type="password" id="mb-apiKey" placeholder="sk-or-v1-..." autocomplete="off" />
-      <button onclick="mbSaveKey()" style="background:#0a2018;border:1px solid #0F6E56;border-radius:3px;padding:7px 12px;color:#1D9E75;font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;white-space:nowrap;letter-spacing:0.5px;">SAVE KEY</button>
-    </div>
-
-    <div class="mb-warn" id="mb-warnBox" style="display:none;">
-      <span style="font-size:14px;flex-shrink:0;">⚡</span>
-      <span id="mb-warnText"></span>
-    </div>
-
-    <div class="mb-grid2">
-      <div class="mb-panel mb-panel-gb">
-        <div class="mb-lbl">Indices &amp; Futures</div>
-        <div id="mb-sec1"><span style="font-size:11px;color:#2d4035;font-family:'Space Mono',monospace;">press run briefing →</span></div>
-      </div>
-      <div class="mb-panel mb-panel-ab">
-        <div class="mb-lbl">F&amp;O / Options Pulse</div>
-        <div id="mb-sec2"><span style="font-size:11px;color:#2d4035;font-family:'Space Mono',monospace;">awaiting data...</span></div>
-      </div>
-    </div>
-
-    <div class="mb-grid2">
-      <div class="mb-panel">
-        <div class="mb-lbl">Top Gainers &amp; Losers</div>
-        <div id="mb-sec3"><span style="font-size:11px;color:#2d4035;font-family:'Space Mono',monospace;">awaiting data...</span></div>
-      </div>
-      <div class="mb-panel mb-panel-rb">
-        <div class="mb-lbl">Macro News &amp; Events</div>
-        <div id="mb-sec4"><span style="font-size:11px;color:#2d4035;font-family:'Space Mono',monospace;">awaiting data...</span></div>
-      </div>
-    </div>
-
-    <div class="mb-grid3">
-      <div class="mb-panel mb-panel-gb">
-        <div class="mb-lbl">RBI MPC Calendar</div>
-        <div id="mb-sec5"><span style="font-size:11px;color:#2d4035;font-family:'Space Mono',monospace;">awaiting data...</span></div>
-      </div>
-      <div class="mb-panel mb-panel-rb">
-        <div class="mb-lbl">Trade Setup</div>
-        <div id="mb-sec6"><span style="font-size:11px;color:#2d4035;font-family:'Space Mono',monospace;">awaiting data...</span></div>
-      </div>
-      <div class="mb-panel">
-        <div class="mb-lbl">Global Cues</div>
-        <div id="mb-sec7"><span style="font-size:11px;color:#2d4035;font-family:'Space Mono',monospace;">awaiting data...</span></div>
-      </div>
-    </div>
-
-    <div class="mb-footer">
-      <span class="mb-ftag">NSE</span>
-      <span class="mb-ftag">BSE</span>
-      <span class="mb-ftag">F&amp;O</span>
-      <span class="mb-ftag">OPENROUTER AI</span>
-      <span class="mb-ftime" id="mb-lastRun"></span>
-    </div>
-    <div class="mb-prompt">$ <span id="mb-statusLine">ready — enter openrouter key and press run</span><span class="mb-cursor"></span></div>
+  <div class="mb-status-bar">
+    <span class="mb-live-dot" id="mb-liveDot"></span>
+    <span id="mb-statusLine">ready — uses the app's OpenRouter key</span>
+    <span class="mb-last-run" id="mb-lastRun"></span>
   </div>
+</div>
+
+<!-- Macro warning bar (hidden until triggered) -->
+<div class="mb-warn-bar" id="mb-warnBox" style="display:none;">
+  <span style="font-size:16px;flex-shrink:0;">⚡</span>
+  <span id="mb-warnText"></span>
+</div>
+
+<!-- Row 1: Indices + F&O -->
+<div class="mb-grid2">
+  <div class="mb-sec-card accent-teal">
+    <div class="mb-sec-lbl">📊 Indices &amp; Futures</div>
+    <div id="mb-sec1"><span class="mb-err-text" style="color:var(--muted);">Press Run Briefing →</span></div>
+  </div>
+  <div class="mb-sec-card accent-warn">
+    <div class="mb-sec-lbl">⚡ F&amp;O / Options Pulse</div>
+    <div id="mb-sec2"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
+  </div>
+</div>
+
+<!-- Row 2: Movers + News -->
+<div class="mb-grid2">
+  <div class="mb-sec-card accent-teal">
+    <div class="mb-sec-lbl">🏆 Top Movers</div>
+    <div id="mb-sec3"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
+  </div>
+  <div class="mb-sec-card accent-red">
+    <div class="mb-sec-lbl">📰 Macro News &amp; Events</div>
+    <div id="mb-sec4"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
+  </div>
+</div>
+
+<!-- Row 3: MPC + Setup + Global -->
+<div class="mb-grid3">
+  <div class="mb-sec-card accent-blue">
+    <div class="mb-sec-lbl">🏦 RBI MPC Calendar</div>
+    <div id="mb-sec5"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
+  </div>
+  <div class="mb-sec-card accent-red">
+    <div class="mb-sec-lbl">🎯 Trade Setup</div>
+    <div id="mb-sec6"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
+  </div>
+  <div class="mb-sec-card accent-blue">
+    <div class="mb-sec-lbl">🌏 Global Cues</div>
+    <div id="mb-sec7"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
+  </div>
+</div>
+
+<!-- Footer tags -->
+<div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:4px;">
+  <span class="mb-tag">NSE</span>
+  <span class="mb-tag">BSE</span>
+  <span class="mb-tag">F&amp;O</span>
+  <span class="mb-tag">OPENROUTER · PERPLEXITY SONAR</span>
 </div>
 
 </div><!-- /tab-briefing -->
@@ -3627,71 +3601,61 @@ async function authSignOut() {
 
 <script>
 // ── MORNING BRIEFING ─────────────────────────────────────
-// Uses OpenRouter API with web-search capable model
+// Uses the same OpenRouter key as the rest of the app
+// Key resolution order: localStorage 'openrouter_key' → '%%OPENROUTER_API_KEY%%'
 
-// Clock & date for briefing tab
+function mbGetKey() {
+  return localStorage.getItem('openrouter_key') ||
+         localStorage.getItem('mb_or_key') ||
+         '%%OPENROUTER_API_KEY%%';
+}
+
+// Init: set date label
 (function mbInit() {
-  function mbTick() {
-    const now = new Date();
-    const el = document.getElementById('mb-clockDisplay');
-    if (el) el.textContent = now.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}) + ' IST';
-  }
-  mbTick();
-  setInterval(mbTick, 1000);
-
   const dateEl = document.getElementById('mb-dateDisplay');
   if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'}).toUpperCase() + ' · LIVE WEB SEARCH';
-  }
-
-  // Restore saved key (masked)
-  const saved = localStorage.getItem('mb_or_key');
-  if (saved) {
-    const inp = document.getElementById('mb-apiKey');
-    if (inp) inp.value = saved;
+    dateEl.textContent =
+      new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'}).toUpperCase()
+      + ' · LIVE WEB SEARCH';
   }
 })();
 
-function mbSaveKey() {
-  const val = document.getElementById('mb-apiKey').value.trim();
-  if (!val) return;
-  localStorage.setItem('mb_or_key', val);
-  document.getElementById('mb-statusLine').textContent = 'api key saved ✓';
-  setTimeout(() => document.getElementById('mb-statusLine').textContent = 'ready — press run briefing', 2000);
-}
-
 function mbSkel(id) {
   document.getElementById(id).innerHTML =
-    '<div class="mb-skeleton mb-skeleton-w85"></div><div class="mb-skeleton mb-skeleton-w70"></div><div class="mb-skeleton mb-skeleton-w50"></div>';
+    '<div class="mb-skeleton mb-skeleton w90"></div>' +
+    '<div class="mb-skeleton mb-skeleton w80"></div>' +
+    '<div class="mb-skeleton mb-skeleton w60"></div>';
 }
+
 function mbStatus(msg) {
   const el = document.getElementById('mb-statusLine');
   if (el) el.textContent = msg;
 }
 
 async function mbRunBriefing() {
-  const apiKey = (document.getElementById('mb-apiKey').value.trim()) ||
-                 (localStorage.getItem('mb_or_key') || '');
-  if (!apiKey) {
-    mbStatus('⚠ enter your openrouter api key above first');
-    document.getElementById('mb-apiKey').focus();
+  const apiKey = mbGetKey();
+  if (!apiKey || apiKey === '%%OPENROUTER_API_KEY%%') {
+    mbStatus('⚠ No OpenRouter key found — add it to localStorage as "openrouter_key"');
+    showToast('⚠ Set your OpenRouter key first', true);
     return;
   }
 
   const btn = document.getElementById('mb-runBtn');
   const dot = document.getElementById('mb-liveDot');
-  btn.disabled = true; btn.textContent = '⟳ FETCHING...';
-  dot.classList.add('live');
+  btn.disabled = true;
+  btn.textContent = '⟳ Fetching...';
+  dot.classList.add('active');
+
   ['mb-sec1','mb-sec2','mb-sec3','mb-sec4','mb-sec5','mb-sec6','mb-sec7'].forEach(mbSkel);
   document.getElementById('mb-warnBox').style.display = 'none';
   document.getElementById('mb-warBadge').style.display = 'none';
-  mbStatus('connecting to openrouter + perplexity web search...');
+  mbStatus('connecting to OpenRouter · Perplexity Sonar...');
 
   const today = new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
   const prompt = `You are a sharp pre-market briefing engine for an Indian NSE/BSE day trader. Today is ${today}.
 
-Search the web for current live market data and return EXACTLY 7 sections. Each section starts with its SECTION tag on its own line. Use "BULLET:color:text" (color = green/red/amber/default). Use "ROW:key|value|color" for data rows. Max 6 items per section. Be data-driven with real numbers.
+Search the web for current live market data. Return EXACTLY 7 sections. Each section starts with its SECTION tag on its own line. Use "BULLET:color:text" (color = green/red/amber/default). Use "ROW:key|value|color" for data rows. Max 6 items per section. Use real numbers.
 
 SECTION_1_INDICES
 ROW lines for: GIFT Nifty level+trend, Nifty 50 last close, Bank Nifty, Sensex, India VIX, USD/INR
@@ -3718,14 +3682,14 @@ ROW lines for: S&P 500, Nasdaq, Dow Jones, Nikkei, Hang Seng, Brent Crude, Gold 
 Also output one line: WARN:your geopolitical/macro risk warning text here (or WARN:none if nothing major)`;
 
   try {
-    mbStatus('calling openrouter api (perplexity sonar)...');
+    mbStatus('fetching live market data...');
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + apiKey,
-        'HTTP-Referer': window.location.href,
-        'X-Title': 'Trading Assistant - Morning Briefing'
+        'HTTP-Referer': window.location.origin,
+        'X-Title': 'Trading Assistant'
       },
       body: JSON.stringify({
         model: 'perplexity/sonar',
@@ -3741,17 +3705,16 @@ Also output one line: WARN:your geopolitical/macro risk warning text here (or WA
 
     const data = await response.json();
     const fullText = data.choices?.[0]?.message?.content || '';
+    if (!fullText) throw new Error('Empty response from API');
 
-    if (!fullText) throw new Error('empty response from api');
+    mbStatus('parsing briefing...');
 
-    mbStatus('parsing briefing data...');
-
-    // Parse WARN
+    // WARN bar
     const warnMatch = fullText.match(/WARN:(.+)/);
     if (warnMatch && warnMatch[1].trim().toLowerCase() !== 'none') {
       document.getElementById('mb-warnBox').style.display = 'flex';
       document.getElementById('mb-warnText').textContent = warnMatch[1].trim();
-      document.getElementById('mb-warBadge').style.display = 'inline-block';
+      document.getElementById('mb-warBadge').style.display = 'inline-flex';
     }
 
     function mbParseSection(tag) {
@@ -3762,28 +3725,28 @@ Also output one line: WARN:your geopolitical/macro risk warning text here (or WA
 
     function mbRenderSection(id, raw) {
       const el = document.getElementById(id);
-      if (!raw) { el.innerHTML = '<span class="mb-err">no data</span>'; return; }
+      if (!raw) { el.innerHTML = '<span class="mb-err-text">no data</span>'; return; }
       const lines = raw.split('\n').filter(l => l.trim());
       let html = '';
       lines.forEach(line => {
         if (line.startsWith('ROW:')) {
           const parts = line.replace('ROW:', '').split('|');
           const k = parts[0]||'', v = parts[1]||'', c = (parts[2]||'').trim();
-          html += `<div class="mb-row"><span class="mb-rkey">${k}</span><span class="mb-rval ${c}">${v}</span></div>`;
+          html += `<div class="mb-data-row"><span class="mb-data-key">${k}</span><span class="mb-data-val ${c}">${v}</span></div>`;
         } else if (line.startsWith('BULLET:')) {
           const parts = line.replace('BULLET:', '').split(':');
           const c = parts[0]||'', t = parts.slice(1).join(':');
-          html += `<span class="mb-bullet ${c === 'default' ? '' : c}">${t}</span>`;
+          html += `<div class="mb-bullet ${c === 'default' ? '' : c}">${t}</div>`;
         } else if (line.includes('|')) {
           const p = line.split('|');
-          html += `<div class="mb-row"><span class="mb-rkey">${p[0]}</span><span class="mb-rval">${p[1]||''}</span></div>`;
+          html += `<div class="mb-data-row"><span class="mb-data-key">${p[0]}</span><span class="mb-data-val">${p[1]||''}</span></div>`;
         } else if (line.startsWith('•') || line.startsWith('-')) {
-          html += `<span class="mb-bullet">${line.replace(/^[•\-]\s*/,'')}</span>`;
+          html += `<div class="mb-bullet">${line.replace(/^[•\-]\s*/,'')}</div>`;
         } else if (line.trim()) {
-          html += `<span class="mb-bullet">${line.trim()}</span>`;
+          html += `<div class="mb-bullet">${line.trim()}</div>`;
         }
       });
-      el.innerHTML = html || '<span class="mb-err">parse error</span>';
+      el.innerHTML = html || '<span class="mb-err-text">parse error</span>';
     }
 
     mbRenderSection('mb-sec1', mbParseSection('SECTION_1_INDICES'));
@@ -3791,25 +3754,24 @@ Also output one line: WARN:your geopolitical/macro risk warning text here (or WA
     mbRenderSection('mb-sec3', mbParseSection('SECTION_3_MOVERS'));
     mbRenderSection('mb-sec4', mbParseSection('SECTION_4_NEWS'));
 
-    // MPC special render
+    // MPC: first ROW becomes the highlight box
     const mpcRaw = mbParseSection('SECTION_5_MPC');
     const mpcLines = mpcRaw.split('\n').filter(l => l.trim());
     let mpcHtml = '';
-    let firstRow = true;
+    let firstMpc = true;
     mpcLines.forEach(line => {
       if (line.startsWith('ROW:')) {
         const parts = line.replace('ROW:', '').split('|');
         const k = parts[0]||'', v = parts[1]||'', c = (parts[2]||'').trim();
-        if (firstRow) {
-          mpcHtml += `<div class="mb-mpc-box"><div class="mb-mpc-date">${v}</div><div class="mb-mpc-sub">${k}</div></div><div style="margin-top:8px;">`;
-          firstRow = false;
+        if (firstMpc) {
+          mpcHtml += `<div class="mb-mpc-highlight"><div class="mb-mpc-date">${v}</div><div class="mb-mpc-sub">${k}</div></div>`;
+          firstMpc = false;
         } else {
-          mpcHtml += `<div class="mb-row"><span class="mb-rkey">${k}</span><span class="mb-rval ${c}">${v}</span></div>`;
+          mpcHtml += `<div class="mb-data-row"><span class="mb-data-key">${k}</span><span class="mb-data-val ${c}">${v}</span></div>`;
         }
       }
     });
-    if (!firstRow) mpcHtml += '</div>';
-    document.getElementById('mb-sec5').innerHTML = mpcHtml || '<span class="mb-err">no data</span>';
+    document.getElementById('mb-sec5').innerHTML = mpcHtml || '<span class="mb-err-text">no data</span>';
 
     mbRenderSection('mb-sec6', mbParseSection('SECTION_6_SETUP'));
     mbRenderSection('mb-sec7', mbParseSection('SECTION_7_GLOBAL'));
@@ -3818,17 +3780,20 @@ Also output one line: WARN:your geopolitical/macro risk warning text here (or WA
     document.getElementById('mb-lastRun').textContent =
       'updated ' + now.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit',hour12:true}) + ' IST';
     mbStatus('briefing complete — have a great session 📈');
+    showToast('Morning Briefing ready ✅', false);
 
   } catch (err) {
     ['mb-sec1','mb-sec2','mb-sec3','mb-sec4','mb-sec5','mb-sec6','mb-sec7'].forEach(id => {
-      document.getElementById(id).innerHTML = `<span class="mb-err">ERR: ${err.message}</span>`;
+      document.getElementById(id).innerHTML =
+        `<span class="mb-err-text">⚠ ${err.message}</span>`;
     });
-    mbStatus('error — check api key / network');
+    mbStatus('error — ' + err.message);
+    showToast('Briefing error: ' + err.message, true);
   }
 
   btn.disabled = false;
-  btn.textContent = '↺ REFRESH';
-  dot.classList.remove('live');
+  btn.textContent = '↺ Refresh';
+  dot.classList.remove('active');
 }
 </script>
 </body>
