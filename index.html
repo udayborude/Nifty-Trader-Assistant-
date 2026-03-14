@@ -405,8 +405,18 @@ svg.ring{overflow:visible;}
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-box">
-    <div class="auth-logo">Nifty <span>Trader</span></div>
-    <div class="auth-sub">Session Assistant · Secure Login</div>
+    <div class="auth-logo" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;">
+      <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+        <rect width="36" height="36" rx="9" fill="#1e222d"/>
+        <rect x="1" y="1" width="34" height="34" rx="8.5" fill="none" stroke="rgba(41,98,255,0.35)" stroke-width="1"/>
+        <polyline points="5,26 11,17 17,21 23,11 31,15" fill="none" stroke="#2962ff" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="23" cy="11" r="2.2" fill="#26a69a"/>
+        <line x1="23" y1="13.2" x2="23" y2="27" stroke="rgba(38,166,154,0.3)" stroke-width="1" stroke-dasharray="2 2"/>
+        <circle cx="31" cy="15" r="1.8" fill="#2962ff" opacity="0.7"/>
+      </svg>
+      <span style="font-size:26px;font-weight:800;letter-spacing:-0.5px;">Trading <span style="color:var(--accent);">Assistant</span></span>
+    </div>
+    <div class="auth-sub">Options Journal · Secure Login</div>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
       <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
@@ -428,8 +438,20 @@ svg.ring{overflow:visible;}
 
 <header>
   <div>
-    <div class="logo-title">Nifty <span>Trader</span></div>
-    <div class="logo-sub">Session Assistant · Live</div>
+    <div style="display:flex;align-items:center;gap:9px;">
+      <svg width="30" height="30" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+        <rect width="36" height="36" rx="9" fill="#1e222d"/>
+        <rect x="1" y="1" width="34" height="34" rx="8.5" fill="none" stroke="rgba(41,98,255,0.35)" stroke-width="1"/>
+        <polyline points="5,26 11,17 17,21 23,11 31,15" fill="none" stroke="#2962ff" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="23" cy="11" r="2.2" fill="#26a69a"/>
+        <line x1="23" y1="13.2" x2="23" y2="27" stroke="rgba(38,166,154,0.3)" stroke-width="1" stroke-dasharray="2 2"/>
+        <circle cx="31" cy="15" r="1.8" fill="#2962ff" opacity="0.7"/>
+      </svg>
+      <div>
+        <div class="logo-title">Trading <span>Assistant</span></div>
+        <div class="logo-sub">Options Journal · Live</div>
+      </div>
+    </div>
     <div id="db-status"><span class="db-dot"></span></div>
   </div>
   <div style="text-align:right;">
@@ -1193,7 +1215,7 @@ Use 3-5 sections, 2-4 bullet points each. Use real numbers from the data. Colors
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + OPENROUTER_KEY,
         'HTTP-Referer': window.location.origin,
-        'X-Title': 'Nifty Trading Assistant'
+        'X-Title': 'Trading Assistant'
       },
       body: JSON.stringify({
         model: 'anthropic/claude-sonnet-4-5',
