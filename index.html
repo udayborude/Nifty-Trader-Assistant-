@@ -736,7 +736,7 @@ svg.ring{overflow:visible;}
         <div><div class="field-label">DATE</div><div id="entry-date-display" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:1px;">—</div></div>
         <div><div class="field-label">TIME (IST)</div><input id="entry-time" type="time" class="j-input" style="width:100%;"></div>
         <div><div class="field-label">ENTRY PRICE (₹)</div><input id="entry-price" type="number" placeholder="e.g. 150.50" class="j-input" style="width:100%;" oninput="onEntryPriceChange()"></div>
-        <div><div class="field-label">QUANTITY (UNITS)</div><input id="entry-qty" type="number" placeholder="e.g. 75" class="j-input" style="width:100%;" oninput="calcPnl()"></div>
+        <div><div class="field-label">QUANTITY (UNITS)</div><input id="entry-qty" type="number" placeholder="e.g. 75" value="65" class="j-input" style="width:100%;" oninput="calcPnl()"></div>
         <div style="grid-column:1/-1;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
             <div class="field-label" style="margin-bottom:0;">STOP LOSS PRICE (₹)</div>
@@ -1692,10 +1692,10 @@ function onEntryPriceChange(){
   const badge=document.getElementById('sl-auto-badge');
   // Auto-fill SL only if user hasn't manually typed a value
   if(ep&&!slEl.dataset.userEdited){
-    const sl=(tradeType==='PUT')?(ep+10):(ep-10);
+    const sl=ep-10;
     slEl.value=sl.toFixed(2);
     badge.style.display='inline';
-    badge.textContent=tradeType==='PUT'?'AUTO +10 PTS':'AUTO −10 PTS';
+    badge.textContent='AUTO −10 PTS';
   }
   calcPnl();
 }
@@ -1806,7 +1806,7 @@ function renderGuardrailBanner(){
   else banner.style.display='none';
 }
 
-function resetTradeForm(){tradeType=null;ruleTags=[];['type-call','type-put'].forEach(id=>document.getElementById(id).classList.remove('selected-yes','selected-no'));document.querySelectorAll('.rule-tag-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));['entry-time','exit-time','entry-price','entry-qty','entry-sl','exit-price','entry-brokerage','trade-note'].forEach(id=>{document.getElementById(id).value='';});const slEl=document.getElementById('entry-sl');if(slEl)delete slEl.dataset.userEdited;const badge=document.getElementById('sl-auto-badge');if(badge)badge.style.display='none';document.getElementById('pnl-display').style.display='none';setEntryDate();}
+function resetTradeForm(){tradeType=null;ruleTags=[];['type-call','type-put'].forEach(id=>document.getElementById(id).classList.remove('selected-yes','selected-no'));document.querySelectorAll('.rule-tag-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));['entry-time','exit-time','entry-price','entry-sl','exit-price','entry-brokerage','trade-note'].forEach(id=>{document.getElementById(id).value='';});document.getElementById('entry-qty').value='65';;const slEl=document.getElementById('entry-sl');if(slEl)delete slEl.dataset.userEdited;const badge=document.getElementById('sl-auto-badge');if(badge)badge.style.display='none';document.getElementById('pnl-display').style.display='none';setEntryDate();}
 
 function updateStats(){
   const has=trades.length>0;
