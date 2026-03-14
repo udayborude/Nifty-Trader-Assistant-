@@ -810,161 +810,6 @@ svg.ring{overflow:visible;}
     <div class="kpi warn"><div class="kpi-label">Rule Breaks</div><div class="kpi-value" id="kpi-breaks" style="color:var(--warn)">—</div><div class="kpi-delta" id="kpi-breaks-d"></div></div>
   </div>
 
-  <!-- ── ROW 1: EQUITY + WIN BREAKDOWN ── -->
-  <div class="section-title">Curve & Distribution</div>
-  <div class="row r13" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Equity Curve · Cumulative P&L (₹)<span class="badge" id="eq-badge">—</span></div>
-      <div class="chart-wrap chart-h220"><canvas id="equity-chart"></canvas></div>
-      <div id="equity-empty" class="empty" style="display:none;"><span class="empty-icon">📈</span>Log trades to build your curve</div>
-    </div>
-    <div class="card" style="display:flex;flex-direction:column;gap:14px;">
-      <div>
-        <div class="card-title"><span class="dot"></span>Win / Loss Split</div>
-        <div class="chart-wrap" style="height:130px;"><canvas id="donut-chart"></canvas></div>
-        <div class="donut-legend" id="donut-legend"></div>
-      </div>
-      <div>
-        <div class="card-title"><span class="dot"></span>Avg Win vs Avg Loss</div>
-        <div id="rr-bars"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── ROW 2: TIME HEATMAP + BEST HOUR ── -->
-  <div class="section-title">Time Intelligence</div>
-  <div class="row r31" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Hourly P&L Heatmap · IST</div>
-      <div id="heatmap-wrap"></div>
-      <div id="heatmap-empty" class="empty" style="display:none;"><span class="empty-icon">🕐</span>Log trades with entry times to see heatmap</div>
-      <div id="best-hour-note" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);"></div>
-    </div>
-    <div class="card" style="display:flex;flex-direction:column;gap:14px;">
-      <div>
-        <div class="card-title"><span class="dot"></span>Hold Duration</div>
-        <div class="chart-wrap" style="height:130px;"><canvas id="duration-chart"></canvas></div>
-      </div>
-      <div>
-        <div class="card-title" style="margin-bottom:8px;"><span class="dot"></span>Session Window</div>
-        <div id="session-win-bars"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── ROW 3: DISCIPLINE + STREAK ── -->
-  <div class="section-title">Discipline & Streaks</div>
-  <div class="row r2" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Daily Discipline Score</div>
-      <div id="discipline-wrap"></div>
-      <div id="discipline-empty" class="empty" style="display:none;"><span class="empty-icon">📋</span>Log trades to see discipline scores</div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Win/Loss Streak Tracker<span class="badge" id="streak-badge">—</span></div>
-      <div class="streak-stat-grid" id="streak-stats"></div>
-      <div id="streak-wrap"><div class="empty"><span class="empty-icon">🔗</span>Log trades to see streaks</div></div>
-    </div>
-  </div>
-
-  <!-- ── ROW 4: EDGE ANALYSIS + RISK ── -->
-  <div class="section-title">Edge & Risk Analysis</div>
-  <div class="row r2" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Setup Edge Breakdown</div>
-      <table class="edge-table">
-        <thead><tr><th>Rule Tag</th><th>Trades</th><th>Win%</th><th>Avg P&L</th></tr></thead>
-        <tbody id="edge-table-body"></tbody>
-      </table>
-      <div id="edge-empty" class="empty" style="display:none;"><span class="empty-icon">🔬</span>Log tagged trades to see edge breakdown</div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Risk Exposure Meter</div>
-      <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:4px;">Average % of Max SL Used</div>
-      <div class="risk-meter"><div class="risk-needle" id="risk-needle" style="left:30%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:16px;">
-        <span style="color:var(--accent)">SAFE</span><span style="color:var(--warn)">CAUTION</span><span style="color:var(--danger)">DANGER</span>
-      </div>
-      <div class="card-title" style="margin-top:4px;"><span class="dot"></span>Drawdown Metrics</div>
-      <div id="dd-metrics"></div>
-      <div class="card-title" style="margin-top:14px;"><span class="dot"></span>CALL vs PUT Split</div>
-      <div id="type-split-bars"></div>
-    </div>
-  </div>
-
-  <!-- ── ROW 5: BEST/WORST + PERFORMANCE SCORE ── -->
-  <div class="section-title">Performance Report</div>
-  <div class="row r3" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Best Trades</div>
-      <div id="best-trades"></div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Worst Trades</div>
-      <div id="worst-trades"></div>
-    </div>
-    <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
-      <div class="card-title" style="width:100%;"><span class="dot"></span>Performance Score</div>
-      <div class="perf-badge" id="perf-score">—</div>
-      <div class="perf-grade" id="perf-grade"></div>
-      <div style="margin-top:16px;width:100%;">
-        <div id="perf-rings"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── ROW 5b: DAY OF WEEK + R:R SCATTER ── -->
-  <div class="section-title">Day Pattern & Risk:Reward</div>
-  <div class="row r2" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Performance by Day of Week<span class="badge" id="dow-best-badge">—</span></div>
-      <div class="chart-wrap chart-h220"><canvas id="dow-chart"></canvas></div>
-      <div id="dow-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Log trades to see day-of-week pattern</div>
-      <div id="dow-insight" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.7;"></div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Risk:Reward Scatter · Each Trade<span class="badge" id="rr-badge">—</span></div>
-      <div id="rr-mode-tabs" style="display:flex;gap:4px;margin-bottom:12px;">
-        <button class="rr-mode-btn active" onclick="setRRMode('pnl',this)" style="padding:4px 10px;font-size:10px;font-family:'Space Mono',monospace;letter-spacing:1px;border-radius:5px;border:1px solid var(--border);background:var(--bg);color:var(--accent);cursor:pointer;">P&L ₹</button>
-        <button class="rr-mode-btn" onclick="setRRMode('pts',this)" style="padding:4px 10px;font-size:10px;font-family:'Space Mono',monospace;letter-spacing:1px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;">Points</button>
-      </div>
-      <div class="chart-wrap chart-h220"><canvas id="rr-scatter-chart"></canvas></div>
-      <div id="rr-empty" class="empty" style="display:none;"><span class="empty-icon">🎯</span>Log trades with entry & exit prices to see scatter</div>
-      <div id="rr-legend" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);"></div>
-    </div>
-  </div>
-
-  <!-- ── ROW 6: ADVANCED STATS ── -->
-
-  <!-- ── ADVANCED DAILY PNL ── -->
-  <div class="section-title">Advanced Daily P&L</div>
-  <div class="row r2" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Daily P&L Bars<span class="badge" id="dpnl-badge">—</span></div>
-      <div class="dpnl-kpi-row" id="dpnl-kpis"></div>
-      <div id="dpnl-bars"></div>
-      <div id="dpnl-empty" class="empty" style="display:none;"><span class="empty-icon">📊</span>Log trades to see daily breakdown</div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Monthly Calendar Heatmap<span class="badge" id="dpnl-month-badge">—</span></div>
-      <div id="dpnl-calendar"></div>
-      <div id="dpnl-cal-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Log trades to see calendar</div>
-    </div>
-  </div>
-
-  <div class="section-title">Advanced Statistics</div>
-  <div class="row r2" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Statistical Summary</div>
-      <div class="stats-grid" id="stats-grid"></div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Monthly P&L Calendar</div>
-      <div class="chart-wrap chart-h180"><canvas id="monthly-chart"></canvas></div>
-      <div id="monthly-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Log trades across months to see trend</div>
-    </div>
-  </div>
-
   <!-- ── AI REVIEW ── -->
   <div class="section-title">AI Review</div>
   <div class="card" style="margin-bottom:32px;" id="ai-review-card">
@@ -1028,6 +873,159 @@ svg.ring{overflow:visible;}
     <div id="ai-review-empty" style="display:none;padding:28px 0;text-align:center;">
       <div style="font-size:28px;opacity:.4;margin-bottom:8px;">🤖</div>
       <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;">No trades in selected period.<br>Log some trades first.</div>
+    </div>
+  </div>
+
+  <!-- ── ROW 1: EQUITY + WIN BREAKDOWN ── -->
+  <div class="section-title">Curve & Distribution</div>
+  <div class="row r13" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Equity Curve · Cumulative P&L (₹)<span class="badge" id="eq-badge">—</span></div>
+      <div class="chart-wrap chart-h220"><canvas id="equity-chart"></canvas></div>
+      <div id="equity-empty" class="empty" style="display:none;"><span class="empty-icon">📈</span>Log trades to build your curve</div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <div class="card-title"><span class="dot"></span>Win / Loss Split</div>
+        <div class="chart-wrap" style="height:130px;"><canvas id="donut-chart"></canvas></div>
+        <div class="donut-legend" id="donut-legend"></div>
+      </div>
+      <div>
+        <div class="card-title"><span class="dot"></span>Avg Win vs Avg Loss</div>
+        <div id="rr-bars"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ROW 5: BEST/WORST + PERFORMANCE SCORE ── -->
+  <div class="section-title">Performance Report</div>
+  <div class="row r3" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Best Trades</div>
+      <div id="best-trades"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Worst Trades</div>
+      <div id="worst-trades"></div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div class="card-title" style="width:100%;"><span class="dot"></span>Performance Score</div>
+      <div class="perf-badge" id="perf-score">—</div>
+      <div class="perf-grade" id="perf-grade"></div>
+      <div style="margin-top:16px;width:100%;">
+        <div id="perf-rings"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ADVANCED DAILY PNL ── -->
+  <div class="section-title">Advanced Daily P&L</div>
+  <div class="row r2" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Daily P&L Bars<span class="badge" id="dpnl-badge">—</span></div>
+      <div class="dpnl-kpi-row" id="dpnl-kpis"></div>
+      <div id="dpnl-bars"></div>
+      <div id="dpnl-empty" class="empty" style="display:none;"><span class="empty-icon">📊</span>Log trades to see daily breakdown</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Monthly Calendar Heatmap<span class="badge" id="dpnl-month-badge">—</span></div>
+      <div id="dpnl-calendar"></div>
+      <div id="dpnl-cal-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Log trades to see calendar</div>
+    </div>
+  </div>
+
+  <!-- ── ROW 2: TIME HEATMAP + BEST HOUR ── -->
+  <div class="section-title">Time Intelligence</div>
+  <div class="row r31" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Hourly P&L Heatmap · IST</div>
+      <div id="heatmap-wrap"></div>
+      <div id="heatmap-empty" class="empty" style="display:none;"><span class="empty-icon">🕐</span>Log trades with entry times to see heatmap</div>
+      <div id="best-hour-note" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);"></div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <div class="card-title"><span class="dot"></span>Hold Duration</div>
+        <div class="chart-wrap" style="height:130px;"><canvas id="duration-chart"></canvas></div>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:8px;"><span class="dot"></span>Session Window</div>
+        <div id="session-win-bars"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ROW 5b: DAY OF WEEK + R:R SCATTER ── -->
+  <div class="section-title">Day Pattern & Risk:Reward</div>
+  <div class="row r2" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Performance by Day of Week<span class="badge" id="dow-best-badge">—</span></div>
+      <div class="chart-wrap chart-h220"><canvas id="dow-chart"></canvas></div>
+      <div id="dow-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Log trades to see day-of-week pattern</div>
+      <div id="dow-insight" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.7;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Risk:Reward Scatter · Each Trade<span class="badge" id="rr-badge">—</span></div>
+      <div id="rr-mode-tabs" style="display:flex;gap:4px;margin-bottom:12px;">
+        <button class="rr-mode-btn active" onclick="setRRMode('pnl',this)" style="padding:4px 10px;font-size:10px;font-family:'Space Mono',monospace;letter-spacing:1px;border-radius:5px;border:1px solid var(--border);background:var(--bg);color:var(--accent);cursor:pointer;">P&L ₹</button>
+        <button class="rr-mode-btn" onclick="setRRMode('pts',this)" style="padding:4px 10px;font-size:10px;font-family:'Space Mono',monospace;letter-spacing:1px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;">Points</button>
+      </div>
+      <div class="chart-wrap chart-h220"><canvas id="rr-scatter-chart"></canvas></div>
+      <div id="rr-empty" class="empty" style="display:none;"><span class="empty-icon">🎯</span>Log trades with entry & exit prices to see scatter</div>
+      <div id="rr-legend" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);"></div>
+    </div>
+  </div>
+
+  <!-- ── ROW 3: DISCIPLINE + STREAK ── -->
+  <div class="section-title">Discipline & Streaks</div>
+  <div class="row r2" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Daily Discipline Score</div>
+      <div id="discipline-wrap"></div>
+      <div id="discipline-empty" class="empty" style="display:none;"><span class="empty-icon">📋</span>Log trades to see discipline scores</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Win/Loss Streak Tracker<span class="badge" id="streak-badge">—</span></div>
+      <div class="streak-stat-grid" id="streak-stats"></div>
+      <div id="streak-wrap"><div class="empty"><span class="empty-icon">🔗</span>Log trades to see streaks</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Advanced Statistics</div>
+  <div class="row r2" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Statistical Summary</div>
+      <div class="stats-grid" id="stats-grid"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Monthly P&L Calendar</div>
+      <div class="chart-wrap chart-h180"><canvas id="monthly-chart"></canvas></div>
+      <div id="monthly-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Log trades across months to see trend</div>
+    </div>
+  </div>
+
+  <!-- ── ROW 4: EDGE ANALYSIS + RISK ── -->
+  <div class="section-title">Edge & Risk Analysis</div>
+  <div class="row r2" style="margin-bottom:32px;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Setup Edge Breakdown</div>
+      <table class="edge-table">
+        <thead><tr><th>Rule Tag</th><th>Trades</th><th>Win%</th><th>Avg P&L</th></tr></thead>
+        <tbody id="edge-table-body"></tbody>
+      </table>
+      <div id="edge-empty" class="empty" style="display:none;"><span class="empty-icon">🔬</span>Log tagged trades to see edge breakdown</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Risk Exposure Meter</div>
+      <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:4px;">Average % of Max SL Used</div>
+      <div class="risk-meter"><div class="risk-needle" id="risk-needle" style="left:30%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:16px;">
+        <span style="color:var(--accent)">SAFE</span><span style="color:var(--warn)">CAUTION</span><span style="color:var(--danger)">DANGER</span>
+      </div>
+      <div class="card-title" style="margin-top:4px;"><span class="dot"></span>Drawdown Metrics</div>
+      <div id="dd-metrics"></div>
+      <div class="card-title" style="margin-top:14px;"><span class="dot"></span>CALL vs PUT Split</div>
+      <div id="type-split-bars"></div>
     </div>
   </div>
 </div>
