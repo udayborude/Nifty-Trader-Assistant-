@@ -1033,7 +1033,7 @@ svg.ring{overflow:visible;}
 </div>
 
 <script>
-// ── AI REVIEW ─────────────────────────────────────────────────────────────────
+// ── AI REVIEW (Analytics Tab) ─────────────────────────────────────────────────
 let _aiScope = 'all';
 let _aiFocus = 'overall';
 
@@ -1047,7 +1047,6 @@ function setAIScope(scope, btn) {
   btn.style.background = 'rgba(41,98,255,0.1)';
   btn.style.color = 'var(--accent)';
   btn.style.borderColor = 'rgba(41,98,255,0.3)';
-  // Reset output when scope changes
   document.getElementById('ai-review-output').style.display = 'none';
   document.getElementById('ai-review-empty').style.display = 'none';
 }
@@ -1064,117 +1063,141 @@ function setAIFocus(btn) {
   btn.style.borderColor = 'rgba(41,98,255,0.3)';
 }
 
+// Parse DD/MM/YYYY date strings used throughout the app
+function _parseTradeDate(dateStr) {
+  if (!dateStr) return null;
+  const parts = dateStr.split('/');
+  if (parts.length !== 3) return null;
+  return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+}
+
 function getFilteredTradesForAI() {
-  if (!window._trades || !window._trades.length) return [];
-  const now = new Date();
-  return window._trades.filter(t => {
-    if (!t.date) return _aiScope === 'all';
-    const d = new Date(t.date);
-    if (_aiScope === 'week') return (now - d) <= 7*86400000;
-    if (_aiScope === 'month') return (now - d) <= 30*86400000;
-    if (_aiScope === 'today') {
-      return d.toDateString() === now.toDateString();
-    }
+  const all = window.trades || [];
+  if (!all.length) return [];
+  const now = getISTDate();
+  const todayStr_ = todayStr(); // returns DD/MM/YYYY
+
+  return all.filter(t => {
+    if (_aiScope === 'all') return true;
+    if (_aiScope === 'today') return t.date === todayStr_;
+    const d = _parseTradeDate(t.date);
+    if (!d) return false;
+    const msAgo = now - d;
+    if (_aiScope === 'week')  return msAgo <= 7  * 86400000;
+    if (_aiScope === 'month') return msAgo <= 30 * 86400000;
     return true;
   });
 }
 
 async function generateAIReview() {
-  const trades = getFilteredTradesForAI();
+  const filteredTrades = getFilteredTradesForAI();
 
   document.getElementById('ai-review-output').style.display = 'none';
   document.getElementById('ai-review-empty').style.display = 'none';
 
-  if (!trades.length) {
+  if (!filteredTrades.length) {
     document.getElementById('ai-review-empty').style.display = 'block';
     return;
   }
 
-  // Show loading
-  const btn = document.getElementById('ai-review-btn');
+  const btn     = document.getElementById('ai-review-btn');
   const loading = document.getElementById('ai-review-loading');
+  const msgEl   = document.getElementById('ai-review-loading-text');
   btn.disabled = true;
   btn.style.opacity = '0.5';
   loading.style.display = 'block';
 
-  const loadingMsgs = [
-    'Analysing your trades...', 'Checking rule discipline...', 'Computing edge metrics...', 'Building your review...'
-  ];
+  const loadingMsgs = ['Analysing your trades...', 'Checking rule discipline...', 'Computing edge metrics...', 'Building your review...'];
   let msgIdx = 0;
-  const msgEl = document.getElementById('ai-review-loading-text');
   const msgInterval = setInterval(() => {
     msgIdx = (msgIdx + 1) % loadingMsgs.length;
-    msgEl.textContent = loadingMsgs[msgIdx];
+    msgEl.style.opacity = '0';
+    setTimeout(() => { msgEl.textContent = loadingMsgs[msgIdx]; msgEl.style.opacity = '1'; }, 200);
   }, 1800);
 
-  // Summarise trade data
-  const wins = trades.filter(t => (t.pnl||0) > 0);
-  const losses = trades.filter(t => (t.pnl||0) < 0);
-  const totalPnl = trades.reduce((s,t) => s+(t.pnl||0), 0);
-  const winRate = trades.length ? ((wins.length/trades.length)*100).toFixed(1) : 0;
-  const avgWin = wins.length ? (wins.reduce((s,t)=>s+(t.pnl||0),0)/wins.length).toFixed(0) : 0;
-  const avgLoss = losses.length ? (losses.reduce((s,t)=>s+(t.pnl||0),0)/losses.length).toFixed(0) : 0;
-  const ruleBreaks = ['Chased breakout','Ignored SL','Traded first 3 candles','Revenge trade'];
-  const breakCount = trades.reduce((s,t) => s + ((t.rules||[]).filter(r=>ruleBreaks.includes(r)).length), 0);
-  const totalRules = trades.reduce((s,t) => s + (t.rules||[]).length, 0);
+  // Build stats from actual trade fields: result, totalPnl, breaks, rules, type, entryTime, exitTime, date, note
+  const closed   = filteredTrades.filter(t => t.result !== 'OPEN');
+  const wins     = closed.filter(t => t.result === 'WIN');
+  const losses   = closed.filter(t => t.result === 'LOSS');
+  const totalPnl = closed.reduce((s, t) => s + (t.totalPnl || 0), 0);
+  const winRate  = closed.length ? ((wins.length / closed.length) * 100).toFixed(1) : 0;
+  const avgWin   = wins.length   ? (wins.reduce((s,t) => s + (t.totalPnl||0), 0) / wins.length).toFixed(0) : 0;
+  const avgLoss  = losses.length ? (losses.reduce((s,t) => s + (t.totalPnl||0), 0) / losses.length).toFixed(0) : 0;
+  const breakCount = filteredTrades.reduce((s, t) => s + (t.breaks?.length || 0), 0);
+  const grossWin  = wins.reduce((s,t) => s + (t.totalPnl||0), 0);
+  const grossLoss = Math.abs(losses.reduce((s,t) => s + (t.totalPnl||0), 0));
+  const pf        = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : '∞';
 
-  const tradeSummary = trades.slice(-20).map((t,i) => {
-    const outcome = (t.pnl||0) >= 0 ? `WIN ₹${t.pnl}` : `LOSS ₹${t.pnl}`;
-    return `Trade ${i+1}: ${t.type||'?'} | ${outcome} | Rules: ${(t.rules||[]).join(', ')||'none'} | Note: ${t.note||''}`;
+  // Per-trade summary (last 25, most recent first from Supabase order)
+  const tradeSummary = filteredTrades.slice(0, 25).map((t, i) => {
+    const tags = [...(t.rules || []), ...(t.breaks || [])].join(', ') || 'none';
+    return `T${i+1} [${t.date}] ${t.type||'?'} | ${t.result||'?'} | P&L ₹${t.totalPnl != null ? Math.round(t.totalPnl) : 'open'} | ${t.entryTime||'?'}→${t.exitTime||'?'} | Tags: ${tags}${t.note ? ' | Note: '+t.note : ''}`;
   }).join('\n');
 
+  const scopeLabel = { all:'All Time', month:'Last 30 Days', week:'Last 7 Days', today:'Today' }[_aiScope] || 'All Time';
   const focusMap = {
-    overall: 'Give an overall performance assessment covering all aspects.',
-    discipline: 'Focus on rule adherence, discipline, and what rules were broken most.',
-    risk: 'Focus on risk management, stop-loss usage, and drawdown.',
-    timing: 'Focus on timing — when trades were taken, session windows, and time-based patterns.',
-    patterns: 'Focus on patterns in wins vs losses — what conditions led to each.',
-    improvement: 'Focus specifically on actionable improvements the trader can make.'
+    overall:     'Give a comprehensive overall performance assessment.',
+    discipline:  'Focus on rule adherence — which rules were followed and which were broken most.',
+    risk:        'Focus on risk management: stop-loss discipline, drawdown, and position sizing.',
+    timing:      'Focus on entry timing — session windows used, best/worst hours, and time-based patterns.',
+    patterns:    'Identify recurring patterns that separate wins from losses.',
+    improvement: 'Identify the single most impactful improvement the trader should make, with a concrete action plan.'
   };
 
-  const prompt = `You are an expert Nifty options trading coach analyzing a trader's journal data. Be direct, data-driven, and constructive.
+  const prompt = `You are a strict but caring Nifty options trading coach. Analyse this trader's journal data and give a structured, data-backed review.
 
-TRADER STATS (${_aiScope === 'all' ? 'All Time' : _aiScope === 'month' ? 'Last 30 Days' : _aiScope === 'week' ? 'Last 7 Days' : 'Today'}):
-- Total Trades: ${trades.length}
-- Win Rate: ${winRate}%
-- Total P&L: ₹${totalPnl.toFixed(0)}
-- Avg Win: ₹${avgWin} | Avg Loss: ₹${avgLoss}
-- Rule Violations: ${breakCount} across ${trades.length} trades
-- Total Rule Tags Applied: ${totalRules}
+PERIOD: ${scopeLabel}
+STATS:
+- Closed trades: ${closed.length} (${wins.length}W / ${losses.length}L)
+- Win rate: ${winRate}%
+- Total P&L: ₹${Math.round(totalPnl).toLocaleString('en-IN')}
+- Avg win: ₹${avgWin} | Avg loss: ₹${avgLoss}
+- Profit factor: ${pf}
+- Rule violations: ${breakCount}
 
-RECENT TRADES (last 20):
+TRADES (newest first):
 ${tradeSummary}
+
+TRADING RULES: No trades in first 3 candles (9:15–9:30). Only buy pullbacks via AVWAP. SL = 10 pts max. Check Daily EMA before entry.
 
 FOCUS: ${focusMap[_aiFocus] || focusMap.overall}
 
-Respond ONLY with a JSON object (no markdown, no backticks) in this exact format:
+Respond ONLY with a valid JSON object — no markdown, no backticks, no explanation outside JSON:
 {
   "score": <integer 0-100>,
-  "scoreLabel": "<one short label like 'Developing' / 'Consistent' / 'Elite'>",
+  "scoreLabel": "<e.g. Developing / Consistent / Elite>",
   "sections": [
-    { "icon": "<emoji>", "title": "<section title>", "color": "<hex or css var>", "points": ["<point 1>", "<point 2>", "<point 3>"] }
+    { "icon": "<single emoji>", "title": "<UPPERCASE TITLE>", "color": "<hex color>", "points": ["<concise point max 20 words>", ...] }
   ]
 }
-Include 3-5 sections. Each section has 2-4 bullet points. Be specific with numbers from the data. Keep points concise (max 20 words each).`;
+Use 3-5 sections, 2-4 bullet points each. Use real numbers from the data. Colors: green=#26a69a, red=#ef5350, blue=#2962ff, yellow=#f9a825, purple=#ab47bc.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + OPENROUTER_KEY,
+        'HTTP-Referer': window.location.origin,
+        'X-Title': 'Nifty Trading Assistant'
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        model: 'anthropic/claude-sonnet-4-5',
+        max_tokens: 1200,
         messages: [{ role: 'user', content: prompt }]
       })
     });
     const data = await res.json();
-    const raw = data.content?.map(c => c.text||'').join('').trim();
-    const clean = raw.replace(/```json|```/g,'').trim();
+    if (data.error) throw new Error(data.error.message || 'OpenRouter error');
+    const raw   = (data.choices?.[0]?.message?.content || '').trim();
+    const clean = raw.replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
     const parsed = JSON.parse(clean);
     renderAIReview(parsed);
   } catch(e) {
+    console.error('AI Review error:', e);
     document.getElementById('ai-review-sections').innerHTML =
-      `<div style="padding:16px;border:1px solid var(--danger);border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;color:var(--danger);">⚠️ Could not generate review. Check connection and try again.</div>`;
+      `<div style="padding:14px;border:1px solid var(--danger);border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;color:var(--danger);line-height:1.6;">⚠️ Could not generate review.<br><span style="opacity:.7">${e.message || 'Check your OpenRouter API key and connection.'}</span></div>`;
     document.getElementById('ai-review-output').style.display = 'block';
   } finally {
     clearInterval(msgInterval);
@@ -1185,33 +1208,29 @@ Include 3-5 sections. Each section has 2-4 bullet points. Be specific with numbe
 }
 
 function renderAIReview(data) {
-  const score = Math.min(100, Math.max(0, data.score||0));
+  const score   = Math.min(100, Math.max(0, data.score || 0));
   const scoreEl = document.getElementById('ai-score-num');
-  const fillEl = document.getElementById('ai-score-fill');
+  const fillEl  = document.getElementById('ai-score-fill');
   const labelEl = document.getElementById('ai-score-label');
 
-  // Animate score
+  // Animate counter
   let cur = 0;
-  const target = score;
-  const tick = setInterval(() => {
-    cur = Math.min(cur + 2, target);
+  const ticker = setInterval(() => {
+    cur = Math.min(cur + 2, score);
     scoreEl.textContent = cur;
-    scoreEl.style.color = cur >= 70 ? 'var(--tv-teal)' : cur >= 45 ? 'var(--warn)' : 'var(--danger)';
-    if (cur >= target) clearInterval(tick);
-  }, 18);
-
-  setTimeout(() => { fillEl.style.width = score + '%'; }, 100);
+    scoreEl.style.color = cur >= 70 ? '#26a69a' : cur >= 45 ? '#f9a825' : '#ef5350';
+    if (cur >= score) clearInterval(ticker);
+  }, 16);
+  setTimeout(() => { fillEl.style.width = score + '%'; }, 80);
   labelEl.textContent = data.scoreLabel || '';
 
-  const sectionsEl = document.getElementById('ai-review-sections');
-  sectionsEl.innerHTML = (data.sections||[]).map(s => `
-    <div style="margin-bottom:10px;padding:12px 14px;border-radius:3px;background:var(--bg);border:1px solid var(--border);border-left:3px solid ${s.color||'var(--accent)'};">
-      <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text);margin-bottom:8px;text-transform:uppercase;">${s.icon||''} ${s.title||''}</div>
+  document.getElementById('ai-review-sections').innerHTML = (data.sections || []).map(s => `
+    <div style="margin-bottom:10px;padding:12px 14px;border-radius:3px;background:var(--bg);border:1px solid var(--border);border-left:3px solid ${s.color || 'var(--accent)'};">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text);margin-bottom:8px;text-transform:uppercase;">${s.icon || ''} ${s.title || ''}</div>
       <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;">
-        ${(s.points||[]).map(p=>`<li style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.5;padding-left:12px;position:relative;"><span style="position:absolute;left:0;color:${s.color||'var(--accent)'};">›</span>${p}</li>`).join('')}
+        ${(s.points || []).map(p => `<li style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.5;padding-left:12px;position:relative;"><span style="position:absolute;left:0;color:${s.color || 'var(--accent)'};">›</span>${p}</li>`).join('')}
       </ul>
-    </div>
-  `).join('');
+    </div>`).join('');
 
   document.getElementById('ai-review-output').style.display = 'block';
 }
