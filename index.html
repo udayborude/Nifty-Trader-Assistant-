@@ -2568,12 +2568,16 @@ function renderRisk(trades){
   // ── Arc helpers (semi-circle: left=0%, right=100%) ──────────────────
   const cx=110,cy=110,r=92;
   function arcXY(pct){
-    const rad=(pct/100*180-180)*Math.PI/180;
-    return [cx+r*Math.cos(rad), cy+r*Math.sin(rad)];
+    // Maps 0%→left (180°) to 100%→right (0°), sweeping across top
+    const deg = 180 - (pct / 100 * 180);
+    const rad = deg * Math.PI / 180;
+    return [cx + r * Math.cos(rad), cy - r * Math.sin(rad)];
   }
-  function arcPath(p1,p2){
-    const[x1,y1]=arcXY(p1);const[x2,y2]=arcXY(p2);
-    return `M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${p2-p1>50?1:0},1 ${x2.toFixed(2)},${y2.toFixed(2)}`;
+  function arcPath(p1, p2){
+    const [x1,y1] = arcXY(p1);
+    const [x2,y2] = arcXY(p2);
+    // Always small-arc (0) — the full track is exactly 180°, fill is always ≤180°
+    return `M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 0,1 ${x2.toFixed(2)},${y2.toFixed(2)}`;
   }
 
   // ── Compute premium recovery rate from closed trades ─────────────────
@@ -2597,7 +2601,7 @@ function renderRisk(trades){
   }
 
   // Fill arc
-  const fillPct = Math.min(99, Math.max(1, avgRecovery));
+  const fillPct = Math.min(98, Math.max(2, avgRecovery));
   const fillColor = avgRecovery<33?'#ef5350':avgRecovery<66?'#f9a825':'#26a69a';
   const fillEl = document.getElementById('arc-fill');
   if(fillEl){ fillEl.setAttribute('d', arcPath(0, fillPct)); fillEl.setAttribute('stroke', fillColor); }
