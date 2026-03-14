@@ -735,9 +735,15 @@ svg.ring{overflow:visible;}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div><div class="field-label">DATE</div><div id="entry-date-display" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:1px;">—</div></div>
         <div><div class="field-label">TIME (IST)</div><input id="entry-time" type="time" class="j-input" style="width:100%;"></div>
-        <div><div class="field-label">ENTRY PRICE (₹)</div><input id="entry-price" type="number" placeholder="e.g. 150.50" class="j-input" style="width:100%;" oninput="calcPnl()"></div>
+        <div><div class="field-label">ENTRY PRICE (₹)</div><input id="entry-price" type="number" placeholder="e.g. 150.50" class="j-input" style="width:100%;" oninput="onEntryPriceChange()"></div>
         <div><div class="field-label">QUANTITY (UNITS)</div><input id="entry-qty" type="number" placeholder="e.g. 75" class="j-input" style="width:100%;" oninput="calcPnl()"></div>
-        <div style="grid-column:1/-1;"><div class="field-label">STOP LOSS PRICE (₹)</div><input id="entry-sl" type="number" placeholder="e.g. 140.00" class="j-input" style="width:100%;" oninput="calcPnl()"></div>
+        <div style="grid-column:1/-1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <div class="field-label" style="margin-bottom:0;">STOP LOSS PRICE (₹)</div>
+            <span id="sl-auto-badge" style="display:none;font-size:9px;font-family:'Space Mono',monospace;letter-spacing:1px;padding:2px 8px;border-radius:20px;background:rgba(239,83,80,0.12);border:1px solid rgba(239,83,80,0.25);color:var(--danger);">AUTO −10 PTS</span>
+          </div>
+          <input id="entry-sl" type="number" placeholder="Auto-filled at Entry ± 10 pts" class="j-input" style="width:100%;" oninput="calcPnl()">
+        </div>
       </div>
     </div>
     <div style="background:rgba(255,107,53,0.03);border:1px solid rgba(249,168,37,0.12);border-radius:10px;padding:14px;margin-bottom:12px;">
@@ -745,12 +751,20 @@ svg.ring{overflow:visible;}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div><div class="field-label">EXIT TIME (IST)</div><input id="exit-time" type="time" class="j-input" style="width:100%;"></div>
         <div><div class="field-label">EXIT PRICE (₹)</div><input id="exit-price" type="number" placeholder="e.g. 175.00" class="j-input" style="width:100%;" oninput="calcPnl()"></div>
+        <div style="grid-column:1/-1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <div class="field-label" style="margin-bottom:0;">BROKERAGE &amp; CHARGES (₹)</div>
+            <span style="font-size:9px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:1px;">STT + Brokerage + GST</span>
+          </div>
+          <input id="entry-brokerage" type="number" placeholder="e.g. 40" class="j-input" style="width:100%;" oninput="calcPnl()" min="0">
+        </div>
       </div>
     </div>
     <div id="pnl-display" style="display:none;margin-bottom:14px;padding:16px;border-radius:10px;text-align:center;border:1px solid var(--border);background:var(--bg);">
-      <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:6px;">CALCULATED P&L</div>
+      <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:6px;">NET P&amp;L (After Charges)</div>
       <div id="pnl-value" style="font-size:32px;font-weight:800;font-family:'Space Mono',monospace;"></div>
-      <div id="pnl-breakdown" style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:4px;"></div>
+      <div id="pnl-gross" style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:4px;"></div>
+      <div id="pnl-breakdown" style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;"></div>
     </div>
     <div style="margin-bottom:14px;">
       <div class="field-label">FOLLOWED RULES?</div>
@@ -1670,20 +1684,54 @@ let guardrailOverride=false, pendingTrade=null;
 function setEntryDate(){document.getElementById('entry-date-display').textContent=todayStr();}
 setEntryDate();
 
-function setType(t){tradeType=t;document.getElementById('type-call').classList.toggle('selected-yes',t==='CALL');document.getElementById('type-put').classList.toggle('selected-yes',t==='PUT');calcPnl();}
+function setType(t){tradeType=t;document.getElementById('type-call').classList.toggle('selected-yes',t==='CALL');document.getElementById('type-put').classList.toggle('selected-yes',t==='PUT');onEntryPriceChange();}
+
+function onEntryPriceChange(){
+  const ep=parseFloat(document.getElementById('entry-price').value);
+  const slEl=document.getElementById('entry-sl');
+  const badge=document.getElementById('sl-auto-badge');
+  // Auto-fill SL only if user hasn't manually typed a value
+  if(ep&&!slEl.dataset.userEdited){
+    const sl=(tradeType==='PUT')?(ep+10):(ep-10);
+    slEl.value=sl.toFixed(2);
+    badge.style.display='inline';
+    badge.textContent=tradeType==='PUT'?'AUTO +10 PTS':'AUTO −10 PTS';
+  }
+  calcPnl();
+}
+
+// Mark SL as user-edited if they type in it directly
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('entry-sl').addEventListener('input',function(){
+    this.dataset.userEdited=this.value?'1':'';
+    const badge=document.getElementById('sl-auto-badge');
+    if(!this.value){badge.style.display='none';}
+    calcPnl();
+  });
+});
 
 function calcPnl(){
   const ep=parseFloat(document.getElementById('entry-price').value);
   const xp=parseFloat(document.getElementById('exit-price').value);
   const qty=parseFloat(document.getElementById('entry-qty').value)||0;
   const sl=parseFloat(document.getElementById('entry-sl').value);
+  const brokerage=parseFloat(document.getElementById('entry-brokerage').value)||0;
   const disp=document.getElementById('pnl-display');
   if(!ep||!xp||!qty){disp.style.display='none';return;}
-  const ppu=xp-ep,total=ppu*qty,prof=total>=0;
+  const ppu=xp-ep,grossTotal=ppu*qty,netTotal=grossTotal-brokerage,prof=netTotal>=0;
   disp.style.display='block';
   disp.style.border=`1px solid ${prof?'rgba(41,98,255,0.3)':'rgba(239,83,80,0.3)'}`;
   disp.style.background=prof?'rgba(41,98,255,0.06)':'rgba(239,83,80,0.06)';
-  const pv=document.getElementById('pnl-value');pv.textContent=`${prof?'+':''}₹${total.toFixed(0)}`;pv.style.color=prof?'var(--accent)':'var(--danger)';
+  const pv=document.getElementById('pnl-value');
+  pv.textContent=`${prof?'+':''}₹${netTotal.toFixed(0)}`;
+  pv.style.color=prof?'var(--accent)':'var(--danger)';
+  // Gross line (only show if brokerage is set)
+  const grossEl=document.getElementById('pnl-gross');
+  if(brokerage>0){
+    grossEl.textContent=`Gross ₹${grossTotal.toFixed(0)} − Charges ₹${brokerage.toFixed(0)}`;
+  } else {
+    grossEl.textContent='';
+  }
   let bd=`${qty} units · ₹${ppu.toFixed(2)}/unit`;
   if(sl&&ep){const risk=Math.abs(ep-sl)*qty;bd+=` · SL risk: ₹${risk.toFixed(0)}`;}
   document.getElementById('pnl-breakdown').textContent=bd;
@@ -1711,8 +1759,10 @@ async function addTrade(){
   const xp=parseFloat(document.getElementById('exit-price').value);
   const qty=parseFloat(document.getElementById('entry-qty').value);
   if(!ep||!qty){showToast('Entry price & quantity required',true);return;}
-  const ppu=xp?(xp-ep):null,total=ppu!==null?ppu*qty:null;
-  const trade={id:Date.now(),type:tradeType,date:todayStr(),entryTime:document.getElementById('entry-time').value||'—',exitTime:document.getElementById('exit-time').value||'—',entryPrice:ep,exitPrice:xp||null,sl:parseFloat(document.getElementById('entry-sl').value)||null,qty,totalPnl:total,result:total!==null?(total>=0?'WIN':'LOSS'):'OPEN',rules:[...ruleTags],breaks:ruleTags.filter(r=>BAD.includes(r)),note:document.getElementById('trade-note').value.trim()};
+  const ppu=xp?(xp-ep):null,grossPnl=ppu!==null?ppu*qty:null;
+  const brokerage=parseFloat(document.getElementById('entry-brokerage').value)||0;
+  const total=grossPnl!==null?grossPnl-brokerage:null;
+  const trade={id:Date.now(),type:tradeType,date:todayStr(),entryTime:document.getElementById('entry-time').value||'—',exitTime:document.getElementById('exit-time').value||'—',entryPrice:ep,exitPrice:xp||null,sl:parseFloat(document.getElementById('entry-sl').value)||null,qty,brokerage,grossPnl,totalPnl:total,result:total!==null?(total>=0?'WIN':'LOSS'):'OPEN',rules:[...ruleTags],breaks:ruleTags.filter(r=>BAD.includes(r)),note:document.getElementById('trade-note').value.trim()};
   const warns=checkGuardrails(trade);
   if(warns.length&&!guardrailOverride){pendingTrade=trade;showGuardrail(warns);return;}
   await commitTrade(trade);
@@ -1756,7 +1806,7 @@ function renderGuardrailBanner(){
   else banner.style.display='none';
 }
 
-function resetTradeForm(){tradeType=null;ruleTags=[];['type-call','type-put'].forEach(id=>document.getElementById(id).classList.remove('selected-yes','selected-no'));document.querySelectorAll('.rule-tag-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));['entry-time','exit-time','entry-price','entry-qty','entry-sl','exit-price','trade-note'].forEach(id=>{document.getElementById(id).value='';});document.getElementById('pnl-display').style.display='none';setEntryDate();}
+function resetTradeForm(){tradeType=null;ruleTags=[];['type-call','type-put'].forEach(id=>document.getElementById(id).classList.remove('selected-yes','selected-no'));document.querySelectorAll('.rule-tag-btn').forEach(b=>b.classList.remove('selected-yes','selected-no'));['entry-time','exit-time','entry-price','entry-qty','entry-sl','exit-price','entry-brokerage','trade-note'].forEach(id=>{document.getElementById(id).value='';});const slEl=document.getElementById('entry-sl');if(slEl)delete slEl.dataset.userEdited;const badge=document.getElementById('sl-auto-badge');if(badge)badge.style.display='none';document.getElementById('pnl-display').style.display='none';setEntryDate();}
 
 function updateStats(){
   const has=trades.length>0;
@@ -1789,6 +1839,7 @@ function renderLog(){
         <div>SL<br><span style="color:var(--danger);font-size:13px;">${t.sl?'₹'+t.sl:'—'}</span></div>
         <div>IN<br><span style="color:var(--text);font-size:13px;">${t.entryTime}</span></div>
         <div>OUT<br><span style="color:var(--text);font-size:13px;">${t.exitTime}</span></div>
+        ${(t.brokerage>0)?`<div style="grid-column:1/-1;display:flex;gap:16px;padding-top:4px;border-top:1px solid var(--border);margin-top:4px;"><span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);">GROSS ₹${t.grossPnl!==null?Math.round(t.grossPnl):'—'}</span><span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--warn);">CHARGES −₹${t.brokerage}</span></div>`:''}
       </div>
       ${t.rules.length?`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;">${t.rules.map(r=>`<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:${BAD.includes(r)?'rgba(239,83,80,0.12)':'rgba(41,98,255,0.1)'};color:${BAD.includes(r)?'var(--danger)':'var(--accent)'};border:1px solid ${BAD.includes(r)?'rgba(239,83,80,0.2)':'rgba(41,98,255,0.18)'};font-family:Space Mono,monospace;">${r}</span>`).join('')}</div>`:''}
       ${t.note?`<div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;line-height:1.5;">${t.note}</div>`:''}
@@ -1810,8 +1861,8 @@ function renderAnalytics(){
 // ── CSV EXPORT ─────────────────────────────────────
 function exportCSV(){
   if(!trades.length){showToast('No trades to export',true);return;}
-  const h='Date,Type,Result,Entry Time,Exit Time,Entry Price,Exit Price,Qty,SL,P&L (₹),Rules,Note';
-  const rows=trades.map(t=>[t.date,t.type,t.result,t.entryTime,t.exitTime,t.entryPrice,t.exitPrice||'',t.qty,t.sl||'',t.totalPnl!==null?Math.round(t.totalPnl):'',`"${t.rules.join(';')}"`,`"${t.note}"`].join(','));
+  const h='Date,Type,Result,Entry Time,Exit Time,Entry Price,Exit Price,Qty,SL,Gross P&L (₹),Charges (₹),Net P&L (₹),Rules,Note';
+  const rows=trades.map(t=>[t.date,t.type,t.result,t.entryTime,t.exitTime,t.entryPrice,t.exitPrice||'',t.qty,t.sl||'',t.grossPnl!==null?Math.round(t.grossPnl):'',t.brokerage||0,t.totalPnl!==null?Math.round(t.totalPnl):'',`"${t.rules.join(';')}"`,`"${t.note}"`].join(','));
   const csv=[h,...rows].join('\n');
   const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`nifty-trades-${todayStr().replace(/\//g,'-')}.csv`;a.click();
   showToast('CSV exported ✅',false);
