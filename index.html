@@ -496,6 +496,7 @@ svg.ring{overflow:visible;}
   <div style="text-align:right;">
     <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end;">
       <button id="mute-btn" onclick="toggleMute()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--accent);font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;">🔔 Sound</button>
+      <button onclick="openKeyModal()" id="key-btn" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;color:var(--muted);transition:all 0.15s;" title="Set OpenRouter API Key">🔑 API Key</button>
       <button class="auth-user-bar" id="logout-btn" onclick="authSignOut()">🔐 Logout</button>
       <div id="clock">--:--:--</div>
     </div>
@@ -1322,7 +1323,8 @@ Respond ONLY with a valid JSON object — no markdown, no backticks, no explanat
 Use 3-5 sections, 2-4 bullet points each. Use real numbers from the data. Colors: green=#26a69a, red=#ef5350, blue=#2962ff, yellow=#f9a825, purple=#ab47bc.`;
 
   try {
-    const OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
+    const OPENROUTER_KEY = getOpenRouterKey();
+    if (!OPENROUTER_KEY) { openKeyModal(); throw new Error('No OpenRouter key set — please add it via the 🔑 API Key button'); }
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -1553,6 +1555,21 @@ function renderAIReview(data) {
 </div><!-- /tab-briefing -->
 
 </div><!-- /container -->
+
+<!-- API KEY MODAL -->
+<div id="key-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;align-items:center;justify-content:center;">
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px 24px;max-width:420px;width:90%;">
+    <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px;">🔑 OpenRouter API Key</div>
+    <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:20px;line-height:1.6;">Used by AI Log, AI Review &amp; Morning Briefing.<br>Get your key at <span style="color:var(--accent);">openrouter.ai/keys</span></div>
+    <div class="field-label" style="margin-bottom:6px;">API Key</div>
+    <input id="key-modal-input" type="password" class="j-input" placeholder="sk-or-v1-..." autocomplete="off" style="margin-bottom:6px;" />
+    <div id="key-modal-status" style="font-size:11px;color:var(--tv-teal);font-family:'Space Mono',monospace;min-height:16px;margin-bottom:16px;"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-accent" onclick="saveKeyModal()" style="flex:1;justify-content:center;">💾 Save Key</button>
+      <button class="btn" onclick="closeKeyModal()">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <!-- GUARDRAIL MODAL -->
 <div id="guardrail-modal">
@@ -2211,7 +2228,8 @@ Provide coaching with these sections:
 Under 250 words. Be direct. Reference actual data.`;
 
   try {
-    const OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
+    const OPENROUTER_KEY = getOpenRouterKey();
+    if (!OPENROUTER_KEY) { openKeyModal(); throw new Error('No OpenRouter key set'); }
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': window.location.origin, 'X-Title': 'Trading Assistant' }, body: JSON.stringify({ model: 'anthropic/claude-sonnet-4-5', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] }) });
     const data = await res.json();
     if (data.error) { throw new Error(data.error.message); }
@@ -3600,14 +3618,66 @@ async function authSignOut() {
 </script>
 
 <script>
+// ── OPENROUTER KEY MANAGEMENT ────────────────────────────
+// Single source of truth for all AI features in this app
+
+function getOpenRouterKey() {
+  return localStorage.getItem('openrouter_key') || '';
+}
+
+function openKeyModal() {
+  const modal = document.getElementById('key-modal');
+  const inp = document.getElementById('key-modal-input');
+  const status = document.getElementById('key-modal-status');
+  const existing = getOpenRouterKey();
+  inp.value = existing;
+  status.textContent = existing ? '✓ Key loaded from storage' : '';
+  status.style.color = 'var(--tv-teal)';
+  modal.style.display = 'flex';
+  setTimeout(() => inp.focus(), 50);
+}
+
+function closeKeyModal() {
+  document.getElementById('key-modal').style.display = 'none';
+}
+
+function saveKeyModal() {
+  const val = document.getElementById('key-modal-input').value.trim();
+  const status = document.getElementById('key-modal-status');
+  if (!val) {
+    status.textContent = '⚠ Please enter a key';
+    status.style.color = 'var(--tv-red)';
+    return;
+  }
+  localStorage.setItem('openrouter_key', val);
+  // Update key button indicator
+  const keyBtn = document.getElementById('key-btn');
+  if (keyBtn) { keyBtn.style.color = 'var(--tv-teal)'; keyBtn.textContent = '🔑 Key Set'; }
+  status.textContent = '✓ Saved!';
+  status.style.color = 'var(--tv-teal)';
+  setTimeout(closeKeyModal, 800);
+  showToast('OpenRouter key saved ✅', false);
+}
+
+// Close modal on backdrop click
+document.getElementById('key-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeKeyModal();
+});
+
+// On load: update key button state
+(function initKeyBtn() {
+  const keyBtn = document.getElementById('key-btn');
+  if (!keyBtn) return;
+  if (getOpenRouterKey()) {
+    keyBtn.style.color = 'var(--tv-teal)';
+    keyBtn.textContent = '🔑 Key Set';
+  }
+})();
+
 // ── MORNING BRIEFING ─────────────────────────────────────
-// Uses the same OpenRouter key as the rest of the app
-// Key resolution order: localStorage 'openrouter_key' → '%%OPENROUTER_API_KEY%%'
 
 function mbGetKey() {
-  return localStorage.getItem('openrouter_key') ||
-         localStorage.getItem('mb_or_key') ||
-         '%%OPENROUTER_API_KEY%%';
+  return getOpenRouterKey();
 }
 
 // Init: set date label
@@ -3634,9 +3704,9 @@ function mbStatus(msg) {
 
 async function mbRunBriefing() {
   const apiKey = mbGetKey();
-  if (!apiKey || apiKey === '%%OPENROUTER_API_KEY%%') {
-    mbStatus('⚠ No OpenRouter key found — add it to localStorage as "openrouter_key"');
-    showToast('⚠ Set your OpenRouter key first', true);
+  if (!apiKey) {
+    openKeyModal();
+    mbStatus('⚠ Enter your OpenRouter key to continue');
     return;
   }
 
