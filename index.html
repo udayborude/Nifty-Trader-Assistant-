@@ -260,15 +260,32 @@ canvas{width:100%!important;}
 .disc-pnl{font-family:'Space Mono',monospace;font-size:11px;min-width:68px;text-align:right;}
 
 /* ── EDGE TABLE ──────────────────────────────────── */
-.edge-table{width:100%;border-collapse:collapse;font-size:12px;}
-.edge-table th{
-  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;
-  text-transform:uppercase;color:var(--muted);
-  text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);
-}
-.edge-table td{padding:9px 10px;border-bottom:1px solid rgba(54,60,78,.6);font-family:'Space Mono',monospace;font-size:12px;}
-.edge-table tr:last-child td{border-bottom:none;}
-.edge-table tr:hover td{background:rgba(255,255,255,.02);}
+/* ── EDGE BREAKDOWN ──────────────────────────────── */
+.edge-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.edge-kpi{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 8px;text-align:center;}
+.edge-kpi .ek-val{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;line-height:1.1;}
+.edge-kpi .ek-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+.edge-sec-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:12px 0 6px;}
+.edge-rule-card{background:var(--panel2);border:1px solid var(--border);border-radius:0 8px 8px 0;border-left:3px solid var(--border);padding:12px 12px 10px;margin-bottom:7px;}
+.edge-rule-card.good{border-left-color:#26a69a;}
+.edge-rule-card.bad{border-left-color:#ef5350;}
+.edge-rule-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;}
+.edge-rule-name{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.edge-score-pill{font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;border-radius:20px;letter-spacing:.8px;border:1px solid;white-space:nowrap;flex-shrink:0;}
+.esp-strong{color:#26a69a;background:rgba(38,166,154,.1);border-color:rgba(38,166,154,.3);}
+.esp-moderate{color:#f9a825;background:rgba(249,168,37,.1);border-color:rgba(249,168,37,.3);}
+.esp-weak{color:#42a5f5;background:rgba(66,165,245,.1);border-color:rgba(66,165,245,.3);}
+.esp-drain{color:#ef5350;background:rgba(239,83,80,.12);border-color:rgba(239,83,80,.35);}
+.edge-wr-wrap{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.edge-wr-track{flex:1;height:5px;background:var(--dim);border-radius:3px;overflow:hidden;}
+.edge-wr-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+.edge-wr-pct{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;min-width:32px;text-align:right;}
+.edge-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.edge-stat-cell{text-align:center;}
+.edge-stat-cell .esv{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
+.edge-stat-cell .esl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.edge-insight{background:rgba(38,166,154,.07);border:1px solid rgba(38,166,154,.2);border-radius:6px;padding:10px 12px;font-family:'Space Mono',monospace;font-size:10px;color:var(--text);line-height:1.7;margin-bottom:6px;}
+.edge-insight.warn{background:rgba(239,83,80,.07);border-color:rgba(239,83,80,.2);}
 
 /* ── RISK METER ──────────────────────────────────── */
 .risk-arc-wrap{display:flex;flex-direction:column;align-items:center;margin:8px 0 4px;}
@@ -1068,11 +1085,30 @@ svg.ring{overflow:visible;}
   <div class="row r2" style="margin-bottom:32px;">
     <div class="card">
       <div class="card-title"><span class="dot"></span>Setup Edge Breakdown</div>
-      <table class="edge-table">
-        <thead><tr><th>Rule Tag</th><th>Trades</th><th>Win%</th><th>Avg P&L</th></tr></thead>
-        <tbody id="edge-table-body"></tbody>
-      </table>
-      <div id="edge-empty" class="empty" style="display:none;"><span class="empty-icon">🔬</span>Log tagged trades to see edge breakdown</div>
+      <!-- KPI strip -->
+      <div class="edge-kpi-row" id="edge-kpi-row" style="display:none;">
+        <div class="edge-kpi"><div class="ek-val" id="ek-followed">—</div><div class="ek-lbl">Rules Followed</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-broken">—</div><div class="ek-lbl">Rules Broken</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-best-wr">—</div><div class="ek-lbl">Best Tag WR</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-worst-wr">—</div><div class="ek-lbl">Worst Tag WR</div></div>
+      </div>
+      <!-- Good tags -->
+      <div id="edge-good-wrap" style="display:none;">
+        <div class="edge-sec-lbl">Edge-positive</div>
+        <div id="edge-good-list"></div>
+      </div>
+      <!-- Bad tags -->
+      <div id="edge-bad-wrap" style="display:none;">
+        <div class="edge-sec-lbl">Edge-negative</div>
+        <div id="edge-bad-list"></div>
+      </div>
+      <!-- Auto insights -->
+      <div id="edge-insights" style="display:none;">
+        <div class="edge-sec-lbl">Auto insights</div>
+        <div id="edge-insights-list"></div>
+      </div>
+      <!-- Empty state -->
+      <div id="edge-empty" class="empty"><span class="empty-icon">🔬</span>Log tagged trades to see edge breakdown</div>
     </div>
     <div class="card">
       <div class="card-title"><span class="dot"></span>Premium Risk Meter</div>
@@ -2531,34 +2567,128 @@ function renderStreak(trades){
 //  EDGE TABLE
 // ══════════════════════════════════════════════════════════════════
 function renderEdgeTable(trades){
-  const tagMap={};
   const goodRules=['Waited for pullback','Waited 5min candle close','AVWAP confirmed','HTF checked','EMA terrain followed'];
+  const badRules=['Chased breakout','Ignored SL','Traded first 3 candles','Revenge trade'];
+  const eEmp=document.getElementById('edge-empty');
+
+  // Build tag map
+  const tagMap={};
   trades.forEach(t=>{
     (t.rules||[]).forEach(r=>{
-      if(!tagMap[r])tagMap[r]={trades:0,wins:0,pnl:0};
+      if(!tagMap[r])tagMap[r]={trades:0,wins:0,totalPnl:0,grossWin:0,grossLoss:0};
       tagMap[r].trades++;
-      if(t.result==='WIN')tagMap[r].wins++;
-      tagMap[r].pnl+=(t.totalPnl||0);
+      if(t.result==='WIN'){tagMap[r].wins++;tagMap[r].grossWin+=(t.totalPnl||0);}
+      if(t.result==='LOSS') tagMap[r].grossLoss+=Math.abs(t.totalPnl||0);
+      tagMap[r].totalPnl+=(t.totalPnl||0);
     });
   });
-  const tbody=document.getElementById('edge-table-body');
-  const eEmp=document.getElementById('edge-empty');
-  const entries=Object.entries(tagMap).sort((a,b)=>b[1].trades-a[1].trades);
-  if(!entries.length){tbody.innerHTML='';eEmp.style.display='flex';return;}
+  const entries=Object.entries(tagMap);
+  if(!entries.length){
+    eEmp.style.display='flex';
+    ['edge-kpi-row','edge-good-wrap','edge-bad-wrap','edge-insights'].forEach(id=>{document.getElementById(id).style.display='none';});
+    return;
+  }
   eEmp.style.display='none';
-  tbody.innerHTML=entries.map(([tag,d])=>{
-    const wr=d.trades?((d.wins/d.trades)*100).toFixed(0):0;
-    const avgPnl=d.trades?(d.pnl/d.trades):0;
-    const isGood=goodRules.includes(tag);
-    const wrColor=wr>=60?'var(--accent)':wr>=40?'var(--warn)':'var(--danger)';
-    const pnlColor=avgPnl>=0?'var(--accent)':'var(--danger)';
-    return `<tr>
-      <td><span class="pill ${isGood?'g':'r'}">${tag.length>20?tag.substring(0,18)+'…':tag}</span></td>
-      <td style="color:var(--text)">${d.trades}</td>
-      <td style="color:${wrColor};font-weight:700">${wr}%</td>
-      <td style="color:${pnlColor}">${avgPnl>=0?'+':''}₹${Math.round(avgPnl).toLocaleString('en-IN')}</td>
-    </tr>`;
-  }).join('');
+
+  // KPIs
+  const followedTags=entries.filter(([t])=>goodRules.includes(t));
+  const brokenTags=entries.filter(([t])=>badRules.includes(t));
+  const wrs=entries.map(([,d])=>d.trades?Math.round(d.wins/d.trades*100):0);
+  const bestWR=wrs.length?Math.max(...wrs):0;
+  const worstWR=wrs.length?Math.min(...wrs):0;
+  document.getElementById('ek-followed').textContent=followedTags.length;
+  document.getElementById('ek-followed').style.color='var(--tv-teal)';
+  document.getElementById('ek-broken').textContent=brokenTags.length;
+  document.getElementById('ek-broken').style.color=brokenTags.length>0?'var(--danger)':'var(--muted)';
+  document.getElementById('ek-best-wr').textContent=bestWR+'%';
+  document.getElementById('ek-best-wr').style.color=bestWR>=60?'var(--tv-teal)':bestWR>=50?'var(--warn)':'var(--danger)';
+  document.getElementById('ek-worst-wr').textContent=worstWR+'%';
+  document.getElementById('ek-worst-wr').style.color=worstWR<40?'var(--danger)':'var(--warn)';
+  document.getElementById('edge-kpi-row').style.display='grid';
+
+  // Edge score classifier
+  function edgeScore(d){
+    const wr=d.trades?d.wins/d.trades*100:0;
+    const pf=d.grossLoss>0?d.grossWin/d.grossLoss:(d.grossWin>0?3:0);
+    if(d.totalPnl<0)return{label:'EDGE DRAIN',cls:'esp-drain'};
+    if(wr>=60&&pf>=1.5)return{label:'STRONG EDGE',cls:'esp-strong'};
+    if(wr>=50)return{label:'MODERATE',cls:'esp-moderate'};
+    return{label:'WEAK EDGE',cls:'esp-weak'};
+  }
+
+  // Build a rule card
+  function buildCard(tag, d, isGood){
+    const wr=d.trades?Math.round(d.wins/d.trades*100):0;
+    const avgPnl=d.trades?d.totalPnl/d.trades:0;
+    const pf=d.grossLoss>0?(d.grossWin/d.grossLoss).toFixed(1)+'×':(d.grossWin>0?'∞':'0×');
+    const es=edgeScore(d);
+    const wrColor=wr>=60?'var(--tv-teal)':wr>=50?'var(--warn)':'var(--danger)';
+    const pnlColor=avgPnl>=0?'var(--tv-teal)':'var(--danger)';
+    const totalColor=d.totalPnl>=0?'var(--tv-teal)':'var(--danger)';
+    const totalStr=(d.totalPnl>=0?'+':'')+'₹'+Math.round(d.totalPnl).toLocaleString('en-IN');
+    const avgStr=(avgPnl>=0?'+':'')+'₹'+Math.round(avgPnl).toLocaleString('en-IN');
+    const barW=Math.min(100,wr);
+    const barColor=wr>=60?'#26a69a':wr>=50?'#f9a825':'#ef5350';
+    const shortTag=tag.length>26?tag.substring(0,24)+'…':tag;
+    return `<div class="edge-rule-card ${isGood?'good':'bad'}">
+      <div class="edge-rule-header">
+        <span class="edge-rule-name" title="${tag}">${shortTag}</span>
+        <span class="edge-score-pill ${es.cls}">${es.label}</span>
+      </div>
+      <div class="edge-wr-wrap">
+        <div class="edge-wr-track"><div class="edge-wr-fill" style="width:${barW}%;background:${barColor}"></div></div>
+        <span class="edge-wr-pct" style="color:${wrColor}">${wr}%</span>
+      </div>
+      <div class="edge-stats-row">
+        <div class="edge-stat-cell"><div class="esv">${d.trades}</div><div class="esl">Trades</div></div>
+        <div class="edge-stat-cell"><div class="esv" style="color:${pnlColor}">${avgStr}</div><div class="esl">Avg P&L</div></div>
+        <div class="edge-stat-cell"><div class="esv" style="color:${totalColor}">${totalStr}</div><div class="esl">Total P&L</div></div>
+        <div class="edge-stat-cell"><div class="esv" style="color:${d.totalPnl>=0?'var(--tv-teal)':'var(--danger)'}">${pf}</div><div class="esl">Prof. Factor</div></div>
+      </div>
+    </div>`;
+  }
+
+  // Separate good / bad / neutral — sort by total P&L desc within each group
+  const goodEntries=entries.filter(([t])=>goodRules.includes(t)).sort((a,b)=>b[1].totalPnl-a[1].totalPnl);
+  const badEntries=entries.filter(([t])=>badRules.includes(t)).sort((a,b)=>a[1].totalPnl-b[1].totalPnl);
+  const neutralEntries=entries.filter(([t])=>!goodRules.includes(t)&&!badRules.includes(t)).sort((a,b)=>b[1].totalPnl-a[1].totalPnl);
+  const allGood=[...goodEntries,...neutralEntries.filter(([,d])=>d.totalPnl>=0)];
+  const allBad=[...badEntries,...neutralEntries.filter(([,d])=>d.totalPnl<0)];
+
+  const goodWrap=document.getElementById('edge-good-wrap');
+  const goodList=document.getElementById('edge-good-list');
+  if(allGood.length){
+    goodList.innerHTML=allGood.map(([t,d])=>buildCard(t,d,true)).join('');
+    goodWrap.style.display='block';
+  } else goodWrap.style.display='none';
+
+  const badWrap=document.getElementById('edge-bad-wrap');
+  const badList=document.getElementById('edge-bad-list');
+  if(allBad.length){
+    badList.innerHTML=allBad.map(([t,d])=>buildCard(t,d,false)).join('');
+    badWrap.style.display='block';
+  } else badWrap.style.display='none';
+
+  // Auto insights
+  const insightWrap=document.getElementById('edge-insights');
+  const insightList=document.getElementById('edge-insights-list');
+  const insights=[];
+  const topWinners=allGood.filter(([,d])=>d.totalPnl>0).slice(0,2);
+  if(topWinners.length){
+    const total=topWinners.reduce((s,[,d])=>s+d.totalPnl,0);
+    const names=topWinners.map(([t])=>t.length>22?t.substring(0,20)+'…':t).join(' + ');
+    insights.push({text:`Your top edge${topWinners.length>1?'s':''} — ${names} — generated ₹${Math.round(total).toLocaleString('en-IN')} combined. Keep executing these setups.`,warn:false});
+  }
+  const topDrains=allBad.filter(([,d])=>d.totalPnl<0).slice(0,2);
+  if(topDrains.length){
+    const lost=Math.abs(topDrains.reduce((s,[,d])=>s+d.totalPnl,0));
+    const names=topDrains.map(([t])=>t.length>22?t.substring(0,20)+'…':t).join(' + ');
+    insights.push({text:`${names} cost ₹${Math.round(lost).toLocaleString('en-IN')}. Eliminating these habits would directly add to your bottom line.`,warn:true});
+  }
+  if(insights.length){
+    insightList.innerHTML=insights.map(i=>`<div class="edge-insight ${i.warn?'warn':''}">${i.text}</div>`).join('');
+    insightWrap.style.display='block';
+  } else insightWrap.style.display='none';
 }
 
 // ══════════════════════════════════════════════════════════════════
