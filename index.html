@@ -398,72 +398,6 @@ svg.ring{overflow:visible;}
 .pq-vwap-needle{position:absolute;top:-6px;width:20px;height:20px;background:var(--text);border-radius:50%;border:3px solid var(--bg);transform:translateX(-50%);transition:left .4s ease;left:50%;}
 .pq-result{margin-top:14px;padding:12px 16px;border-radius:10px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.8;display:none;border:1px solid;}
 .pq-section-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
-
-/* ── AI BRIEFING TAB ─────────────────────────────── */
-.briefing-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.briefing-ts{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
-.briefing-refresh{background:none;border:1px solid var(--border);border-radius:3px;padding:5px 12px;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:1px;transition:all .2s;}
-.briefing-refresh:hover{border-color:var(--accent);color:var(--accent);}
-.briefing-refresh:disabled{opacity:.4;cursor:not-allowed;}
-.market-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px;}
-@media(max-width:640px){.market-grid{grid-template-columns:repeat(2,1fr);}}
-.mkt-tile{background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:12px 10px;position:relative;overflow:hidden;transition:border-color .2s;}
-.mkt-tile:hover{border-color:var(--border2);}
-.mkt-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--tile-accent,var(--border));}
-.mkt-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-bottom:5px;font-family:'Space Mono',monospace;}
-.mkt-val{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:var(--text);line-height:1;}
-.mkt-chg{font-family:'Space Mono',monospace;font-size:11px;margin-top:4px;}
-.mkt-chg.up{color:var(--tv-teal);}.mkt-chg.dn{color:var(--danger);}
-.mkt-sub{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:.5px;}
-.mkt-status{font-family:'Space Mono',monospace;font-size:9px;padding:2px 6px;border-radius:20px;position:absolute;top:10px;right:8px;font-weight:700;letter-spacing:.5px;}
-.mkt-status.open{background:rgba(38,166,154,.15);color:var(--tv-teal);border:1px solid rgba(38,166,154,.25);}
-.mkt-status.closed{background:rgba(120,123,134,.1);color:var(--muted);border:1px solid rgba(120,123,134,.2);}
-.mkt-status.loading{background:rgba(41,98,255,.1);color:var(--accent);border:1px solid rgba(41,98,255,.2);}
-.mkt-loading{width:40px;height:8px;background:var(--border);border-radius:3px;animation:shimmer 1.2s infinite;}
-@keyframes shimmer{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
-.events-list{display:flex;flex-direction:column;gap:0;}
-.event-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
-.event-row:last-child{border-bottom:none;}
-.event-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:52px;letter-spacing:.5px;line-height:1.4;}
-.event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;}
-.event-dot.high{background:var(--danger);box-shadow:0 0 6px rgba(239,83,80,.5);}
-.event-dot.med{background:var(--warn);}
-.event-dot.low{background:var(--muted);}
-.event-name{font-size:12px;font-weight:600;color:var(--text);flex:1;line-height:1.4;}
-.event-impact{font-size:9px;padding:2px 7px;border-radius:20px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.5px;flex-shrink:0;}
-.event-impact.high{background:rgba(239,83,80,.12);color:var(--danger);border:1px solid rgba(239,83,80,.25);}
-.event-impact.med{background:rgba(249,168,37,.12);color:var(--warn);border:1px solid rgba(249,168,37,.25);}
-.event-impact.low{background:rgba(120,123,134,.1);color:var(--muted);border:1px solid rgba(120,123,134,.2);}
-.news-list{display:flex;flex-direction:column;gap:0;}
-.news-item{padding:12px 0;border-bottom:1px solid var(--border);cursor:default;}
-.news-item:last-child{border-bottom:none;}
-.news-headline{font-size:12px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:5px;}
-.news-meta{display:flex;align-items:center;gap:8px;}
-.news-src{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.5px;}
-.news-tag{font-size:9px;padding:1px 6px;border-radius:20px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.3px;}
-.news-tag.bull{background:rgba(38,166,154,.12);color:var(--tv-teal);border:1px solid rgba(38,166,154,.2);}
-.news-tag.bear{background:rgba(239,83,80,.12);color:var(--danger);border:1px solid rgba(239,83,80,.2);}
-.news-tag.neut{background:rgba(120,123,134,.1);color:var(--muted);border:1px solid rgba(120,123,134,.2);}
-.vix-bar{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--tv-teal),var(--warn),var(--danger));position:relative;margin:14px 0 6px;}
-.vix-needle{position:absolute;top:-7px;width:24px;height:24px;background:var(--text);border-radius:50%;border:3px solid var(--bg);transform:translateX(-50%);transition:left .6s ease;box-shadow:0 2px 8px rgba(0,0,0,.4);}
-.vix-zones{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.5px;}
-.briefing-ai-output{font-size:13px;line-height:1.9;color:var(--text);font-family:'Space Mono',monospace;}
-.briefing-ai-output p{margin-bottom:12px;}
-.briefing-ai-output .section-hdr{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin:18px 0 8px;display:flex;align-items:center;gap:10px;}
-.briefing-ai-output .section-hdr::after{content:'';flex:1;height:1px;background:var(--border);}
-.briefing-ai-output .bullet{display:flex;gap:8px;margin-bottom:6px;font-size:12px;line-height:1.6;}
-.briefing-ai-output .bullet-dot{color:var(--accent);flex-shrink:0;margin-top:1px;}
-.briefing-ai-output .verdict-box{padding:12px 14px;border-radius:3px;margin-top:14px;font-size:12px;line-height:1.7;border-left:3px solid;}
-.briefing-ai-output .verdict-box.bull{background:rgba(38,166,154,.08);border-color:var(--tv-teal);color:var(--tv-teal);}
-.briefing-ai-output .verdict-box.bear{background:rgba(239,83,80,.08);border-color:var(--danger);color:var(--danger);}
-.briefing-ai-output .verdict-box.neut{background:rgba(249,168,37,.08);border-color:var(--warn);color:var(--warn);}
-.bias-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
-.bias-pill.bull{background:rgba(38,166,154,.12);border:1px solid rgba(38,166,154,.3);color:var(--tv-teal);}
-.bias-pill.bear{background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.3);color:var(--danger);}
-.bias-pill.neut{background:rgba(249,168,37,.12);border:1px solid rgba(249,168,37,.3);color:var(--warn);}
-.briefing-score{font-family:'Space Mono',monospace;font-size:32px;font-weight:800;line-height:1;}
-.score-bar{height:6px;border-radius:3px;background:var(--panel2);margin:8px 0 4px;overflow:hidden;}
-.score-bar-fill{height:100%;border-radius:3px;transition:width .8s ease;}
 </style>
 </head>
 <body>
@@ -514,7 +448,7 @@ svg.ring{overflow:visible;}
   <button class="tab" onclick="switchTab('journal',this)">📒 Journal</button>
   <button class="tab" onclick="switchTab('analytics',this)">📈 Analytics</button>
   <button class="tab" onclick="switchTab('ailog',this)">🤖 AI Log</button>
-  <button class="tab" onclick="switchTab('briefing',this)" id="briefing-tab-btn">🌐 Briefing</button>
+  <button class="tab" onclick="switchTab('briefing',this)">📡 AI Briefing</button>
 </div>
 
 <!-- PRE-SESSION -->
@@ -1346,151 +1280,697 @@ function renderAIReview(data) {
   </div>
 </div>
 
-<!-- AI BRIEFING TAB -->
+<!-- AI BRIEFING -->
 <div id="tab-briefing" class="panel">
 
-  <div class="briefing-header">
+  <!-- ── HEADER ── -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
     <div>
-      <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:1px;">MARKET INTELLIGENCE · <span id="briefing-date-label" style="color:var(--text);">—</span></div>
+      <div style="font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+        Pre-Market AI Briefing
+        <span id="briefing-live-tag" style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.5px;background:rgba(38,166,154,0.12);border:1px solid rgba(38,166,154,0.25);color:var(--tv-teal);">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--tv-teal);animation:pulse 2s ease-in-out infinite;display:inline-block;"></span>LIVE
+        </span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;" id="briefing-clock-sub">Loading...</div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span id="briefing-ts" class="briefing-ts">Not loaded</span>
-      <button class="briefing-refresh" id="briefing-refresh-btn" onclick="loadBriefing()">⟳ Refresh</button>
-    </div>
+    <button onclick="fetchMarketData()" style="padding:7px 14px;border-radius:3px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;gap:6px;" id="mkt-refresh-btn">↺ Refresh</button>
   </div>
 
-  <!-- MARKET SNAPSHOT ROW -->
+  <!-- ── SECTION 1: READINESS SNAPSHOT (KPIs from trades) ── -->
+  <div class="section-title">Readiness Snapshot</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;" id="briefing-kpi-strip">
+    <div class="session-stat"><div class="stat-label">Yesterday P&L</div><div class="stat-value" id="b-kpi-pnl">—</div></div>
+    <div class="session-stat"><div class="stat-label">7D Win Rate</div><div class="stat-value" id="b-kpi-wr">—</div></div>
+    <div class="session-stat"><div class="stat-label">7D Trades</div><div class="stat-value accent" id="b-kpi-trades">—</div></div>
+    <div class="session-stat"><div class="stat-label">Rule Breaks (7D)</div><div class="stat-value danger" id="b-kpi-breaks">—</div></div>
+  </div>
+
+  <!-- ── SECTION 2: MARKET ENVIRONMENT ── -->
+  <div class="section-title">Market Environment · Pre-Open</div>
   <div class="card" style="margin-bottom:12px;">
-    <div class="card-title">Global Markets · Live Snapshot</div>
-    <div class="market-grid" id="market-tiles-row1">
-      <!-- US Markets -->
-      <div class="mkt-tile" style="--tile-accent:#2962ff;">
-        <div class="mkt-label">S&P 500</div>
-        <div class="mkt-val" id="mkt-sp500"><div class="mkt-loading"></div></div>
-        <div class="mkt-chg" id="mkt-sp500-chg">—</div>
-        <div class="mkt-sub">Yesterday Close</div>
-        <div class="mkt-status closed" id="mkt-sp500-status">CLOSED</div>
+
+    <!-- Top row: fetch status -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);" id="mkt-fetch-time">Not loaded · click Refresh</div>
+      <div id="mkt-bias-badge" style="display:none;padding:4px 12px;border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;"></div>
+    </div>
+
+    <!-- Instruments grid -->
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;" id="mkt-instruments-grid">
+
+      <!-- GIFT Nifty -->
+      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;">GIFT Nifty</div>
+          <div style="font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;">NSE IX Futures</div>
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:22px;font-weight:700;" id="gift-price">—</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+          <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;" id="gift-change">—</span>
+          <span style="font-size:10px;color:var(--muted);" id="gift-note">vs prev close</span>
+        </div>
+        <div style="height:2px;border-radius:1px;margin-top:10px;background:var(--border);overflow:hidden;"><div id="gift-bar" style="height:100%;border-radius:1px;width:50%;background:var(--muted);transition:width .6s ease,background .4s;"></div></div>
       </div>
-      <div class="mkt-tile" style="--tile-accent:#f9a825;">
-        <div class="mkt-label">NASDAQ</div>
-        <div class="mkt-val" id="mkt-nas"><div class="mkt-loading"></div></div>
-        <div class="mkt-chg" id="mkt-nas-chg">—</div>
-        <div class="mkt-sub">Yesterday Close</div>
-        <div class="mkt-status closed" id="mkt-nas-status">CLOSED</div>
-      </div>
-      <div class="mkt-tile" style="--tile-accent:#ef5350;">
-        <div class="mkt-label">DOW JONES</div>
-        <div class="mkt-val" id="mkt-dow"><div class="mkt-loading"></div></div>
-        <div class="mkt-chg" id="mkt-dow-chg">—</div>
-        <div class="mkt-sub">Yesterday Close</div>
-        <div class="mkt-status closed" id="mkt-dow-status">CLOSED</div>
-      </div>
-      <div class="mkt-tile" style="--tile-accent:#ab47bc;">
-        <div class="mkt-label">VIX (Fear)</div>
-        <div class="mkt-val" id="mkt-vix-us"><div class="mkt-loading"></div></div>
-        <div class="mkt-chg" id="mkt-vix-us-chg">—</div>
-        <div class="mkt-sub">US Volatility Index</div>
-        <div class="mkt-status closed" id="mkt-vix-us-status">CLOSED</div>
+
+      <!-- India VIX -->
+      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;">India VIX</div>
+          <div style="font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;cursor:default;" id="vix-zone-tag">Volatility Index</div>
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:22px;font-weight:700;" id="vix-price">—</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+          <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;" id="vix-change">—</span>
+          <span style="font-size:10px;color:var(--muted);" id="vix-regime">—</span>
+        </div>
+        <div style="height:2px;border-radius:1px;margin-top:10px;background:var(--border);overflow:hidden;"><div id="vix-bar" style="height:100%;border-radius:1px;width:50%;background:var(--muted);transition:width .6s ease,background .4s;"></div></div>
       </div>
     </div>
-    <div style="height:1px;background:var(--border);margin:12px 0;"></div>
-    <div class="market-grid" id="market-tiles-row2">
-      <!-- Asian Markets -->
-      <div class="mkt-tile" style="--tile-accent:#ef5350;">
-        <div class="mkt-label">NIKKEI 225</div>
-        <div class="mkt-val" id="mkt-nikkei"><div class="mkt-loading"></div></div>
-        <div class="mkt-chg" id="mkt-nikkei-chg">—</div>
-        <div class="mkt-sub">Japan · Today</div>
-        <div class="mkt-status" id="mkt-nikkei-status">—</div>
+
+    <!-- Global indices row -->
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">Global Indices · Last Close</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="mkt-globals-grid">
+      <!-- Dow Jones -->
+      <div style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:3px;">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-bottom:5px;">Dow Jones</div>
+        <div style="font-family:'Space Mono',monospace;font-size:16px;font-weight:700;" id="dow-price">—</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;margin-top:2px;" id="dow-change">—</div>
       </div>
-      <div class="mkt-tile" style="--tile-accent:#26a69a;">
-        <div class="mkt-label">HANG SENG</div>
-        <div class="mkt-val" id="mkt-hsi"><div class="mkt-loading"></div></div>
-        <div class="mkt-chg" id="mkt-hsi-chg">—</div>
-        <div class="mkt-sub">Hong Kong · Today</div>
-        <div class="mkt-status" id="mkt-hsi-status">—</div>
+      <!-- S&P 500 -->
+      <div style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:3px;">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-bottom:5px;">S&P 500</div>
+        <div style="font-family:'Space Mono',monospace;font-size:16px;font-weight:700;" id="sp-price">—</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;margin-top:2px;" id="sp-change">—</div>
       </div>
-      <div class="mkt-tile" style="--tile-accent:#42a5f5;">
-        <div class="mkt-label">SGX NIFTY</div>
-        <div class="mkt-val" id="mkt-sgx"><div class="mkt-loading"></div></div>
-        <div class="mkt-chg" id="mkt-sgx-chg">—</div>
-        <div class="mkt-sub">Singapore · Gap Indicator</div>
-        <div class="mkt-status" id="mkt-sgx-status">—</div>
-      </div>
-      <div class="mkt-tile" style="--tile-accent:#f9a825;">
-        <div class="mkt-label">INDIA VIX</div>
-        <div class="mkt-val" id="mkt-india-vix"><div class="mkt-loading"></div></div>
-        <div class="mkt-chg" id="mkt-india-vix-chg">—</div>
-        <div class="mkt-sub">Fear · Nifty Volatility</div>
-        <div class="mkt-status" id="mkt-india-vix-status">—</div>
+      <!-- Nasdaq -->
+      <div style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:3px;">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-bottom:5px;">Nasdaq</div>
+        <div style="font-family:'Space Mono',monospace;font-size:16px;font-weight:700;" id="ndx-price">—</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;margin-top:2px;" id="ndx-change">—</div>
       </div>
     </div>
+
+    <!-- Gap estimate strip -->
+    <div id="gap-strip" style="display:none;margin-top:12px;padding:10px 14px;border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;border:1px solid;"></div>
   </div>
 
-  <!-- TWO COLUMN: VIX + EVENTS -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-    <!-- INDIA VIX DETAIL -->
+  <!-- ── SECTION 3: AI ANALYSIS ── -->
+  <div class="section-title">AI Analysis</div>
+  <div style="display:grid;grid-template-columns:3fr 2fr;gap:10px;margin-bottom:12px;">
+
+    <!-- Left: Generated briefing -->
     <div class="card">
-      <div class="card-title">India VIX · Volatility Meter</div>
-      <div style="text-align:center;">
-        <div class="briefing-score" id="vix-big">—</div>
-        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:4px;" id="vix-label">Loading...</div>
+      <div class="card-title" style="justify-content:space-between;">
+        <span style="display:flex;align-items:center;gap:8px;"><span class="dot" style="background:#ab47bc;"></span>AI Briefing</span>
+        <span style="font-size:9px;padding:2px 8px;border-radius:20px;background:rgba(171,71,188,0.12);border:1px solid rgba(171,71,188,0.25);color:#ab47bc;letter-spacing:1px;" id="briefing-gen-time" style="display:none;"></span>
       </div>
-      <div class="vix-bar"><div class="vix-needle" id="vix-needle" style="left:20%;"></div></div>
-      <div class="vix-zones">
-        <span style="color:var(--tv-teal)">LOW &lt;12</span>
-        <span style="color:var(--warn)">ELEVATED 16–20</span>
-        <span style="color:var(--danger)">EXTREME &gt;24</span>
+
+      <!-- Scope chips -->
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;" id="briefing-scope-chips">
+        <button class="brief-scope active" data-scope="today" onclick="setBriefScope(this)" style="padding:4px 11px;border-radius:20px;border:1px solid rgba(171,71,188,0.4);background:rgba(171,71,188,0.1);color:#ab47bc;font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;transition:all .15s;">Today</button>
+        <button class="brief-scope" data-scope="week" onclick="setBriefScope(this)" style="padding:4px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;transition:all .15s;">7D</button>
+        <button class="brief-scope" data-scope="month" onclick="setBriefScope(this)" style="padding:4px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;transition:all .15s;">30D</button>
       </div>
-      <div id="vix-advice" style="margin-top:14px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;color:var(--muted);padding:10px;background:var(--panel2);border-radius:3px;border:1px solid var(--border);">Select a VIX range to see strategy advice.</div>
+
+      <!-- Focus chips -->
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;">
+        <button class="brief-focus active" data-focus="overall" onclick="setBriefFocus(this)" style="padding:3px 9px;border-radius:20px;border:1px solid rgba(41,98,255,0.35);background:rgba(41,98,255,0.1);color:#5c85ff;font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;transition:all .15s;">📊 Overall</button>
+        <button class="brief-focus" data-focus="discipline" onclick="setBriefFocus(this)" style="padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;transition:all .15s;">🎯 Discipline</button>
+        <button class="brief-focus" data-focus="risk" onclick="setBriefFocus(this)" style="padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;transition:all .15s;">🛡️ Risk</button>
+        <button class="brief-focus" data-focus="market" onclick="setBriefFocus(this)" style="padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;transition:all .15s;">🌐 Market</button>
+        <button class="brief-focus" data-focus="plan" onclick="setBriefFocus(this)" style="padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;transition:all .15s;">📋 Game Plan</button>
+      </div>
+
+      <button id="brief-gen-btn" onclick="generateBriefing()" style="width:100%;padding:10px;border-radius:3px;border:1px solid rgba(171,71,188,0.4);background:rgba(171,71,188,0.1);color:#ab47bc;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1.5px;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s;margin-bottom:12px;">
+        🤖 GENERATE BRIEFING
+      </button>
+
+      <!-- Loading -->
+      <div id="brief-loading" style="display:none;text-align:center;padding:22px 0;">
+        <div style="width:34px;height:34px;border:2px solid rgba(171,71,188,0.2);border-top-color:#ab47bc;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;transition:opacity .3s;" id="brief-loading-msg">Reading market data...</div>
+      </div>
+
+      <!-- Output -->
+      <div id="brief-output" style="display:none;">
+        <div id="brief-score-bar" style="margin-bottom:12px;padding:12px 14px;border-radius:3px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+          <div style="text-align:center;min-width:56px;">
+            <div style="font-family:'Space Mono',monospace;font-size:28px;font-weight:700;line-height:1;" id="brief-score-num">—</div>
+            <div style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);margin-top:2px;">READINESS</div>
+          </div>
+          <div style="flex:1;min-width:120px;">
+            <div style="height:5px;background:var(--panel2);border-radius:2px;overflow:hidden;margin-bottom:4px;"><div id="brief-score-fill" style="height:100%;border-radius:2px;transition:width 1s ease;background:linear-gradient(90deg,var(--danger),var(--warn),var(--accent));width:0%;"></div></div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);" id="brief-score-label">—</div>
+          </div>
+        </div>
+        <div id="brief-sections"></div>
+        <div style="margin-top:10px;text-align:right;">
+          <button onclick="generateBriefing()" style="padding:5px 12px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;" onmouseover="this.style.color='#ab47bc';this.style.borderColor='rgba(171,71,188,.4)';" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)';">↺ REGENERATE</button>
+        </div>
+      </div>
+
+      <div id="brief-empty" style="display:none;padding:22px 0;text-align:center;">
+        <div style="font-size:24px;opacity:.4;margin-bottom:6px;">📡</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;">No trades in selected period.<br>Log trades to generate a briefing.</div>
+      </div>
     </div>
 
-    <!-- EVENTS THIS WEEK -->
-    <div class="card">
-      <div class="card-title">Key Events · This Week</div>
-      <div class="events-list" id="events-list">
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);padding:20px 0;text-align:center;">Loading events...</div>
+    <!-- Right: Warnings + streak + game plan -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <!-- Risk warnings -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:8px;"><span class="dot" style="background:var(--danger);"></span>Risk Warnings</div>
+        <div id="brief-warnings">
+          <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-align:center;padding:10px 0;">Generate briefing to see warnings</div>
+        </div>
+      </div>
+
+      <!-- Streak -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:8px;"><span class="dot" style="background:var(--tv-teal);"></span>Current Streak</div>
+        <div style="display:flex;align-items:center;gap:12px;" id="brief-streak-display">
+          <div style="font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--muted);" id="brief-streak-val">—</div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px;" id="brief-streak-label">no trades yet</div>
+            <div style="display:flex;gap:4px;" id="brief-streak-dots"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's game plan (populated by AI) -->
+      <div class="card" id="brief-plan-card" style="display:none;">
+        <div class="card-title" style="margin-bottom:8px;"><span class="dot" style="background:var(--accent);"></span>Today's Plan</div>
+        <div id="brief-plan-content" style="font-size:12px;color:var(--muted);line-height:1.6;font-family:'Space Mono',monospace;"></div>
       </div>
     </div>
   </div>
 
-  <!-- NEWS -->
-  <div class="card" style="margin-bottom:12px;">
-    <div class="card-title">Global News · Impact on Nifty</div>
-    <div class="news-list" id="briefing-news">
-      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);padding:20px 0;text-align:center;">Loading news...</div>
+  <!-- ── SECTION 4: ASK THE COACH ── -->
+  <div class="section-title">Ask the Coach</div>
+  <div class="card" style="margin-bottom:32px;">
+    <div id="brief-chat-msgs" style="max-height:280px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:6px;">
+      <div style="padding:9px 12px;border-radius:8px;background:var(--panel2);border:1px solid var(--border);border-bottom-left-radius:3px;font-size:12px;line-height:1.6;color:var(--muted);max-width:90%;">
+        Hi! Generate a briefing first, then ask me anything about your trades, today's setup, or whether to trade.
+      </div>
     </div>
-  </div>
-
-  <!-- AI BRIEFING -->
-  <div class="card">
-    <div class="card-title">🤖 AI Daily Briefing · Market Intelligence</div>
-    <!-- Status / Loading -->
-    <div id="briefing-loading" style="display:none;text-align:center;padding:28px 0;">
-      <div style="width:36px;height:36px;border:3px solid rgba(41,98,255,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;"></div>
-      <div id="briefing-loading-msg" style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;transition:opacity .3s;">Fetching market data...</div>
-    </div>
-    <!-- Output -->
-    <div id="briefing-ai-out" style="display:none;">
-      <div id="briefing-bias-row" style="margin-bottom:12px;"></div>
-      <div class="briefing-ai-output" id="briefing-ai-content"></div>
-    </div>
-    <!-- Empty / prompt to generate -->
-    <div id="briefing-empty" style="text-align:center;padding:24px 0;">
-      <div style="font-size:28px;margin-bottom:10px;opacity:.5;">🌐</div>
-      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:18px;">Generate today's AI market briefing before the session opens.</div>
-      <button class="btn btn-accent" onclick="loadBriefing()" style="margin:0 auto;">🔍 Generate Briefing</button>
-    </div>
-    <!-- Last generated note -->
-    <div id="briefing-footer" style="display:none;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);" id="briefing-gen-time">Generated: —</div>
-      <button class="btn btn-sm" onclick="loadBriefing(true)" style="color:var(--accent);border-color:rgba(41,98,255,.3);">↺ Regenerate</button>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input id="brief-chat-input" type="text" placeholder="Ask about your patterns, today's plan..." class="j-input" style="flex:1;" onkeydown="if(event.key==='Enter')sendBriefChat()">
+      <button onclick="sendBriefChat()" style="padding:8px 14px;border-radius:3px;border:1px solid rgba(171,71,188,.4);background:rgba(171,71,188,.1);color:#ab47bc;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Ask ↗</button>
     </div>
   </div>
 
 </div><!-- /tab-briefing -->
 
 </div><!-- /container -->
+
+<script>
+// ══════════════════════════════════════════════════════
+//  AI BRIEFING — MARKET DATA (Yahoo Finance via allorigins)
+// ══════════════════════════════════════════════════════
+
+// Symbols: ^NSEI = Nifty 50 spot (proxy for GIFT Nifty pre-open),
+// ^INDIAVIX = India VIX, ^DJI = Dow, ^GSPC = S&P 500, ^IXIC = Nasdaq
+const MKT_SYMBOLS = {
+  gift:  { sym: '^NSEI',     label: 'Nifty 50',   note: 'spot (GIFT proxy)' },
+  vix:   { sym: '^INDIAVIX', label: 'India VIX',  note: '' },
+  dow:   { sym: '^DJI',      label: 'Dow Jones',  note: '' },
+  sp:    { sym: '^GSPC',     label: 'S&P 500',    note: '' },
+  ndx:   { sym: '^IXIC',     label: 'Nasdaq',     note: '' },
+};
+
+let _mktData = {};
+
+async function fetchYF(symbol) {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=2d`;
+  const proxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+  const res = await fetch(proxy);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  const r = json?.chart?.result?.[0];
+  if (!r) throw new Error('No result for ' + symbol);
+  const meta = r.meta;
+  const price = meta.regularMarketPrice ?? meta.previousClose;
+  const prev  = meta.chartPreviousClose ?? meta.previousClose;
+  const chg   = price - prev;
+  const pct   = prev ? (chg / prev) * 100 : 0;
+  return { price, prev, chg, pct, symbol };
+}
+
+function fmtPrice(v, decimals = 2) {
+  if (v == null || isNaN(v)) return '—';
+  return Number(v).toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function fmtChg(chg, pct) {
+  if (chg == null || isNaN(chg)) return { text: '—', col: 'var(--muted)' };
+  const sign = chg >= 0 ? '+' : '';
+  const col  = chg >= 0 ? 'var(--tv-teal)' : 'var(--tv-red)';
+  return { text: `${sign}${fmtPrice(chg)} (${sign}${pct.toFixed(2)}%)`, col };
+}
+
+function setMktEl(id, text, color) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = text; if (color) el.style.color = color; }
+}
+
+function renderGift(d) {
+  setMktEl('gift-price', fmtPrice(d.price, 2), d.chg >= 0 ? 'var(--tv-teal)' : 'var(--tv-red)');
+  const c = fmtChg(d.chg, d.pct);
+  setMktEl('gift-change', c.text, c.col);
+  document.getElementById('gift-note').textContent = 'vs prev close · spot proxy';
+  // Bar: 0% = -3% move, 50% = flat, 100% = +3% move
+  const barPct = Math.min(100, Math.max(0, 50 + (d.pct / 3) * 50));
+  const bar = document.getElementById('gift-bar');
+  bar.style.width = barPct + '%';
+  bar.style.background = d.chg >= 0 ? 'var(--tv-teal)' : 'var(--tv-red)';
+}
+
+function renderVix(d) {
+  const v = d.price;
+  setMktEl('vix-price', fmtPrice(v, 2), v > 20 ? 'var(--tv-red)' : v > 14 ? 'var(--warn)' : 'var(--tv-teal)');
+  const c = fmtChg(d.chg, d.pct);
+  setMktEl('vix-change', c.text, c.col);
+  // Zone label
+  const zone = v < 14 ? 'LOW volatility · Trend-friendly' : v < 20 ? 'MODERATE · Normal conditions' : v < 30 ? 'HIGH · Wide spreads, reduce size' : 'EXTREME · Consider sitting out';
+  const zoneCol = v < 14 ? 'var(--tv-teal)' : v < 20 ? 'var(--accent)' : v < 30 ? 'var(--warn)' : 'var(--tv-red)';
+  setMktEl('vix-regime', zone, zoneCol);
+  document.getElementById('vix-zone-tag').textContent = v < 14 ? 'CALM' : v < 20 ? 'NORMAL' : v < 30 ? 'ELEVATED' : 'EXTREME';
+  document.getElementById('vix-zone-tag').style.color = zoneCol;
+  // Bar: 0% = VIX 8, 100% = VIX 40
+  const barPct = Math.min(100, Math.max(0, ((v - 8) / 32) * 100));
+  const bar = document.getElementById('vix-bar');
+  bar.style.width = barPct + '%';
+  bar.style.background = zoneCol;
+}
+
+function renderGlobal(id_p, id_c, d) {
+  const c = fmtChg(d.chg, d.pct);
+  setMktEl(id_p, fmtPrice(d.price, 2), d.chg >= 0 ? 'var(--tv-teal)' : 'var(--tv-red)');
+  setMktEl(id_c, c.text, c.col);
+}
+
+function renderMarketBias() {
+  const gift = _mktData.gift, vix = _mktData.vix;
+  const dow = _mktData.dow, sp = _mktData.sp, ndx = _mktData.ndx;
+  if (!gift || !vix) return;
+
+  // Global sentiment: count positive closes
+  const globals = [dow, sp, ndx].filter(Boolean);
+  const posGlobals = globals.filter(g => g.chg >= 0).length;
+  const globalBull = posGlobals >= 2;
+
+  const giftBull = gift.chg >= 0;
+  const vixHigh  = vix.price > 20;
+
+  let bias, col, bg;
+  if (giftBull && globalBull && !vixHigh) {
+    bias = '🟢 BULLISH OPEN — Positive global cues + low VIX';
+    col = 'var(--tv-teal)'; bg = 'rgba(38,166,154,0.1)';
+  } else if (!giftBull && !globalBull) {
+    bias = '🔴 BEARISH OPEN — Weak global cues, stay cautious';
+    col = 'var(--tv-red)'; bg = 'rgba(239,83,80,0.1)';
+  } else if (vixHigh) {
+    bias = '🟡 CAUTION — Elevated VIX, expect wide swings';
+    col = 'var(--warn)'; bg = 'rgba(249,168,37,0.08)';
+  } else {
+    bias = '🟡 MIXED — Global signals not aligned';
+    col = 'var(--warn)'; bg = 'rgba(249,168,37,0.08)';
+  }
+
+  const badge = document.getElementById('mkt-bias-badge');
+  badge.style.display = 'inline-block';
+  badge.textContent = bias;
+  badge.style.color = col;
+  badge.style.background = bg;
+  badge.style.border = '1px solid ' + col;
+
+  // Gap strip: estimate Nifty gap
+  const giftPct = gift.pct;
+  const strip = document.getElementById('gap-strip');
+  const gapDir = giftPct >= 0 ? 'Gap UP' : 'Gap DOWN';
+  const gapCol = giftPct >= 0 ? 'var(--tv-teal)' : 'var(--tv-red)';
+  const gapBg  = giftPct >= 0 ? 'rgba(38,166,154,0.08)' : 'rgba(239,83,80,0.08)';
+  strip.style.display = 'block';
+  strip.style.color = gapCol;
+  strip.style.borderColor = gapCol;
+  strip.style.background = gapBg;
+  const absGap = Math.abs(giftPct).toFixed(2);
+  const gapStrength = Math.abs(giftPct) < 0.3 ? 'Flat open expected' : Math.abs(giftPct) < 0.7 ? `Moderate ${gapDir} (~${absGap}%)` : `Strong ${gapDir} (~${absGap}%) — wait for first 3 candles`;
+  strip.innerHTML = `<strong>Expected open:</strong> ${gapStrength} &nbsp;·&nbsp; VIX at ${fmtPrice(vix.price, 2)} (${vix.price < 14 ? 'calm' : vix.price < 20 ? 'normal' : 'elevated'}) &nbsp;·&nbsp; Global mood: ${globalBull ? 'positive' : posGlobals === 1 ? 'mixed' : 'negative'}`;
+}
+
+async function fetchMarketData() {
+  const btn = document.getElementById('mkt-refresh-btn');
+  const timeEl = document.getElementById('mkt-fetch-time');
+  btn.textContent = '↻ Loading...';
+  btn.disabled = true;
+  timeEl.textContent = 'Fetching...';
+
+  const keys = ['gift', 'vix', 'dow', 'sp', 'ndx'];
+  const syms = keys.map(k => MKT_SYMBOLS[k].sym);
+
+  let success = 0;
+  await Promise.allSettled(syms.map(async (sym, i) => {
+    try {
+      const d = await fetchYF(sym);
+      _mktData[keys[i]] = d;
+      success++;
+      // Render immediately as each arrives
+      if (keys[i] === 'gift') renderGift(d);
+      if (keys[i] === 'vix')  renderVix(d);
+      if (keys[i] === 'dow')  renderGlobal('dow-price', 'dow-change', d);
+      if (keys[i] === 'sp')   renderGlobal('sp-price',  'sp-change',  d);
+      if (keys[i] === 'ndx')  renderGlobal('ndx-price', 'ndx-change', d);
+    } catch(e) {
+      console.warn('Market fetch failed for', sym, e.message);
+      _mktData[keys[i]] = null;
+    }
+  }));
+
+  renderMarketBias();
+  const ist = getISTDate();
+  const hm = String(ist.getHours()).padStart(2,'0') + ':' + String(ist.getMinutes()).padStart(2,'0');
+  timeEl.textContent = `Updated ${hm} IST · ${success}/${keys.length} sources loaded` + (success < keys.length ? ' · Some data unavailable' : '');
+  btn.textContent = '↺ Refresh';
+  btn.disabled = false;
+}
+
+// ══════════════════════════════════════════════════════
+//  AI BRIEFING — READINESS KPIs
+// ══════════════════════════════════════════════════════
+function renderBriefingKPIs() {
+  const all = window.trades || [];
+  const ist = getISTDate();
+  const yStr = (() => {
+    const y = new Date(ist); y.setDate(y.getDate() - 1);
+    return String(y.getDate()).padStart(2,'0') + '/' + String(y.getMonth()+1).padStart(2,'0') + '/' + y.getFullYear();
+  })();
+
+  // Yesterday P&L
+  const yday = all.filter(t => t.date === yStr);
+  const ydayPnl = yday.reduce((s,t) => s+(t.totalPnl||0), 0);
+  const pnlEl = document.getElementById('b-kpi-pnl');
+  if (pnlEl) {
+    pnlEl.textContent = yday.length ? (ydayPnl >= 0 ? '+' : '') + '₹' + Math.round(ydayPnl).toLocaleString('en-IN') : '—';
+    pnlEl.style.color = ydayPnl >= 0 ? 'var(--tv-teal)' : 'var(--tv-red)';
+  }
+
+  // 7D trades
+  const cutoff7 = new Date(ist); cutoff7.setDate(ist.getDate() - 7);
+  const week = all.filter(t => { const d = _parseTradeDate(t.date); return d && d >= cutoff7; });
+  const wins7 = week.filter(t => t.result === 'WIN').length;
+  const wr7 = week.length ? Math.round((wins7/week.length)*100) : null;
+
+  setMktEl('b-kpi-wr',     wr7 != null ? wr7 + '%' : '—', wr7 >= 60 ? 'var(--tv-teal)' : wr7 >= 40 ? 'var(--warn)' : 'var(--tv-red)');
+  setMktEl('b-kpi-trades', week.length || '—', 'var(--accent)');
+
+  const breaks7 = week.reduce((s,t) => s+(t.breaks?.length||0), 0);
+  setMktEl('b-kpi-breaks', breaks7 || '0', breaks7 === 0 ? 'var(--tv-teal)' : breaks7 <= 2 ? 'var(--warn)' : 'var(--tv-red)');
+
+  // Streak
+  const closed = all.filter(t => t.result === 'WIN' || t.result === 'LOSS');
+  let streak = 0, streakType = '';
+  if (closed.length) {
+    const last = closed[0].result;
+    streakType = last;
+    for (let i = 0; i < closed.length; i++) {
+      if (closed[i].result === last) streak++; else break;
+    }
+  }
+  const streakVal = document.getElementById('brief-streak-val');
+  const streakLbl = document.getElementById('brief-streak-label');
+  const streakDots = document.getElementById('brief-streak-dots');
+  if (streakVal && streak > 0) {
+    streakVal.textContent = streak + (streakType === 'WIN' ? 'W' : 'L');
+    streakVal.style.color = streakType === 'WIN' ? 'var(--tv-teal)' : 'var(--tv-red)';
+    streakLbl.textContent = streak + (streakType === 'WIN' ? ' wins' : ' losses') + ' in a row';
+    streakDots.innerHTML = Array.from({length: Math.min(streak, 7)}, (_,i) =>
+      `<span style="width:11px;height:11px;border-radius:2px;background:${streakType==='WIN'?'var(--tv-teal)':'var(--tv-red)'};display:inline-block;opacity:${1-(i*0.08)};"></span>`
+    ).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  AI BRIEFING — GENERATE
+// ══════════════════════════════════════════════════════
+let _briefScope = 'today';
+let _briefFocus = 'overall';
+let _briefChatHistory = [];
+
+function setBriefScope(btn) {
+  _briefScope = btn.dataset.scope;
+  document.querySelectorAll('.brief-scope').forEach(b => {
+    b.style.background = 'transparent'; b.style.color = 'var(--muted)'; b.style.borderColor = 'var(--border)';
+  });
+  btn.style.background = 'rgba(171,71,188,0.1)'; btn.style.color = '#ab47bc'; btn.style.borderColor = 'rgba(171,71,188,0.4)';
+}
+
+function setBriefFocus(btn) {
+  _briefFocus = btn.dataset.focus;
+  document.querySelectorAll('.brief-focus').forEach(b => {
+    b.style.background = 'transparent'; b.style.color = 'var(--muted)'; b.style.borderColor = 'var(--border)';
+  });
+  btn.style.background = 'rgba(41,98,255,0.1)'; btn.style.color = '#5c85ff'; btn.style.borderColor = 'rgba(41,98,255,0.3)';
+}
+
+function getBriefTrades() {
+  const all = window.trades || [];
+  const ist = getISTDate();
+  const todayStr_ = todayStr();
+  if (_briefScope === 'today') return all.filter(t => t.date === todayStr_);
+  const cutoff = new Date(ist);
+  if (_briefScope === 'week')  cutoff.setDate(ist.getDate() - 7);
+  if (_briefScope === 'month') cutoff.setDate(ist.getDate() - 30);
+  return all.filter(t => { const d = _parseTradeDate(t.date); return d && d >= cutoff; });
+}
+
+function buildMarketContext() {
+  const g = _mktData.gift, v = _mktData.vix, d = _mktData.dow, s = _mktData.sp, n = _mktData.ndx;
+  if (!g && !v) return 'Market data not loaded.';
+  const lines = [];
+  if (g) lines.push(`GIFT Nifty (Nifty50 spot proxy): ${fmtPrice(g.price)} (${g.chg>=0?'+':''}${g.pct.toFixed(2)}% vs prev close)`);
+  if (v) lines.push(`India VIX: ${fmtPrice(v.price)} (${v.chg>=0?'+':''}${v.pct.toFixed(2)}%) — ${v.price<14?'low/calm':v.price<20?'moderate':v.price<30?'elevated':'extreme'}`);
+  if (d) lines.push(`Dow Jones: ${fmtPrice(d.price)} (${d.chg>=0?'+':''}${d.pct.toFixed(2)}%)`);
+  if (s) lines.push(`S&P 500: ${fmtPrice(s.price)} (${s.chg>=0?'+':''}${s.pct.toFixed(2)}%)`);
+  if (n) lines.push(`Nasdaq: ${fmtPrice(n.price)} (${n.chg>=0?'+':''}${n.pct.toFixed(2)}%)`);
+  return lines.join('\n');
+}
+
+async function generateBriefing() {
+  const filteredTrades = getBriefTrades();
+  document.getElementById('brief-output').style.display = 'none';
+  document.getElementById('brief-empty').style.display = 'none';
+
+  if (!filteredTrades.length && _briefScope !== 'today') {
+    document.getElementById('brief-empty').style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('brief-gen-btn');
+  const loading = document.getElementById('brief-loading');
+  const msgEl = document.getElementById('brief-loading-msg');
+  btn.disabled = true; btn.style.opacity = '0.5';
+  loading.style.display = 'block';
+
+  const msgs = ['Reading market data...','Analysing your trades...','Checking discipline...','Building briefing...'];
+  let mi = 0;
+  const mt = setInterval(() => {
+    mi = (mi+1) % msgs.length;
+    msgEl.style.opacity = '0';
+    setTimeout(() => { msgEl.textContent = msgs[mi]; msgEl.style.opacity = '1'; }, 200);
+  }, 1800);
+
+  const closed = filteredTrades.filter(t => t.result !== 'OPEN');
+  const wins   = closed.filter(t => t.result === 'WIN');
+  const losses = closed.filter(t => t.result === 'LOSS');
+  const totalPnl = closed.reduce((s,t) => s+(t.totalPnl||0), 0);
+  const wr = closed.length ? ((wins.length/closed.length)*100).toFixed(1) : 0;
+  const breaks = filteredTrades.reduce((s,t) => s+(t.breaks?.length||0), 0);
+  const tradeSummary = filteredTrades.slice(0,20).map((t,i) =>
+    `T${i+1}[${t.date}] ${t.type||'?'} ${t.result||'?'} ₹${t.totalPnl!=null?Math.round(t.totalPnl):'open'} Tags:[${[...(t.rules||[]),...(t.breaks||[])].join(',')||'none'}]`
+  ).join('\n');
+
+  const scopeLabel = { today:'Today', week:'Last 7 Days', month:'Last 30 Days' }[_briefScope];
+  const focusMap = {
+    overall:    'Give a comprehensive pre-market briefing covering market environment, trader readiness, and today\'s edge.',
+    discipline: 'Focus on rule adherence — what patterns of discipline or violations exist and what to watch today.',
+    risk:       'Focus on risk — VIX conditions, position sizing advice, and drawdown patterns.',
+    market:     'Focus on the market environment — how global cues and VIX affect today\'s expected open and strategy.',
+    plan:       'Give a clear, actionable game plan for today with specific what-to-do and what-to-avoid instructions.'
+  };
+
+  const prompt = `You are a pre-market trading coach for a Nifty options trader. Deliver a sharp, data-driven morning briefing.
+
+MARKET ENVIRONMENT (live data):
+${buildMarketContext()}
+
+TRADER STATS (${scopeLabel}):
+- Closed trades: ${closed.length} (${wins.length}W / ${losses.length}L), Win rate: ${wr}%
+- Total P&L: ₹${Math.round(totalPnl).toLocaleString('en-IN')}
+- Rule violations: ${breaks}
+
+RECENT TRADES:
+${tradeSummary || 'No trades in this period.'}
+
+TRADING RULES: No trades in first 3 candles (9:15–9:30). Only buy pullbacks via AVWAP. SL = 10 pts max. Check Daily EMA before entry.
+
+FOCUS: ${focusMap[_briefFocus] || focusMap.overall}
+
+Respond ONLY with valid JSON (no markdown, no backticks):
+{
+  "score": <0-100 readiness score>,
+  "scoreLabel": "<e.g. Ready / Caution / Sit Out>",
+  "sections": [
+    { "icon": "<single emoji>", "title": "<UPPERCASE>", "color": "<hex>", "points": ["<max 20 words>"] }
+  ],
+  "warnings": ["<short warning string>"],
+  "plan": "<2-3 sentence game plan for today>"
+}
+3-5 sections, 2-3 points each. Colors: #26a69a green, #ef5350 red, #2962ff blue, #f9a825 yellow, #ab47bc purple.`;
+
+  try {
+    const OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': window.location.origin, 'X-Title': 'Nifty Trader Briefing' },
+      body: JSON.stringify({ model: 'anthropic/claude-sonnet-4-5', max_tokens: 1200, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const raw = (data.choices?.[0]?.message?.content || '').trim().replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
+    const parsed = JSON.parse(raw);
+    renderBriefing(parsed);
+    _briefChatHistory = [{ role: 'assistant', content: `Briefing generated. ${parsed.plan || ''}` }];
+  } catch(e) {
+    console.error(e);
+    document.getElementById('brief-sections').innerHTML = `<div style="padding:12px;border:1px solid var(--danger);border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;color:var(--danger);">⚠️ ${e.message || 'Could not generate briefing.'}</div>`;
+    document.getElementById('brief-output').style.display = 'block';
+  } finally {
+    clearInterval(mt);
+    loading.style.display = 'none';
+    btn.disabled = false; btn.style.opacity = '1';
+    document.getElementById('briefing-gen-time').textContent = 'Generated ' + String(getISTDate().getHours()).padStart(2,'0') + ':' + String(getISTDate().getMinutes()).padStart(2,'0');
+    document.getElementById('briefing-gen-time').style.display = 'inline';
+  }
+}
+
+function renderBriefing(data) {
+  const score = Math.min(100, Math.max(0, data.score || 0));
+  let cur = 0;
+  const ticker = setInterval(() => {
+    cur = Math.min(cur + 2, score);
+    const el = document.getElementById('brief-score-num');
+    if (el) { el.textContent = cur; el.style.color = cur >= 70 ? '#26a69a' : cur >= 45 ? '#f9a825' : '#ef5350'; }
+    if (cur >= score) clearInterval(ticker);
+  }, 16);
+  setTimeout(() => { const f = document.getElementById('brief-score-fill'); if (f) f.style.width = score + '%'; }, 80);
+  const lbl = document.getElementById('brief-score-label'); if (lbl) lbl.textContent = data.scoreLabel || '';
+
+  document.getElementById('brief-sections').innerHTML = (data.sections || []).map(s => `
+    <div style="margin-bottom:9px;padding:11px 13px;border-radius:3px;background:var(--bg);border:1px solid var(--border);border-left:3px solid ${s.color||'var(--accent)'};">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text);margin-bottom:7px;text-transform:uppercase;">${s.icon||''} ${s.title||''}</div>
+      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px;">
+        ${(s.points||[]).map(p=>`<li style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.5;padding-left:11px;position:relative;"><span style="position:absolute;left:0;color:${s.color||'var(--accent)'};">›</span>${p}</li>`).join('')}
+      </ul>
+    </div>`).join('');
+
+  // Warnings
+  const wEl = document.getElementById('brief-warnings');
+  if (data.warnings?.length) {
+    wEl.innerHTML = data.warnings.map(w => `<div style="padding:7px 10px;border-radius:3px;background:rgba(239,83,80,0.08);border:1px solid rgba(239,83,80,0.2);font-size:11px;color:var(--danger);line-height:1.5;margin-bottom:6px;font-family:'Space Mono',monospace;">⚠️ ${w}</div>`).join('');
+  } else {
+    wEl.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:11px;color:var(--tv-teal);padding:6px 0;">✅ No critical warnings</div>';
+  }
+
+  // Game plan
+  if (data.plan) {
+    const pc = document.getElementById('brief-plan-card');
+    const pContent = document.getElementById('brief-plan-content');
+    pc.style.display = 'block';
+    pContent.textContent = data.plan;
+  }
+
+  document.getElementById('brief-output').style.display = 'block';
+}
+
+// ══════════════════════════════════════════════════════
+//  BRIEFING CHAT
+// ══════════════════════════════════════════════════════
+async function sendBriefChat() {
+  const input = document.getElementById('brief-chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  const msgs = document.getElementById('brief-chat-msgs');
+
+  // User bubble
+  msgs.innerHTML += `<div style="padding:9px 12px;border-radius:8px;border-bottom-right-radius:3px;background:rgba(41,98,255,0.1);border:1px solid rgba(41,98,255,0.2);font-size:12px;line-height:1.6;color:var(--text);max-width:90%;align-self:flex-end;margin-left:auto;">${msg}</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // Typing indicator
+  const typingId = 'typing-' + Date.now();
+  msgs.innerHTML += `<div id="${typingId}" style="padding:9px 12px;border-radius:8px;background:var(--panel2);border:1px solid var(--border);border-bottom-left-radius:3px;font-size:12px;color:var(--muted);max-width:90%;">...</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  _briefChatHistory.push({ role: 'user', content: msg });
+
+  const context = `You are a Nifty trading coach. Market context: ${buildMarketContext()}. Trader recent stats: ${(window.trades||[]).slice(0,10).map(t=>`${t.type} ${t.result} ₹${Math.round(t.totalPnl||0)}`).join(', ')||'no trades'}. Rules: AVWAP pullbacks only, SL=10pts, no first 3 candles.`;
+  const chatMessages = [{ role: 'system', content: context }, ..._briefChatHistory];
+
+  try {
+    const OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': window.location.origin, 'X-Title': 'Nifty Trader Chat' },
+      body: JSON.stringify({ model: 'anthropic/claude-sonnet-4-5', max_tokens: 400, messages: chatMessages })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const reply = data.choices?.[0]?.message?.content || '—';
+    _briefChatHistory.push({ role: 'assistant', content: reply });
+    document.getElementById(typingId).innerHTML = reply.replace(/\n/g,'<br>');
+    document.getElementById(typingId).style.color = 'var(--text)';
+  } catch(e) {
+    document.getElementById(typingId).textContent = '⚠️ ' + (e.message || 'Error. Try again.');
+    document.getElementById(typingId).style.color = 'var(--danger)';
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ══════════════════════════════════════════════════════
+//  BRIEFING CLOCK SUB-LABEL
+// ══════════════════════════════════════════════════════
+function updateBriefingClock() {
+  const el = document.getElementById('briefing-clock-sub');
+  if (!el) return;
+  const ist = getISTDate();
+  const h = ist.getHours(), m = ist.getMinutes();
+  const hm = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ' IST';
+  const tot = h * 60 + m;
+  const phase = tot < 9*60+15 ? `Market opens in ${9*60+15 - tot} min` :
+                tot < 9*60+30 ? 'Market open · No-trade zone' :
+                tot < 10*60+30 ? 'Direction forming' :
+                tot < 13*60   ? '✅ Prime window active' :
+                tot < 14*60   ? '⚠️ Lunch — reduce risk' :
+                tot < 15*60+15 ? 'Late session' : 'Market closed';
+  el.textContent = `${hm} · ${phase}`;
+}
+setInterval(updateBriefingClock, 10000);
+
+// Auto-load market data and KPIs when briefing tab is opened
+const _origSwitchTab = window.switchTab || function(){};
+window.switchTab = function(name, btn) {
+  _origSwitchTab(name, btn);
+  if (name === 'briefing') {
+    updateBriefingClock();
+    renderBriefingKPIs();
+    if (Object.keys(_mktData).length === 0) fetchMarketData();
+  }
+};
+</script>
 
 <!-- GUARDRAIL MODAL -->
 <div id="guardrail-modal">
@@ -1638,7 +2118,6 @@ function switchTab(name,btn){
   if(btn)btn.classList.add('active');
   if(name==='analytics')renderAnalytics();
   if(name==='ailog'){renderAIHistory();checkTodayReviewExists();}
-  if(name==='briefing'){initBriefingTab();}
 }
 
 // ── BELIEFS ────────────────────────────────────────
@@ -3184,391 +3663,6 @@ setInterval(()=>{const ist=getISTDate();const h=ist.getHours(),m=ist.getMinutes(
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-// ── AI BRIEFING TAB ─────────────────────────────────────────────────────────
-let _briefingLoaded = false;
-let _briefingData   = null;
-
-function initBriefingTab() {
-  const ist = getISTDate();
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const el = document.getElementById('briefing-date-label');
-  if (el) el.textContent = `${days[ist.getDay()]} ${ist.getDate()} ${months[ist.getMonth()]} ${ist.getFullYear()}`;
-  renderWeeklyEvents();
-  if (!_briefingLoaded) {
-    // Auto-load on first open
-    loadBriefing();
-  }
-}
-
-// ── WEEKLY EVENTS (static, curated for Indian market context) ─────────────
-function renderWeeklyEvents() {
-  const ist = getISTDate();
-  const day = ist.getDay(); // 0=Sun
-  const date = ist.getDate();
-  const m = ist.getMonth()+1;
-
-  // Generate a week of relevant events — AI will contextualize, these are always-present markers
-  const events = [
-    { offset:1, name:'RBI MPC Minutes / Policy Decision', impact:'high', when:'Mon' },
-    { offset:2, name:'US CPI / Core Inflation Data', impact:'high', when:'Tue' },
-    { offset:2, name:'India Industrial Production (IIP)', impact:'med', when:'Tue' },
-    { offset:3, name:'FOMC Meeting Minutes Release', impact:'high', when:'Wed' },
-    { offset:3, name:'Nifty F&O Expiry Watch', impact:'med', when:'Wed' },
-    { offset:4, name:'US Initial Jobless Claims', impact:'med', when:'Thu' },
-    { offset:4, name:'ECB Interest Rate Decision', impact:'med', when:'Thu' },
-    { offset:5, name:'US Non-Farm Payrolls (NFP)', impact:'high', when:'Fri' },
-    { offset:5, name:'India FII/DII Flow Report', impact:'low', when:'Fri' },
-    { offset:5, name:'Weekly Options Expiry (Thu/Fri)', impact:'high', when:'Fri' },
-  ];
-
-  // Always show this week's events starting from today
-  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const shown = events.slice(0, 6);
-
-  const html = shown.map(e => {
-    const d = new Date(ist);
-    d.setDate(d.getDate() + (e.offset - day + (e.offset >= day ? 0 : 7)));
-    const dayName = dayNames[d.getDay()];
-    return `
-      <div class="event-row">
-        <div class="event-date">${dayName} ${d.getDate()}/${m}</div>
-        <div class="event-dot ${e.impact}"></div>
-        <div class="event-name">${e.name}</div>
-        <span class="event-impact ${e.impact}">${e.impact.toUpperCase()}</span>
-      </div>`;
-  }).join('');
-
-  const el = document.getElementById('events-list');
-  if (el) el.innerHTML = html;
-}
-
-// ── MARKET TILE RENDERER ──────────────────────────────────────────────────
-function renderMarketTile(id, val, chg, status) {
-  const valEl  = document.getElementById('mkt-'+id);
-  const chgEl  = document.getElementById('mkt-'+id+'-chg');
-  const statEl = document.getElementById('mkt-'+id+'-status');
-  if (!valEl) return;
-
-  if (val === null || val === undefined) {
-    valEl.innerHTML = '<div class="mkt-loading"></div>';
-    if (chgEl) chgEl.textContent = '—';
-    return;
-  }
-
-  const numVal = parseFloat(val);
-  const numChg = parseFloat(chg);
-  const isUp   = numChg >= 0;
-
-  // Format value
-  valEl.textContent = numVal > 10000
-    ? numVal.toLocaleString('en-IN', {maximumFractionDigits: 0})
-    : numVal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-
-  if (chgEl) {
-    const sign = isUp ? '+' : '';
-    const chgPct = parseFloat(chg);
-    chgEl.textContent = `${sign}${chgPct.toFixed(2)}%`;
-    chgEl.className = 'mkt-chg ' + (isUp ? 'up' : 'dn');
-  }
-
-  if (statEl && status) {
-    statEl.textContent = status;
-    statEl.className = 'mkt-status ' + (status === 'OPEN' ? 'open' : status === 'LOADING' ? 'loading' : 'closed');
-  }
-}
-
-// ── VIX RENDERER ─────────────────────────────────────────────────────────
-function renderVixGauge(vixVal) {
-  const v = parseFloat(vixVal);
-  if (isNaN(v)) return;
-
-  const bigEl   = document.getElementById('vix-big');
-  const lblEl   = document.getElementById('vix-label');
-  const advEl   = document.getElementById('vix-advice');
-  const needle  = document.getElementById('vix-needle');
-
-  if (bigEl) { bigEl.textContent = v.toFixed(2); bigEl.style.color = v > 20 ? 'var(--danger)' : v > 15 ? 'var(--warn)' : 'var(--tv-teal)'; }
-
-  // Needle position: 0=left(low=8), 100=right(extreme=32), clamp
-  const pct = Math.min(100, Math.max(0, ((v - 8) / (32 - 8)) * 100));
-  if (needle) needle.style.left = pct + '%';
-
-  let label, advice;
-  if (v < 12) {
-    label = 'LOW VOLATILITY';
-    advice = '🟢 VIX below 12 — very low fear. Market is calm. Options premiums are cheap. Ideal conditions for directional trades. Hold positions confidently.';
-  } else if (v < 16) {
-    label = 'NORMAL RANGE';
-    advice = '🔵 VIX 12–16 — normal market conditions. Good environment for systematic trading. Follow your plan. No special adjustments needed.';
-  } else if (v < 20) {
-    label = 'ELEVATED · CAUTION';
-    advice = '🟡 VIX 16–20 — elevated uncertainty. Premiums are higher. Pullbacks may be sharper. Be patient with entries, consider tighter position sizing.';
-  } else if (v < 24) {
-    label = 'HIGH · REDUCE SIZE';
-    advice = '🟠 VIX 20–24 — high volatility. Wide swings expected. Reduce position size by 30-50%. Widen SL slightly. Be extra selective — only A+ setups.';
-  } else {
-    label = 'EXTREME · DEFENSIVE';
-    advice = '🔴 VIX above 24 — extreme fear. Market is unstable. Consider skipping the day. If trading: tiny size, wide stops, no FOMO. Capital preservation > profit.';
-  }
-
-  if (lblEl) { lblEl.textContent = label; lblEl.style.color = v > 20 ? 'var(--danger)' : v > 15 ? 'var(--warn)' : 'var(--tv-teal)'; }
-  if (advEl) advEl.textContent = advice;
-}
-
-// ── NEWS RENDERER ──────────────────────────────────────────────────────────
-function renderNews(newsItems) {
-  const el = document.getElementById('briefing-news');
-  if (!el || !newsItems || !newsItems.length) {
-    if (el) el.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:11px;color:var(--muted);padding:20px 0;text-align:center;">No news data available.</div>';
-    return;
-  }
-
-  el.innerHTML = newsItems.map(n => `
-    <div class="news-item">
-      <div class="news-headline">${n.headline}</div>
-      <div class="news-meta">
-        <span class="news-src">${n.source || 'Global'}</span>
-        <span class="news-tag ${n.sentiment || 'neut'}">${(n.sentiment || 'NEUT').toUpperCase()}</span>
-        ${n.impact ? `<span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);">· ${n.impact}</span>` : ''}
-      </div>
-    </div>`).join('');
-}
-
-// ── MAIN BRIEFING LOADER ───────────────────────────────────────────────────
-async function loadBriefing(force = false) {
-  const ist = getISTDate();
-  const todayKey = todayStr();
-
-  // Show loading state
-  document.getElementById('briefing-empty').style.display    = 'none';
-  document.getElementById('briefing-ai-out').style.display   = 'none';
-  document.getElementById('briefing-footer').style.display   = 'none';
-  document.getElementById('briefing-loading').style.display  = 'block';
-
-  const btn = document.getElementById('briefing-refresh-btn');
-  if (btn) { btn.disabled = true; }
-
-  const msgs = ['Scanning global markets...','Checking Asia open...','Reading India VIX...','Scanning key news...','Analysing impact on Nifty...','Building your briefing...'];
-  let mi = 0;
-  const msgEl = document.getElementById('briefing-loading-msg');
-  const msgIv = setInterval(() => {
-    mi = (mi + 1) % msgs.length;
-    if (msgEl) { msgEl.style.opacity = '0'; setTimeout(() => { msgEl.textContent = msgs[mi]; msgEl.style.opacity = '1'; }, 200); }
-  }, 1800);
-
-  try {
-    // Build context for AI
-    const h = ist.getHours(), m = ist.getMinutes();
-    const sessionPhase = h < 9 ? 'pre-market' : h === 9 && m < 30 ? 'market just opened' : h < 10 ? 'early session' : h < 13 ? 'prime session' : h < 14 ? 'lunch hour' : h < 15 ? 'late session' : 'market closed';
-
-    const dow = ist.getDay();
-    const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dow];
-    const isExpiry = dow === 4; // Thursday = weekly expiry day
-    const isFriday = dow === 5;
-
-    const prompt = `You are a sharp, data-driven market intelligence analyst specializing in Indian equity markets and Nifty50 options trading. Generate a concise, actionable pre-session briefing for a Nifty intraday options trader.
-
-Today: ${dayName}, ${todayStr()} IST
-Current session phase: ${sessionPhase}
-${isExpiry ? '⚡ TODAY IS WEEKLY EXPIRY DAY — Options decay is extreme. Extra caution required.' : ''}
-${isFriday ? '📅 Friday — watch for weekend gap risk in your positions.' : ''}
-
-Generate a complete briefing in JSON format ONLY (no markdown, no backticks):
-{
-  "bias": "bullish|bearish|neutral",
-  "confidence": <integer 1-100>,
-  "bias_reason": "<one crisp sentence why>",
-  "us_close": {
-    "summary": "<2-3 sentences on how US markets closed yesterday and what it signals for India today>",
-    "sp500_change": "<+/-X.XX%>",
-    "nasdaq_change": "<+/-X.XX%>",
-    "key_driver": "<main driver of US move>"
-  },
-  "asia_open": {
-    "summary": "<2 sentences on Asian market opens today — Nikkei, Hang Seng, SGX Nifty>",
-    "sgx_nifty_gap": "<gap up/down/flat and approximate points>",
-    "dominant_tone": "bullish|bearish|mixed"
-  },
-  "india_vix": {
-    "level": <number — current approximate India VIX>,
-    "change": <number — approximate % change>,
-    "interpretation": "<1 sentence what current VIX means for today's trading>"
-  },
-  "macro_events": [
-    { "event": "<event name>", "impact": "high|med|low", "nifty_effect": "<bullish|bearish|neutral>", "note": "<brief 1-line note>" }
-  ],
-  "top_news": [
-    { "headline": "<concise news headline>", "source": "<Bloomberg/Reuters/ET/etc>", "sentiment": "bull|bear|neut", "impact": "<brief impact on Nifty>" }
-  ],
-  "key_levels": {
-    "nifty_support": "<key support level>",
-    "nifty_resistance": "<key resistance level>",
-    "note": "<1 sentence on why these levels matter today>"
-  },
-  "session_notes": [
-    "<actionable note 1 for today's session, max 15 words>",
-    "<actionable note 2>",
-    "<actionable note 3>"
-  ],
-  "risk_factors": [
-    "<risk factor 1 that could invalidate the bias>",
-    "<risk factor 2>"
-  ],
-  "overall_verdict": "<2-3 sentences wrapping up the day's outlook and what the trader should focus on>"
-}
-
-Use your training knowledge of recent market conditions (as of early 2025). Be specific with approximate numbers where possible. Focus on what directly moves Nifty50.`;
-
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1800,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    const data = await res.json();
-    const raw = (data.content?.[0]?.text || '').trim();
-    const clean = raw.replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
-    const parsed = JSON.parse(clean);
-
-    _briefingData = parsed;
-    _briefingLoaded = true;
-
-    renderBriefingOutput(parsed);
-
-    // Update market tiles with AI data
-    if (parsed.us_close) {
-      renderMarketTile('sp500', parsed.us_close.sp500_approximate || '—', parsed.us_close.sp500_change?.replace('%','') || 0, 'CLOSED');
-      renderMarketTile('nas', '—', parsed.us_close.nasdaq_change?.replace('%','') || 0, 'CLOSED');
-    }
-    if (parsed.india_vix) {
-      renderMarketTile('india-vix', parsed.india_vix.level, parsed.india_vix.change, 'LIVE');
-      renderVixGauge(parsed.india_vix.level);
-    }
-    if (parsed.top_news) renderNews(parsed.top_news);
-
-    // Footer
-    const now = getISTDate();
-    const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} IST`;
-    const footerEl = document.getElementById('briefing-gen-time');
-    if (footerEl) footerEl.textContent = `Generated: ${ts}`;
-    const tsEl = document.getElementById('briefing-ts');
-    if (tsEl) tsEl.textContent = `Updated ${ts}`;
-
-    document.getElementById('briefing-footer').style.display = 'flex';
-
-  } catch(e) {
-    console.error('Briefing error:', e);
-    document.getElementById('briefing-ai-content').innerHTML =
-      `<div style="padding:12px;border:1px solid var(--danger);border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;color:var(--danger);">⚠️ Could not generate briefing. Check connection and try again.<br><span style="opacity:.6;font-size:10px;">${e.message || ''}</span></div>`;
-    document.getElementById('briefing-ai-out').style.display = 'block';
-    document.getElementById('briefing-bias-row').innerHTML = '';
-  } finally {
-    clearInterval(msgIv);
-    document.getElementById('briefing-loading').style.display = 'none';
-    if (btn) btn.disabled = false;
-  }
-}
-
-function renderBriefingOutput(d) {
-  // Bias pill
-  const biasEl = document.getElementById('briefing-bias-row');
-  if (biasEl && d.bias) {
-    const icons = { bullish: '▲', bearish: '▼', neutral: '◆' };
-    const conf = d.confidence || 0;
-    biasEl.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
-        <span class="bias-pill ${d.bias === 'bullish' ? 'bull' : d.bias === 'bearish' ? 'bear' : 'neut'}">
-          ${icons[d.bias] || '◆'} ${d.bias.toUpperCase()} BIAS
-        </span>
-        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">Confidence:
-          <span style="color:${conf >= 65 ? 'var(--tv-teal)' : conf >= 40 ? 'var(--warn)' : 'var(--danger)'};">
-            ${conf}%
-          </span>
-        </div>
-        <div style="font-size:12px;color:var(--text);flex:1;min-width:200px;">${d.bias_reason || ''}</div>
-      </div>
-      <div class="score-bar" style="margin-bottom:16px;">
-        <div class="score-bar-fill" style="width:${conf}%;background:${conf >= 65 ? 'var(--tv-teal)' : conf >= 40 ? 'var(--warn)' : 'var(--danger)'};"></div>
-      </div>`;
-  }
-
-  let html = '';
-
-  // US Close
-  if (d.us_close) {
-    html += `<div class="section-hdr">🇺🇸 US Markets · Yesterday Close</div>`;
-    html += `<div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:8px;">${d.us_close.summary}</div>`;
-    if (d.us_close.key_driver) html += `<div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">KEY DRIVER: <span style="color:var(--text);">${d.us_close.key_driver}</span></div>`;
-  }
-
-  // Asia Open
-  if (d.asia_open) {
-    html += `<div class="section-hdr">🌏 Asian Markets · Today Open</div>`;
-    html += `<div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:8px;">${d.asia_open.summary}</div>`;
-    if (d.asia_open.sgx_nifty_gap) html += `<div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">SGX NIFTY GAP: <span style="color:var(--text);">${d.asia_open.sgx_nifty_gap}</span> · Tone: <span style="color:${d.asia_open.dominant_tone==='bullish'?'var(--tv-teal)':d.asia_open.dominant_tone==='bearish'?'var(--danger)':'var(--warn)'}">${(d.asia_open.dominant_tone||'').toUpperCase()}</span></div>`;
-  }
-
-  // Key Levels
-  if (d.key_levels) {
-    html += `<div class="section-hdr">📐 Key Levels · Nifty50</div>`;
-    html += `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;">
-      <div style="background:rgba(38,166,154,.08);border:1px solid rgba(38,166,154,.2);border-radius:3px;padding:8px 16px;font-family:'Space Mono',monospace;">
-        <div style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:3px;">SUPPORT</div>
-        <div style="font-size:16px;font-weight:700;color:var(--tv-teal);">${d.key_levels.nifty_support}</div>
-      </div>
-      <div style="background:rgba(239,83,80,.08);border:1px solid rgba(239,83,80,.2);border-radius:3px;padding:8px 16px;font-family:'Space Mono',monospace;">
-        <div style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:3px;">RESISTANCE</div>
-        <div style="font-size:16px;font-weight:700;color:var(--danger);">${d.key_levels.nifty_resistance}</div>
-      </div>
-    </div>`;
-    if (d.key_levels.note) html += `<div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:12px;">${d.key_levels.note}</div>`;
-  }
-
-  // Macro Events
-  if (d.macro_events && d.macro_events.length) {
-    html += `<div class="section-hdr">📅 Macro Events · Watch List</div>`;
-    html += d.macro_events.map(e => `
-      <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
-        <div class="event-dot ${e.impact}" style="margin-top:4px;flex-shrink:0;"></div>
-        <div style="flex:1;">
-          <div style="font-size:12px;font-weight:600;color:var(--text);">${e.event}</div>
-          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;">${e.note}</div>
-        </div>
-        <span style="font-size:9px;padding:2px 6px;border-radius:20px;font-family:'Space Mono',monospace;font-weight:700;background:${e.nifty_effect==='bullish'?'rgba(38,166,154,.12)':e.nifty_effect==='bearish'?'rgba(239,83,80,.12)':'rgba(249,168,37,.1)'};color:${e.nifty_effect==='bullish'?'var(--tv-teal)':e.nifty_effect==='bearish'?'var(--danger)':'var(--warn)'};border:1px solid ${e.nifty_effect==='bullish'?'rgba(38,166,154,.2)':e.nifty_effect==='bearish'?'rgba(239,83,80,.2)':'rgba(249,168,37,.2)'};">${(e.nifty_effect||'NEUT').toUpperCase()}</span>
-      </div>`).join('');
-    html += '<div style="height:12px;"></div>';
-  }
-
-  // Session Notes
-  if (d.session_notes && d.session_notes.length) {
-    html += `<div class="section-hdr">📋 Today's Session Notes</div>`;
-    html += d.session_notes.map(n => `<div class="bullet"><span class="bullet-dot">›</span><span>${n}</span></div>`).join('');
-    html += '<div style="height:8px;"></div>';
-  }
-
-  // Risk Factors
-  if (d.risk_factors && d.risk_factors.length) {
-    html += `<div class="section-hdr">⚠️ Risk Factors · Watch For</div>`;
-    html += d.risk_factors.map(r => `<div class="bullet"><span class="bullet-dot" style="color:var(--danger);">›</span><span style="color:var(--muted);">${r}</span></div>`).join('');
-    html += '<div style="height:8px;"></div>';
-  }
-
-  // Overall Verdict
-  if (d.overall_verdict) {
-    const cls = d.bias === 'bullish' ? 'bull' : d.bias === 'bearish' ? 'bear' : 'neut';
-    html += `<div class="verdict-box ${cls}"><strong>OUTLOOK:</strong> ${d.overall_verdict}</div>`;
-  }
-
-  document.getElementById('briefing-ai-content').innerHTML = html;
-  document.getElementById('briefing-ai-out').style.display = 'block';
-}
-</script>
-
 <script>
 // ── SUPABASE AUTH ──────────────────────────────────
 const _supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
