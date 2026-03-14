@@ -953,7 +953,7 @@ svg.ring{overflow:visible;}
   </div>
 
   <div class="section-title">Advanced Statistics</div>
-  <div class="row r2" style="margin-bottom:32px;">
+  <div class="row r2" style="margin-bottom:12px;">
     <div class="card">
       <div class="card-title"><span class="dot"></span>Statistical Summary</div>
       <div class="stats-grid" id="stats-grid"></div>
@@ -964,7 +964,258 @@ svg.ring{overflow:visible;}
       <div id="monthly-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Log trades across months to see trend</div>
     </div>
   </div>
+
+  <!-- ── AI REVIEW ── -->
+  <div class="section-title">AI Review</div>
+  <div class="card" style="margin-bottom:32px;" id="ai-review-card">
+    <div class="card-title"><span class="dot"></span>AI Performance Coach<span class="badge" style="background:rgba(171,71,188,0.12);border-color:rgba(171,71,188,0.25);color:#ab47bc;">POWERED BY CLAUDE</span></div>
+
+    <!-- Scope selector -->
+    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+      <button class="ai-scope-btn active" onclick="setAIScope('all',this)" style="padding:5px 12px;border-radius:3px;border:1px solid var(--border);background:var(--bg);color:var(--accent);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;">All Time</button>
+      <button class="ai-scope-btn" onclick="setAIScope('month',this)" style="padding:5px 12px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;">Last 30D</button>
+      <button class="ai-scope-btn" onclick="setAIScope('week',this)" style="padding:5px 12px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;">Last 7D</button>
+      <button class="ai-scope-btn" onclick="setAIScope('today',this)" style="padding:5px 12px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;">Today</button>
+    </div>
+
+    <!-- Focus selector -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+      <button class="ai-focus-btn active" data-focus="overall" onclick="setAIFocus(this)" style="padding:5px 10px;border-radius:3px;border:1px solid rgba(41,98,255,0.3);background:rgba(41,98,255,0.1);color:#5c85ff;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .2s;">📊 Overall</button>
+      <button class="ai-focus-btn" data-focus="discipline" onclick="setAIFocus(this)" style="padding:5px 10px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .2s;">🎯 Discipline</button>
+      <button class="ai-focus-btn" data-focus="risk" onclick="setAIFocus(this)" style="padding:5px 10px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .2s;">🛡️ Risk Mgmt</button>
+      <button class="ai-focus-btn" data-focus="timing" onclick="setAIFocus(this)" style="padding:5px 10px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .2s;">⏱️ Timing</button>
+      <button class="ai-focus-btn" data-focus="patterns" onclick="setAIFocus(this)" style="padding:5px 10px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .2s;">🔍 Patterns</button>
+      <button class="ai-focus-btn" data-focus="improvement" onclick="setAIFocus(this)" style="padding:5px 10px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .2s;">📈 Improvement</button>
+    </div>
+
+    <!-- Generate button -->
+    <button id="ai-review-btn" onclick="generateAIReview()" style="width:100%;padding:11px;border-radius:3px;border:1px solid rgba(171,71,188,0.4);background:rgba(171,71,188,0.1);color:#ab47bc;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1.5px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span id="ai-review-btn-icon">🤖</span> <span id="ai-review-btn-text">GENERATE AI REVIEW</span>
+    </button>
+
+    <!-- Loading state -->
+    <div id="ai-review-loading" style="display:none;padding:28px 0;text-align:center;">
+      <div style="width:36px;height:36px;border:2px solid rgba(171,71,188,0.2);border-top-color:#ab47bc;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;"></div>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;" id="ai-review-loading-text">Analysing your trades...</div>
+    </div>
+
+    <!-- Output -->
+    <div id="ai-review-output" style="display:none;margin-top:16px;">
+      <!-- Score bar -->
+      <div id="ai-score-bar" style="margin-bottom:16px;padding:14px 16px;border-radius:3px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+        <div style="text-align:center;min-width:60px;">
+          <div style="font-family:'Space Mono',monospace;font-size:32px;font-weight:800;line-height:1;" id="ai-score-num">—</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:3px;">AI SCORE</div>
+        </div>
+        <div style="flex:1;min-width:140px;">
+          <div style="height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;margin-bottom:5px;">
+            <div id="ai-score-fill" style="height:100%;border-radius:3px;transition:width 1s ease;background:linear-gradient(90deg,var(--danger),var(--warn),var(--accent));width:0%;"></div>
+          </div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);" id="ai-score-label">—</div>
+        </div>
+      </div>
+
+      <!-- Insight sections -->
+      <div id="ai-review-sections"></div>
+
+      <!-- Regenerate -->
+      <div style="margin-top:12px;text-align:right;">
+        <button onclick="generateAIReview()" style="padding:6px 14px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='#ab47bc';this.style.color='#ab47bc';" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)';">↺ REGENERATE</button>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="ai-review-empty" style="display:none;padding:28px 0;text-align:center;">
+      <div style="font-size:28px;opacity:.4;margin-bottom:8px;">🤖</div>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;">No trades in selected period.<br>Log some trades first.</div>
+    </div>
+  </div>
 </div>
+
+<script>
+// ── AI REVIEW ─────────────────────────────────────────────────────────────────
+let _aiScope = 'all';
+let _aiFocus = 'overall';
+
+function setAIScope(scope, btn) {
+  _aiScope = scope;
+  document.querySelectorAll('.ai-scope-btn').forEach(b => {
+    b.style.background = 'transparent';
+    b.style.color = 'var(--muted)';
+    b.style.borderColor = 'var(--border)';
+  });
+  btn.style.background = 'rgba(41,98,255,0.1)';
+  btn.style.color = 'var(--accent)';
+  btn.style.borderColor = 'rgba(41,98,255,0.3)';
+  // Reset output when scope changes
+  document.getElementById('ai-review-output').style.display = 'none';
+  document.getElementById('ai-review-empty').style.display = 'none';
+}
+
+function setAIFocus(btn) {
+  _aiFocus = btn.dataset.focus;
+  document.querySelectorAll('.ai-focus-btn').forEach(b => {
+    b.style.background = 'transparent';
+    b.style.color = 'var(--muted)';
+    b.style.borderColor = 'var(--border)';
+  });
+  btn.style.background = 'rgba(41,98,255,0.1)';
+  btn.style.color = '#5c85ff';
+  btn.style.borderColor = 'rgba(41,98,255,0.3)';
+}
+
+function getFilteredTradesForAI() {
+  if (!window._trades || !window._trades.length) return [];
+  const now = new Date();
+  return window._trades.filter(t => {
+    if (!t.date) return _aiScope === 'all';
+    const d = new Date(t.date);
+    if (_aiScope === 'week') return (now - d) <= 7*86400000;
+    if (_aiScope === 'month') return (now - d) <= 30*86400000;
+    if (_aiScope === 'today') {
+      return d.toDateString() === now.toDateString();
+    }
+    return true;
+  });
+}
+
+async function generateAIReview() {
+  const trades = getFilteredTradesForAI();
+
+  document.getElementById('ai-review-output').style.display = 'none';
+  document.getElementById('ai-review-empty').style.display = 'none';
+
+  if (!trades.length) {
+    document.getElementById('ai-review-empty').style.display = 'block';
+    return;
+  }
+
+  // Show loading
+  const btn = document.getElementById('ai-review-btn');
+  const loading = document.getElementById('ai-review-loading');
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  loading.style.display = 'block';
+
+  const loadingMsgs = [
+    'Analysing your trades...', 'Checking rule discipline...', 'Computing edge metrics...', 'Building your review...'
+  ];
+  let msgIdx = 0;
+  const msgEl = document.getElementById('ai-review-loading-text');
+  const msgInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % loadingMsgs.length;
+    msgEl.textContent = loadingMsgs[msgIdx];
+  }, 1800);
+
+  // Summarise trade data
+  const wins = trades.filter(t => (t.pnl||0) > 0);
+  const losses = trades.filter(t => (t.pnl||0) < 0);
+  const totalPnl = trades.reduce((s,t) => s+(t.pnl||0), 0);
+  const winRate = trades.length ? ((wins.length/trades.length)*100).toFixed(1) : 0;
+  const avgWin = wins.length ? (wins.reduce((s,t)=>s+(t.pnl||0),0)/wins.length).toFixed(0) : 0;
+  const avgLoss = losses.length ? (losses.reduce((s,t)=>s+(t.pnl||0),0)/losses.length).toFixed(0) : 0;
+  const ruleBreaks = ['Chased breakout','Ignored SL','Traded first 3 candles','Revenge trade'];
+  const breakCount = trades.reduce((s,t) => s + ((t.rules||[]).filter(r=>ruleBreaks.includes(r)).length), 0);
+  const totalRules = trades.reduce((s,t) => s + (t.rules||[]).length, 0);
+
+  const tradeSummary = trades.slice(-20).map((t,i) => {
+    const outcome = (t.pnl||0) >= 0 ? `WIN ₹${t.pnl}` : `LOSS ₹${t.pnl}`;
+    return `Trade ${i+1}: ${t.type||'?'} | ${outcome} | Rules: ${(t.rules||[]).join(', ')||'none'} | Note: ${t.note||''}`;
+  }).join('\n');
+
+  const focusMap = {
+    overall: 'Give an overall performance assessment covering all aspects.',
+    discipline: 'Focus on rule adherence, discipline, and what rules were broken most.',
+    risk: 'Focus on risk management, stop-loss usage, and drawdown.',
+    timing: 'Focus on timing — when trades were taken, session windows, and time-based patterns.',
+    patterns: 'Focus on patterns in wins vs losses — what conditions led to each.',
+    improvement: 'Focus specifically on actionable improvements the trader can make.'
+  };
+
+  const prompt = `You are an expert Nifty options trading coach analyzing a trader's journal data. Be direct, data-driven, and constructive.
+
+TRADER STATS (${_aiScope === 'all' ? 'All Time' : _aiScope === 'month' ? 'Last 30 Days' : _aiScope === 'week' ? 'Last 7 Days' : 'Today'}):
+- Total Trades: ${trades.length}
+- Win Rate: ${winRate}%
+- Total P&L: ₹${totalPnl.toFixed(0)}
+- Avg Win: ₹${avgWin} | Avg Loss: ₹${avgLoss}
+- Rule Violations: ${breakCount} across ${trades.length} trades
+- Total Rule Tags Applied: ${totalRules}
+
+RECENT TRADES (last 20):
+${tradeSummary}
+
+FOCUS: ${focusMap[_aiFocus] || focusMap.overall}
+
+Respond ONLY with a JSON object (no markdown, no backticks) in this exact format:
+{
+  "score": <integer 0-100>,
+  "scoreLabel": "<one short label like 'Developing' / 'Consistent' / 'Elite'>",
+  "sections": [
+    { "icon": "<emoji>", "title": "<section title>", "color": "<hex or css var>", "points": ["<point 1>", "<point 2>", "<point 3>"] }
+  ]
+}
+Include 3-5 sections. Each section has 2-4 bullet points. Be specific with numbers from the data. Keep points concise (max 20 words each).`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.map(c => c.text||'').join('').trim();
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    renderAIReview(parsed);
+  } catch(e) {
+    document.getElementById('ai-review-sections').innerHTML =
+      `<div style="padding:16px;border:1px solid var(--danger);border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;color:var(--danger);">⚠️ Could not generate review. Check connection and try again.</div>`;
+    document.getElementById('ai-review-output').style.display = 'block';
+  } finally {
+    clearInterval(msgInterval);
+    loading.style.display = 'none';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+}
+
+function renderAIReview(data) {
+  const score = Math.min(100, Math.max(0, data.score||0));
+  const scoreEl = document.getElementById('ai-score-num');
+  const fillEl = document.getElementById('ai-score-fill');
+  const labelEl = document.getElementById('ai-score-label');
+
+  // Animate score
+  let cur = 0;
+  const target = score;
+  const tick = setInterval(() => {
+    cur = Math.min(cur + 2, target);
+    scoreEl.textContent = cur;
+    scoreEl.style.color = cur >= 70 ? 'var(--tv-teal)' : cur >= 45 ? 'var(--warn)' : 'var(--danger)';
+    if (cur >= target) clearInterval(tick);
+  }, 18);
+
+  setTimeout(() => { fillEl.style.width = score + '%'; }, 100);
+  labelEl.textContent = data.scoreLabel || '';
+
+  const sectionsEl = document.getElementById('ai-review-sections');
+  sectionsEl.innerHTML = (data.sections||[]).map(s => `
+    <div style="margin-bottom:10px;padding:12px 14px;border-radius:3px;background:var(--bg);border:1px solid var(--border);border-left:3px solid ${s.color||'var(--accent)'};">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text);margin-bottom:8px;text-transform:uppercase;">${s.icon||''} ${s.title||''}</div>
+      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;">
+        ${(s.points||[]).map(p=>`<li style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.5;padding-left:12px;position:relative;"><span style="position:absolute;left:0;color:${s.color||'var(--accent)'};">›</span>${p}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+
+  document.getElementById('ai-review-output').style.display = 'block';
+}
+</script>
 
 <!-- AI LOG -->
 <div id="tab-ailog" class="panel">
