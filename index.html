@@ -438,12 +438,10 @@ svg.ring{overflow:visible;}
 .pq-vwap-needle{position:absolute;top:-6px;width:20px;height:20px;background:var(--text);border-radius:50%;border:3px solid var(--bg);transform:translateX(-50%);transition:left .4s ease;left:50%;}
 .pq-result{margin-top:14px;padding:12px 16px;border-radius:10px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.8;display:none;border:1px solid;}
 .pq-section-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
-
-/* ── ARCHITECTURE NODES ──────────────────────────── */
 .arch-node{border-radius:4px;border:1px solid var(--border);padding:10px 12px;cursor:pointer;transition:border-color .15s,transform .12s;background:var(--panel2);}
 .arch-node:hover{transform:translateY(-1px);}
 .arch-num{font-size:9px;font-weight:700;letter-spacing:1px;font-family:'Space Mono',monospace;margin-bottom:4px;opacity:.7;}
-.arch-title{font-size:12px;font-weight:700;color:var(--text);line-height:1.3;font-family:'Trebuchet MS',Arial,sans-serif;}
+.arch-title{font-size:12px;font-weight:700;color:var(--text);line-height:1.3;}
 .arch-sub{font-size:10px;margin-top:3px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.3px;}
 .arch-ctx{background:rgba(41,98,255,.07);border-color:rgba(41,98,255,.2);}
 .arch-ctx .arch-num{color:#5c85ff;}.arch-ctx:hover{border-color:rgba(41,98,255,.45);}
@@ -629,142 +627,51 @@ svg.ring{overflow:visible;}
 
 <!-- ARCHITECTURE / SETUP MAP -->
 <div id="tab-architecture" class="panel">
-
   <div class="card">
     <div class="card-title">Trade Execution Architecture · Nifty Options Scalping</div>
-
-    <!-- Phase 1: Context -->
     <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:8px;">Phase 1 · Context</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
-      <div class="arch-node arch-ctx" onclick="archDetail(0)">
-        <div class="arch-num">01</div>
-        <div class="arch-title">Daily chart</div>
-        <div class="arch-sub">EMA direction · bias</div>
-      </div>
-      <div class="arch-node arch-ctx" onclick="archDetail(1)">
-        <div class="arch-num">02</div>
-        <div class="arch-title">5-min candles</div>
-        <div class="arch-sub">Session structure</div>
-      </div>
-      <div class="arch-node arch-ctx" onclick="archDetail(2)">
-        <div class="arch-num">03</div>
-        <div class="arch-title">EMA terrain</div>
-        <div class="arch-sub">Price vs EMA slope</div>
-      </div>
+      <div class="arch-node arch-ctx" onclick="archDetail(0)"><div class="arch-num">01</div><div class="arch-title">Daily chart</div><div class="arch-sub">EMA direction · bias</div></div>
+      <div class="arch-node arch-ctx" onclick="archDetail(1)"><div class="arch-num">02</div><div class="arch-title">5-min candles</div><div class="arch-sub">Session structure</div></div>
+      <div class="arch-node arch-ctx" onclick="archDetail(2)"><div class="arch-num">03</div><div class="arch-title">EMA terrain</div><div class="arch-sub">Price vs EMA slope</div></div>
     </div>
-
-    <!-- Gate 1 -->
-    <div class="arch-gate">
-      <span class="arch-gate-pass">✓ PASS</span>
-      <span class="arch-gate-text">Bias gate — Daily EMA matches 5-min terrain. Conflict = no trade today.</span>
-      <span class="arch-gate-fail">✕ SKIP</span>
-    </div>
+    <div class="arch-gate"><span class="arch-gate-pass">✓ PASS</span><span class="arch-gate-text">Bias gate — Daily EMA matches 5-min terrain. Conflict = no trade today.</span><span class="arch-gate-fail">✕ SKIP</span></div>
     <div class="arch-arrow">↓</div>
-
-    <!-- Phase 2: Setup -->
     <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:8px;">Phase 2 · Setup Identification</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-      <div class="arch-node arch-read" onclick="archDetail(3)">
-        <div class="arch-num">04</div>
-        <div class="arch-title">Premium / Discount</div>
-        <div class="arch-sub">Price vs Daily VWAP</div>
-      </div>
-      <div class="arch-node arch-read" onclick="archDetail(4)">
-        <div class="arch-num">05</div>
-        <div class="arch-title">Pullback quality</div>
-        <div class="arch-sub">Structure · volume · depth</div>
-      </div>
+      <div class="arch-node arch-read" onclick="archDetail(3)"><div class="arch-num">04</div><div class="arch-title">Premium / Discount</div><div class="arch-sub">Price vs Daily VWAP</div></div>
+      <div class="arch-node arch-read" onclick="archDetail(4)"><div class="arch-num">05</div><div class="arch-title">Pullback quality</div><div class="arch-sub">Structure · volume · depth</div></div>
     </div>
-
-    <!-- Gate 2 -->
-    <div class="arch-gate">
-      <span class="arch-gate-pass">✓ PASS</span>
-      <span class="arch-gate-text">Setup gate — Discount/premium zone confirmed + 3 of 5 pullback signals green.</span>
-      <span class="arch-gate-fail">✕ WAIT</span>
-    </div>
+    <div class="arch-gate"><span class="arch-gate-pass">✓ PASS</span><span class="arch-gate-text">Setup gate — Discount/premium confirmed + 3 of 5 pullback signals green.</span><span class="arch-gate-fail">✕ WAIT</span></div>
     <div class="arch-arrow">↓</div>
-
-    <!-- Phase 3: Trigger -->
     <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:8px;">Phase 3 · Entry Trigger</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
-      <div class="arch-node arch-filter" onclick="archDetail(5)">
-        <div class="arch-num">06</div>
-        <div class="arch-title">AVWAP anchor</div>
-        <div class="arch-sub">Place at pullback start</div>
-      </div>
-      <div class="arch-node arch-filter" onclick="archDetail(6)">
-        <div class="arch-num">07</div>
-        <div class="arch-title">AVWAP cross</div>
-        <div class="arch-sub">Close above AVWAP</div>
-      </div>
-      <div class="arch-node arch-filter" onclick="archDetail(7)">
-        <div class="arch-num">08</div>
-        <div class="arch-title">5-min close</div>
-        <div class="arch-sub">Wait for full close</div>
-      </div>
+      <div class="arch-node arch-filter" onclick="archDetail(5)"><div class="arch-num">06</div><div class="arch-title">AVWAP anchor</div><div class="arch-sub">Place at pullback start</div></div>
+      <div class="arch-node arch-filter" onclick="archDetail(6)"><div class="arch-num">07</div><div class="arch-title">AVWAP cross</div><div class="arch-sub">Close above AVWAP</div></div>
+      <div class="arch-node arch-filter" onclick="archDetail(7)"><div class="arch-num">08</div><div class="arch-title">5-min close</div><div class="arch-sub">Wait for full close</div></div>
     </div>
-
-    <!-- Gate 3 -->
-    <div class="arch-gate">
-      <span class="arch-gate-pass">✓ PASS</span>
-      <span class="arch-gate-text">Trigger gate — Full candle CLOSE above AVWAP. Wick only = invalid. Still forming = wait.</span>
-      <span class="arch-gate-fail">✕ WAIT</span>
-    </div>
+    <div class="arch-gate"><span class="arch-gate-pass">✓ PASS</span><span class="arch-gate-text">Trigger gate — Full candle CLOSE above AVWAP. Wick only = invalid. Still forming = wait.</span><span class="arch-gate-fail">✕ WAIT</span></div>
     <div class="arch-arrow">↓</div>
-
-    <!-- Phase 4: Execution -->
     <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:8px;">Phase 4 · Execution</div>
     <div style="margin-bottom:10px;">
-      <div class="arch-node arch-exec" onclick="archDetail(8)" style="max-width:100%;">
-        <div class="arch-num">09</div>
-        <div class="arch-title">Entry — next candle open · SL −10 pts immediate</div>
-        <div class="arch-sub">Enter at open of the candle AFTER the trigger candle. Set SL in the same action.</div>
-      </div>
+      <div class="arch-node arch-exec" onclick="archDetail(8)"><div class="arch-num">09</div><div class="arch-title">Entry — next candle open · SL −10 pts immediate</div><div class="arch-sub">Enter at open of the candle AFTER the trigger candle. Set SL in the same action.</div></div>
     </div>
     <div class="arch-arrow">↓</div>
-
-    <!-- Phase 5: Management -->
     <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:8px;">Phase 5 · Trade Management</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
-      <div class="arch-node arch-mgmt" onclick="archDetail(9)">
-        <div class="arch-num">10</div>
-        <div class="arch-title">Stop loss</div>
-        <div class="arch-sub">−10 pts · trail to BE</div>
-      </div>
-      <div class="arch-node arch-mgmt" onclick="archDetail(10)">
-        <div class="arch-num">11</div>
-        <div class="arch-title">Target</div>
-        <div class="arch-sub">2× risk · swing high</div>
-      </div>
-      <div class="arch-node arch-mgmt" onclick="archDetail(11)">
-        <div class="arch-num">12</div>
-        <div class="arch-title">Exit rules</div>
-        <div class="arch-sub">Close all by 15:15</div>
-      </div>
+      <div class="arch-node arch-mgmt" onclick="archDetail(9)"><div class="arch-num">10</div><div class="arch-title">Stop loss</div><div class="arch-sub">−10 pts · trail to BE</div></div>
+      <div class="arch-node arch-mgmt" onclick="archDetail(10)"><div class="arch-num">11</div><div class="arch-title">Target</div><div class="arch-sub">2× risk · swing high</div></div>
+      <div class="arch-node arch-mgmt" onclick="archDetail(11)"><div class="arch-num">12</div><div class="arch-title">Exit rules</div><div class="arch-sub">Close all by 15:15</div></div>
     </div>
-
-    <!-- Legend -->
     <div style="display:flex;flex-wrap:wrap;gap:10px;padding-top:12px;border-top:1px solid var(--border);">
-      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">
-        <div style="width:8px;height:8px;border-radius:2px;background:rgba(41,98,255,0.5);"></div>Context
-      </div>
-      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">
-        <div style="width:8px;height:8px;border-radius:2px;background:rgba(249,168,37,0.6);"></div>Setup
-      </div>
-      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">
-        <div style="width:8px;height:8px;border-radius:2px;background:rgba(171,71,188,0.6);"></div>Trigger
-      </div>
-      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">
-        <div style="width:8px;height:8px;border-radius:2px;background:rgba(38,166,154,0.6);"></div>Execution
-      </div>
-      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">
-        <div style="width:8px;height:8px;border-radius:2px;background:rgba(239,83,80,0.5);"></div>Management
-      </div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;"><div style="width:8px;height:8px;border-radius:2px;background:rgba(41,98,255,0.5);"></div>Context</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;"><div style="width:8px;height:8px;border-radius:2px;background:rgba(249,168,37,0.6);"></div>Setup</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;"><div style="width:8px;height:8px;border-radius:2px;background:rgba(171,71,188,0.6);"></div>Trigger</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;"><div style="width:8px;height:8px;border-radius:2px;background:rgba(38,166,154,0.6);"></div>Execution</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;"><div style="width:8px;height:8px;border-radius:2px;background:rgba(239,83,80,0.5);"></div>Management</div>
       <div style="margin-left:auto;font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;font-style:italic;">tap any node for detail</div>
     </div>
   </div>
-
-  <!-- Detail panel (hidden until a node is tapped) -->
   <div id="arch-detail-panel" style="display:none;" class="card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
       <div class="card-title" id="arch-detail-title" style="margin-bottom:0;padding-bottom:0;border-bottom:none;"></div>
@@ -773,7 +680,6 @@ svg.ring{overflow:visible;}
     <div id="arch-detail-body" style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px;"></div>
     <div id="arch-detail-rule" class="rule-card info" style="font-size:12px;line-height:1.6;"></div>
   </div>
-
 </div>
 
 <!-- PRE-ENTRY -->
@@ -1353,6 +1259,23 @@ svg.ring{overflow:visible;}
 </div>
 
 <script>
+// ── ARCHITECTURE TAB ───────────────────────────────
+var _archData=[
+  {t:'Daily chart — directional bias',b:'Check the Daily candle before anything else. Is price above or below the Daily EMA (20 EMA)? This is your session bias. Above = bullish — only look for CALL setups. Below = bearish — only look for PUT setups. Do not override the daily bias intraday.',r:'Rule: if the Daily EMA direction is unclear or sideways, reduce size or skip the session entirely.'},
+  {t:'5-min candles — session structure',b:'Watch the first 3 candles (9:15–9:30) without trading. These candles establish the opening range and intraday direction. A strong bullish open with candles closing above each other confirms the daily bias. A choppy open means wait.',r:'Rule: no trades before 9:30. The first 3 candles are observation only — not trading time.'},
+  {t:'EMA terrain — 5-min',b:'On the 5-min chart, the EMA slope and price position define the terrain. Price consistently above a rising EMA = bullish terrain. EMA curling down while price drifts below it = bearish. Trade only when terrain matches your daily bias.',r:'Rule: if 5-min EMA is flat or conflicts with daily bias, there is no setup — do not manufacture one.'},
+  {t:'Premium / discount zone',b:"Map the day's current range (session high to low). Lower 30% = discount zone — ideal for buying CALLs. Upper 30% = premium zone — ideal for buying PUTs. Middle 40% = fair value, low edge. Daily VWAP is the reference line.",r:'Rule: buy CALLs in discount zone. Buy PUTs in premium zone. Entering at fair value gives no asymmetry.'},
+  {t:'Pullback quality — 5 signals',b:'Score the pullback: (1) tight orderly candles with small bodies, (2) volume shrinking on the pullback, (3) price stays above Daily VWAP for CALLs, (4) 5-min trend structure intact — higher highs and higher lows, (5) shallow retracement of 30–50%. Need 3+ greens to proceed.',r:'Rule: if only 1–2 signals are green, the pullback is ambiguous — skip it and wait for the next one.'},
+  {t:'AVWAP — place from pullback start',b:'Identify the exact candle where the pullback began — the last swing high before price started correcting. Anchor your AVWAP there. It now tracks the volume-weighted average price of the entire pullback, giving you a dynamic entry level.',r:'Rule: anchor AVWAP at the pullback START candle only. Do not move it mid-pullback. One anchor per setup.'},
+  {t:'AVWAP cross — the signal',b:'As the pullback exhausts, watch for the options price to cross back above the AVWAP line. This signals that buyers have absorbed the pullback volume and are now in control. The cross is the event — but wait for confirmation.',r:'Rule: price must CROSS above AVWAP — not just touch it. A wick through AVWAP is not a cross.'},
+  {t:'5-min candle close — confirmation',b:'After the AVWAP cross, wait for the 5-min candle to fully close above it. A candle that crosses mid-bar and then reverses is a trap. The close confirms buyers held through the entire 5-minute auction. This patience is the edge.',r:'Rule: enter ONLY after the candle clock resets to zero and the close is confirmed above AVWAP.'},
+  {t:'Entry — next candle open',b:'The trigger candle has closed above AVWAP. Place your entry at the open of the very next 5-min candle. Set your stop loss immediately at entry price minus 10 points — entry and SL placement is one single action, never two.',r:'Rule: if the next candle opens more than 15 pts above AVWAP, skip the trade — the move has already happened.'},
+  {t:'Stop loss — 10 pts fixed, then trail',b:'Initial SL is a hard 10 points below entry. Once the trade moves 10 pts in your favour (1:1), move SL to breakeven. Once you have 15+ pts, trail SL 10 pts below the most recent 5-min swing low. Never widen the SL.',r:'Rule: if SL is hit, do not re-enter the same setup. The AVWAP has failed — wait for the next pullback.'},
+  {t:'Target — 2× risk minimum',b:'Minimum target is 20 pts (2× your 10-pt risk). Ideal target is the previous session swing high for CALLs, or swing low for PUTs. If price stalls before target and AVWAP rolls over, exit early — a partial win beats a full loss.',r:'Rule: if target not hit and session reaches 15:00, close the trade. Do not hold options through the last 15 minutes.'},
+  {t:'Exit rules — end of session',b:'Hard exit at 15:15 regardless of position. Also exit early if: AVWAP fails and price is back below it; 3 consecutive bearish candles after entry; sudden volume spike against your direction; daily loss limit reached.',r:'Rule: 15:15 is absolute. Options lose value rapidly in the final minutes — holding through close is not trading.'}
+];
+function archDetail(i){var d=_archData[i];document.getElementById('arch-detail-title').textContent=d.t;document.getElementById('arch-detail-body').textContent=d.b;document.getElementById('arch-detail-rule').textContent=d.r;var p=document.getElementById('arch-detail-panel');p.style.display='block';p.scrollIntoView({behavior:'smooth',block:'nearest'});}
+
 // ── AI REVIEW (Analytics Tab) ─────────────────────────────────────────────────
 let _aiScope = 'all';
 let _aiFocus = 'overall';
@@ -3547,56 +3470,6 @@ Chart.defaults.font.family='Space Mono, monospace';
 
 // Hook into original app tab switch
 window._renderAnalyticsEnhanced = renderAll;
-
-// ── ARCHITECTURE TAB ───────────────────────────────
-const _archData = [
-  {t:'Daily chart — directional bias',
-   b:'Check the Daily candle before anything else. Is price above or below the Daily EMA (20 EMA)? This is your session bias. Above = bullish — only look for CALL setups. Below = bearish — only look for PUT setups. Do not override the daily bias intraday.',
-   r:'Rule: if the Daily EMA direction is unclear or sideways, reduce size or skip the session entirely.'},
-  {t:'5-min candles — session structure',
-   b:'Watch the first 3 candles (9:15–9:30) without trading. These candles establish the opening range and intraday direction. A strong bullish open with candles closing above each other confirms the daily bias. A choppy open means wait.',
-   r:'Rule: no trades before 9:30. The first 3 candles are observation only — not trading time.'},
-  {t:'EMA terrain — 5-min',
-   b:'On the 5-min chart, the EMA slope and price position define the terrain. Price consistently above a rising EMA = bullish terrain. EMA curling down while price drifts below it = bearish. Trade only when terrain matches your daily bias.',
-   r:'Rule: if 5-min EMA is flat or conflicts with daily bias, there is no setup — do not manufacture one.'},
-  {t:'Premium / discount zone',
-   b:'Map the day\'s current range (session high to low). Lower 30% = discount zone — ideal for buying CALLs. Upper 30% = premium zone — ideal for buying PUTs. Middle 40% = fair value, low edge. Daily VWAP is the reference line.',
-   r:'Rule: buy CALLs in discount zone. Buy PUTs in premium zone. Entering at fair value gives no asymmetry.'},
-  {t:'Pullback quality — 5 signals',
-   b:'Score the pullback: (1) tight orderly candles with small bodies, (2) volume shrinking on the pullback, (3) price stays above Daily VWAP for CALLs, (4) 5-min trend structure intact — higher highs and higher lows, (5) shallow retracement of 30–50%. Need 3+ greens to proceed.',
-   r:'Rule: if only 1–2 signals are green, the pullback is ambiguous — skip it and wait for the next one.'},
-  {t:'AVWAP — place from pullback start',
-   b:'Identify the exact candle where the pullback began — the last swing high before price started correcting. Anchor your AVWAP there. It now tracks the volume-weighted average price of the entire pullback, giving you a dynamic entry level.',
-   r:'Rule: anchor AVWAP at the pullback START candle only. Do not move it mid-pullback. One anchor per setup.'},
-  {t:'AVWAP cross — the signal',
-   b:'As the pullback exhausts, watch for the options price to cross back above the AVWAP line. This signals that buyers have absorbed the pullback volume and are now in control. The cross is the event — but wait for confirmation.',
-   r:'Rule: price must CROSS above AVWAP — not just touch it. A wick through AVWAP is not a cross.'},
-  {t:'5-min candle close — confirmation',
-   b:'After the AVWAP cross, wait for the 5-min candle to fully close above it. A candle that crosses mid-bar and then reverses is a trap. The close confirms buyers held through the entire 5-minute auction. This patience is the edge.',
-   r:'Rule: enter ONLY after the candle clock resets to zero and the close is confirmed above AVWAP.'},
-  {t:'Entry — next candle open',
-   b:'The trigger candle has closed above AVWAP. Place your entry at the open of the very next 5-min candle. Set your stop loss immediately at entry price minus 10 points — entry and SL placement is one single action, never two.',
-   r:'Rule: if the next candle opens more than 15 pts above AVWAP, skip the trade — the move has already happened.'},
-  {t:'Stop loss — 10 pts fixed, then trail',
-   b:'Initial SL is a hard 10 points below entry. Once the trade moves 10 pts in your favour (1:1), move SL to breakeven. Once you have 15+ pts, trail SL 10 pts below the most recent 5-min swing low. Never widen the SL.',
-   r:'Rule: if SL is hit, do not re-enter the same setup. The AVWAP has failed — wait for the next pullback.'},
-  {t:'Target — 2× risk minimum',
-   b:'Minimum target is 20 pts (2× your 10-pt risk). Ideal target is the previous session swing high for CALLs, or swing low for PUTs. If price stalls before target and AVWAP rolls over, exit early — a partial win beats a full loss.',
-   r:'Rule: if target not hit and session reaches 15:00, close the trade. Do not hold options through the last 15 minutes.'},
-  {t:'Exit rules — end of session',
-   b:'Hard exit at 15:15 regardless of position. Also exit early if: AVWAP fails and price is back below it; 3 consecutive bearish candles after entry; sudden volume spike against your direction; daily loss limit reached.',
-   r:'Rule: 15:15 is absolute. Options lose value rapidly in the final minutes — holding through close is not trading.'},
-];
-
-function archDetail(i){
-  const d = _archData[i];
-  document.getElementById('arch-detail-title').textContent = d.t;
-  document.getElementById('arch-detail-body').textContent = d.b;
-  document.getElementById('arch-detail-rule').textContent = d.r;
-  const panel = document.getElementById('arch-detail-panel');
-  panel.style.display = 'block';
-  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
-}
 
 // ── TOAST & AUDIO ──────────────────────────────────
 let audioMuted=false;
