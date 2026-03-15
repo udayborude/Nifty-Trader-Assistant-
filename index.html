@@ -3518,7 +3518,7 @@ Chart.defaults.font.family='Space Mono, monospace';
 window._renderAnalyticsEnhanced = renderAll;
 
 // ── TOAST & AUDIO ──────────────────────────────────
-let audioMuted=false;
+var audioMuted=false;
 function showToast(msg,warn){const t=document.getElementById('toast');t.textContent=msg;t.className=warn?'warn-toast show':'show';setTimeout(()=>t.className='',3500);if(!audioMuted)playAlert(warn?'warn':'good');}
 function toggleMute(){audioMuted=!audioMuted;const b=document.getElementById('mute-btn');b.textContent=audioMuted?'🔇 Muted':'🔔 Sound';b.style.color=audioMuted?'var(--danger)':'var(--accent)';if(!audioMuted)playAlert('good');}
 let audioCtx=null;
