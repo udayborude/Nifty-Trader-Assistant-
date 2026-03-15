@@ -1323,8 +1323,8 @@ Respond ONLY with a valid JSON object — no markdown, no backticks, no explanat
 Use 3-5 sections, 2-4 bullet points each. Use real numbers from the data. Colors: green=#26a69a, red=#ef5350, blue=#2962ff, yellow=#f9a825, purple=#ab47bc.`;
 
   try {
-    const OPENROUTER_KEY = getOpenRouterKey();
-    if (!OPENROUTER_KEY) { openKeyModal(); throw new Error('No OpenRouter key set — please add it via the 🔑 API Key button'); }
+    const OPENROUTER_KEY = getAIReviewKey();
+    if (!OPENROUTER_KEY) { openKeyModal('aireview'); throw new Error('No AI Review key set — click 🔑 API Key to add one'); }
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -1558,15 +1558,43 @@ function renderAIReview(data) {
 
 <!-- API KEY MODAL -->
 <div id="key-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;align-items:center;justify-content:center;">
-  <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px 24px;max-width:420px;width:90%;">
-    <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px;">🔑 OpenRouter API Key</div>
-    <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:20px;line-height:1.6;">Used by AI Log, AI Review &amp; Morning Briefing.<br>Get your key at <span style="color:var(--accent);">openrouter.ai/keys</span></div>
-    <div class="field-label" style="margin-bottom:6px;">API Key</div>
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px 24px;max-width:460px;width:90%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div style="font-size:16px;font-weight:800;color:var(--text);">🔑 API Keys</div>
+      <button onclick="closeKeyModal()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;">✕</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:18px;line-height:1.6;">Each feature can use a separate OpenRouter key, or share one.<br>Get keys at <span style="color:var(--accent);">openrouter.ai/keys</span></div>
+    <!-- Feature tabs -->
+    <div style="display:flex;gap:0;background:var(--bg);border:1px solid var(--border);border-radius:6px;margin-bottom:18px;overflow:hidden;">
+      <button class="km-tab active" data-feature="ailog"    onclick="switchKeyTab('ailog',this)"    style="flex:1;padding:8px 4px;background:var(--panel);border:none;border-right:1px solid var(--border);color:var(--accent);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:0.5px;transition:all .15s;">🤖 AI Log</button>
+      <button class="km-tab"        data-feature="aireview" onclick="switchKeyTab('aireview',this)" style="flex:1;padding:8px 4px;background:transparent;border:none;border-right:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:0.5px;transition:all .15s;">📊 AI Review</button>
+      <button class="km-tab"        data-feature="briefing" onclick="switchKeyTab('briefing',this)" style="flex:1;padding:8px 4px;background:transparent;border:none;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:0.5px;transition:all .15s;">📰 Briefing</button>
+    </div>
+    <!-- Descriptions -->
+    <div id="km-desc-ailog"    style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:10px;padding:8px 10px;background:var(--bg);border-radius:4px;border:1px solid var(--border);">Uses <span style="color:var(--text);">claude-sonnet-4-5</span> via OpenRouter · Daily coaching review &amp; trade notes.</div>
+    <div id="km-desc-aireview" style="display:none;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:10px;padding:8px 10px;background:var(--bg);border-radius:4px;border:1px solid var(--border);">Uses <span style="color:var(--text);">claude-sonnet-4-5</span> via OpenRouter · Performance stats &amp; structured score.</div>
+    <div id="km-desc-briefing" style="display:none;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:10px;padding:8px 10px;background:var(--bg);border-radius:4px;border:1px solid var(--border);">Uses <span style="color:var(--text);">perplexity/sonar</span> via OpenRouter · Live NSE/BSE market briefing.</div>
+    <!-- Input -->
+    <div class="field-label" style="margin-bottom:6px;">API Key <span id="km-feature-label" style="color:var(--accent);font-size:9px;letter-spacing:1px;">· AI LOG</span></div>
     <input id="key-modal-input" type="password" class="j-input" placeholder="sk-or-v1-..." autocomplete="off" style="margin-bottom:6px;" />
-    <div id="key-modal-status" style="font-size:11px;color:var(--tv-teal);font-family:'Space Mono',monospace;min-height:16px;margin-bottom:16px;"></div>
-    <div style="display:flex;gap:8px;">
+    <div id="key-modal-status" style="font-size:11px;color:var(--tv-teal);font-family:'Space Mono',monospace;min-height:16px;margin-bottom:4px;"></div>
+    <!-- Copy-from helper -->
+    <div id="km-copy-helper" style="display:none;margin-bottom:10px;">
+      <button onclick="copyKeyFromFeature()" style="background:none;border:1px dashed var(--border);border-radius:4px;padding:5px 10px;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;width:100%;text-align:left;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <span id="km-copy-helper-text">↑ Copy from AI Log key</span>
+      </button>
+    </div>
+    <!-- Buttons -->
+    <div style="display:flex;gap:8px;margin-top:8px;">
       <button class="btn btn-accent" onclick="saveKeyModal()" style="flex:1;justify-content:center;">💾 Save Key</button>
+      <button class="btn" onclick="clearCurrentKey()" style="color:var(--danger);border-color:rgba(239,83,80,0.4);" title="Clear this key">🗑 Clear</button>
       <button class="btn" onclick="closeKeyModal()">Cancel</button>
+    </div>
+    <!-- Status strip -->
+    <div style="display:flex;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+      <div style="flex:1;text-align:center;"><div id="km-status-ailog"    style="font-size:9px;font-family:'Space Mono',monospace;padding:4px 6px;border-radius:3px;background:var(--bg);border:1px solid var(--border);line-height:1.6;">🤖 AI Log<br><span style="color:var(--muted);">not set</span></div></div>
+      <div style="flex:1;text-align:center;"><div id="km-status-aireview" style="font-size:9px;font-family:'Space Mono',monospace;padding:4px 6px;border-radius:3px;background:var(--bg);border:1px solid var(--border);line-height:1.6;">📊 Review<br><span style="color:var(--muted);">not set</span></div></div>
+      <div style="flex:1;text-align:center;"><div id="km-status-briefing" style="font-size:9px;font-family:'Space Mono',monospace;padding:4px 6px;border-radius:3px;background:var(--bg);border:1px solid var(--border);line-height:1.6;">📰 Briefing<br><span style="color:var(--muted);">not set</span></div></div>
     </div>
   </div>
 </div>
@@ -2229,7 +2257,7 @@ Under 250 words. Be direct. Reference actual data.`;
 
   try {
     const OPENROUTER_KEY = getOpenRouterKey();
-    if (!OPENROUTER_KEY) { openKeyModal(); throw new Error('No OpenRouter key set'); }
+    if (!OPENROUTER_KEY) { openKeyModal('ailog'); throw new Error('No AI Log key set — click 🔑 API Key to add one'); }
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': window.location.origin, 'X-Title': 'Trading Assistant' }, body: JSON.stringify({ model: 'anthropic/claude-sonnet-4-5', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] }) });
     const data = await res.json();
     if (!res.ok || data.error) {
@@ -2260,7 +2288,7 @@ Under 250 words. Be direct. Reference actual data.`;
       <div style="border:1px solid var(--danger);border-radius:4px;padding:14px;background:rgba(239,83,80,0.06);">
         <div style="color:var(--danger);font-weight:700;margin-bottom:6px;">⚠️ AI review failed</div>
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:10px;">${errMsg}</div>
-        ${isKeyErr ? `<button class="btn btn-sm" onclick="openKeyModal()" style="color:var(--accent);border-color:var(--accent);">🔑 Set API Key</button>` : ''}
+        ${isKeyErr ? `<button class="btn btn-sm" onclick="openKeyModal('ailog')" style="color:var(--accent);border-color:var(--accent);">🔑 Set AI Log Key</button>` : ''}
       </div>`;
     todayWrap.style.display = 'block';
     showToast('AI review failed — see details', true);
@@ -3633,21 +3661,135 @@ async function authSignOut() {
 
 <script>
 // ── OPENROUTER KEY MANAGEMENT ────────────────────────────
-// Single source of truth for all AI features in this app
+// Per-feature keys: ailog / aireview / briefing
+// Falls back to legacy 'openrouter_key' if feature key not set
 
-function getOpenRouterKey() {
+const KEY_STORES = {
+  ailog:    'or_key_ailog',
+  aireview: 'or_key_aireview',
+  briefing: 'or_key_briefing'
+};
+const FEATURE_LABELS = { ailog: '· AI LOG', aireview: '· AI REVIEW', briefing: '· BRIEFING' };
+let _activeKeyFeature = 'ailog';
+
+function getKeyForFeature(feature) {
+  const specific = localStorage.getItem(KEY_STORES[feature] || KEY_STORES.ailog) || '';
+  if (specific) return specific;
+  // Legacy fallback: if user had a single key before
   return localStorage.getItem('openrouter_key') || '';
 }
 
-function openKeyModal() {
-  const modal = document.getElementById('key-modal');
+// Convenience getters used by each feature
+function getOpenRouterKey()       { return getKeyForFeature('ailog'); }
+function getAIReviewKey()         { return getKeyForFeature('aireview'); }
+function getMorningBriefingKey()  { return getKeyForFeature('briefing'); }
+
+function _refreshKeyStatusStrip() {
+  const defs = [
+    { id: 'km-status-ailog',    feature: 'ailog',    label: '🤖 AI Log' },
+    { id: 'km-status-aireview', feature: 'aireview', label: '📊 Review' },
+    { id: 'km-status-briefing', feature: 'briefing', label: '📰 Briefing' }
+  ];
+  defs.forEach(d => {
+    const el = document.getElementById(d.id);
+    if (!el) return;
+    const k = getKeyForFeature(d.feature);
+    const has = k.length > 0;
+    el.innerHTML = d.label + '<br><span style="color:' + (has ? 'var(--tv-teal)' : 'var(--muted)') + ';font-weight:700;">' + (has ? '✓ set' : 'not set') + '</span>';
+    el.style.borderColor = has ? 'rgba(38,166,154,0.35)' : 'var(--border)';
+  });
+}
+
+function _refreshHeaderBtn() {
+  const keyBtn = document.getElementById('key-btn');
+  if (!keyBtn) return;
+  const anySet = Object.keys(KEY_STORES).some(f => getKeyForFeature(f));
+  const allSet = Object.keys(KEY_STORES).every(f => getKeyForFeature(f));
+  if (allSet) { keyBtn.style.color = 'var(--tv-teal)'; keyBtn.textContent = '🔑 Keys Set'; }
+  else if (anySet) { keyBtn.style.color = 'var(--warn)'; keyBtn.textContent = '🔑 Keys Partial'; }
+  else { keyBtn.style.color = 'var(--muted)'; keyBtn.textContent = '🔑 API Key'; }
+}
+
+function switchKeyTab(feature, btn) {
+  _activeKeyFeature = feature;
+  // Tab styles
+  document.querySelectorAll('.km-tab').forEach(t => {
+    t.style.background = 'transparent';
+    t.style.color = 'var(--muted)';
+  });
+  btn.style.background = 'var(--panel)';
+  btn.style.color = 'var(--accent)';
+  // Descriptions
+  ['ailog','aireview','briefing'].forEach(f => {
+    const el = document.getElementById('km-desc-' + f);
+    if (el) el.style.display = f === feature ? 'block' : 'none';
+  });
+  // Feature label
+  const lbl = document.getElementById('km-feature-label');
+  if (lbl) lbl.textContent = FEATURE_LABELS[feature] || '';
+  // Load existing key into input
   const inp = document.getElementById('key-modal-input');
   const status = document.getElementById('key-modal-status');
-  const existing = getOpenRouterKey();
+  const existing = localStorage.getItem(KEY_STORES[feature]) || '';
   inp.value = existing;
-  status.textContent = existing ? '✓ Key loaded from storage' : '';
+  status.textContent = existing ? '✓ Key loaded' : '';
   status.style.color = 'var(--tv-teal)';
+  inp.focus();
+  // Show copy-helper for aireview and briefing (can copy from ailog)
+  const helper = document.getElementById('km-copy-helper');
+  const helperText = document.getElementById('km-copy-helper-text');
+  if (feature !== 'ailog' && helper) {
+    const srcKey = getKeyForFeature('ailog');
+    if (srcKey) {
+      helper.style.display = 'block';
+      if (helperText) helperText.textContent = feature === 'aireview' ? '↑ Copy from AI Log key' : '↑ Copy from AI Log key';
+    } else {
+      helper.style.display = 'none';
+    }
+  } else if (helper) {
+    helper.style.display = 'none';
+  }
+}
+
+function copyKeyFromFeature() {
+  const srcKey = getKeyForFeature('ailog');
+  if (!srcKey) return;
+  const inp = document.getElementById('key-modal-input');
+  const status = document.getElementById('key-modal-status');
+  inp.value = srcKey;
+  status.textContent = '✓ Copied from AI Log key';
+  status.style.color = 'var(--tv-teal)';
+}
+
+function openKeyModal(feature) {
+  _activeKeyFeature = feature || 'ailog';
+  const modal = document.getElementById('key-modal');
   modal.style.display = 'flex';
+  // Activate the right tab
+  document.querySelectorAll('.km-tab').forEach(t => {
+    const isActive = t.dataset.feature === _activeKeyFeature;
+    t.style.background = isActive ? 'var(--panel)' : 'transparent';
+    t.style.color = isActive ? 'var(--accent)' : 'var(--muted)';
+  });
+  ['ailog','aireview','briefing'].forEach(f => {
+    const el = document.getElementById('km-desc-' + f);
+    if (el) el.style.display = f === _activeKeyFeature ? 'block' : 'none';
+  });
+  const lbl = document.getElementById('km-feature-label');
+  if (lbl) lbl.textContent = FEATURE_LABELS[_activeKeyFeature] || '';
+  const inp = document.getElementById('key-modal-input');
+  const status = document.getElementById('key-modal-status');
+  const existing = localStorage.getItem(KEY_STORES[_activeKeyFeature]) || '';
+  inp.value = existing;
+  status.textContent = existing ? '✓ Key loaded' : '';
+  status.style.color = 'var(--tv-teal)';
+  // Copy helper
+  const helper = document.getElementById('km-copy-helper');
+  if (helper) {
+    const srcKey = _activeKeyFeature !== 'ailog' ? getKeyForFeature('ailog') : '';
+    helper.style.display = (srcKey && _activeKeyFeature !== 'ailog') ? 'block' : 'none';
+  }
+  _refreshKeyStatusStrip();
   setTimeout(() => inp.focus(), 50);
 }
 
@@ -3663,14 +3805,27 @@ function saveKeyModal() {
     status.style.color = 'var(--tv-red)';
     return;
   }
-  localStorage.setItem('openrouter_key', val);
-  // Update key button indicator
-  const keyBtn = document.getElementById('key-btn');
-  if (keyBtn) { keyBtn.style.color = 'var(--tv-teal)'; keyBtn.textContent = '🔑 Key Set'; }
+  localStorage.setItem(KEY_STORES[_activeKeyFeature], val);
+  // Also keep legacy key in sync with ailog key for backward compat
+  if (_activeKeyFeature === 'ailog') localStorage.setItem('openrouter_key', val);
   status.textContent = '✓ Saved!';
   status.style.color = 'var(--tv-teal)';
-  setTimeout(closeKeyModal, 800);
-  showToast('OpenRouter key saved ✅', false);
+  _refreshKeyStatusStrip();
+  _refreshHeaderBtn();
+  showToast('🔑 ' + (_activeKeyFeature === 'ailog' ? 'AI Log' : _activeKeyFeature === 'aireview' ? 'AI Review' : 'Briefing') + ' key saved ✅', false);
+  setTimeout(closeKeyModal, 900);
+}
+
+function clearCurrentKey() {
+  localStorage.removeItem(KEY_STORES[_activeKeyFeature]);
+  if (_activeKeyFeature === 'ailog') localStorage.removeItem('openrouter_key');
+  const inp = document.getElementById('key-modal-input');
+  const status = document.getElementById('key-modal-status');
+  inp.value = '';
+  status.textContent = '✓ Key cleared';
+  status.style.color = 'var(--warn)';
+  _refreshKeyStatusStrip();
+  _refreshHeaderBtn();
 }
 
 // Close modal on backdrop click
@@ -3680,18 +3835,14 @@ document.getElementById('key-modal').addEventListener('click', function(e) {
 
 // On load: update key button state
 (function initKeyBtn() {
-  const keyBtn = document.getElementById('key-btn');
-  if (!keyBtn) return;
-  if (getOpenRouterKey()) {
-    keyBtn.style.color = 'var(--tv-teal)';
-    keyBtn.textContent = '🔑 Key Set';
-  }
+  _refreshHeaderBtn();
+  _refreshKeyStatusStrip();
 })();
 
 // ── MORNING BRIEFING ─────────────────────────────────────
 
 function mbGetKey() {
-  return getOpenRouterKey();
+  return getMorningBriefingKey();
 }
 
 // Init: set date label
@@ -3719,8 +3870,8 @@ function mbStatus(msg) {
 async function mbRunBriefing() {
   const apiKey = mbGetKey();
   if (!apiKey) {
-    openKeyModal();
-    mbStatus('⚠ Enter your OpenRouter key to continue');
+    openKeyModal('briefing');
+    mbStatus('⚠ Enter your Briefing key to continue');
     return;
   }
 
