@@ -2232,7 +2232,12 @@ Under 250 words. Be direct. Reference actual data.`;
     if (!OPENROUTER_KEY) { openKeyModal(); throw new Error('No OpenRouter key set'); }
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': window.location.origin, 'X-Title': 'Trading Assistant' }, body: JSON.stringify({ model: 'anthropic/claude-sonnet-4-5', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] }) });
     const data = await res.json();
-    if (data.error) { throw new Error(data.error.message); }
+    if (!res.ok || data.error) {
+      const msg = (data.error && data.error.message) || data.message || 'HTTP ' + res.status;
+      if (res.status === 401 || res.status === 403) throw new Error('Invalid API key (' + res.status + ') — ' + msg);
+      if (res.status === 429) throw new Error('Rate limit exceeded — wait a moment and retry');
+      throw new Error(msg);
+    }
     const text = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
     _lastAIReviewText = text;
 
@@ -2246,10 +2251,19 @@ Under 250 words. Be direct. Reference actual data.`;
     renderAIHistory();
     showToast(isRegen ? 'Review regenerated ✅' : 'AI review saved ✅', false);
   } catch(e) {
+    console.error('AI Log error:', e);
     stopAILoadingAnim();
     loadEl.style.display = 'none';
-    todayEl.innerHTML = '<span style="color:var(--danger);">Could not connect to AI. Check your API key.</span>';
+    const errMsg = e.message || 'Unknown error';
+    const isKeyErr = !getOpenRouterKey() || errMsg.toLowerCase().includes('key') || errMsg.toLowerCase().includes('auth') || errMsg.toLowerCase().includes('401');
+    todayEl.innerHTML = `
+      <div style="border:1px solid var(--danger);border-radius:4px;padding:14px;background:rgba(239,83,80,0.06);">
+        <div style="color:var(--danger);font-weight:700;margin-bottom:6px;">⚠️ AI review failed</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:10px;">${errMsg}</div>
+        ${isKeyErr ? `<button class="btn btn-sm" onclick="openKeyModal()" style="color:var(--accent);border-color:var(--accent);">🔑 Set API Key</button>` : ''}
+      </div>`;
     todayWrap.style.display = 'block';
+    showToast('AI review failed — see details', true);
   }
   genBtn.disabled = false;
   if (regenBtn) regenBtn.disabled = false;
