@@ -496,7 +496,6 @@ svg.ring{overflow:visible;}
   <div style="text-align:right;">
     <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end;">
       <button id="mute-btn" onclick="toggleMute()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--accent);font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;">🔔 Sound</button>
-      <button onclick="openKeyModal()" id="key-btn" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;color:var(--muted);transition:all 0.15s;" title="Set OpenRouter API Key">🔑 API Key</button>
       <button class="auth-user-bar" id="logout-btn" onclick="authSignOut()">🔐 Logout</button>
       <div id="clock">--:--:--</div>
     </div>
@@ -511,7 +510,6 @@ svg.ring{overflow:visible;}
   <button class="tab" onclick="switchTab('journal',this)">📒 Journal</button>
   <button class="tab" onclick="switchTab('analytics',this)">📈 Analytics</button>
   <button class="tab" onclick="switchTab('ailog',this)">🤖 AI Log</button>
-  <button class="tab" onclick="switchTab('briefing',this)">📰 Morning Briefing</button>
 </div>
 
 <!-- PRE-SESSION -->
@@ -1323,8 +1321,7 @@ Respond ONLY with a valid JSON object — no markdown, no backticks, no explanat
 Use 3-5 sections, 2-4 bullet points each. Use real numbers from the data. Colors: green=#26a69a, red=#ef5350, blue=#2962ff, yellow=#f9a825, purple=#ab47bc.`;
 
   try {
-    const OPENROUTER_KEY = getOpenRouterKey();
-    if (!OPENROUTER_KEY) { openKeyModal(); throw new Error('No OpenRouter key set — please add it via the 🔑 API Key button'); }
+    const OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -1432,144 +1429,7 @@ function renderAIReview(data) {
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════ -->
-<!-- MORNING BRIEFING TAB -->
-<div id="tab-briefing" class="panel">
-
-<style>
-/* ── BRIEFING: native app theme extensions ── */
-.mb-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-.mb-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
-@media(max-width:640px){.mb-grid2,.mb-grid3{grid-template-columns:1fr;}}
-.mb-sec-card{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:14px;}
-.mb-sec-card.accent-teal{border-left:3px solid var(--tv-teal);}
-.mb-sec-card.accent-blue{border-left:3px solid var(--tv-blue);}
-.mb-sec-card.accent-red{border-left:3px solid var(--tv-red);}
-.mb-sec-card.accent-warn{border-left:3px solid var(--warn);}
-.mb-sec-lbl{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.mb-data-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid rgba(54,60,78,0.5);gap:8px;}
-.mb-data-row:last-child{border-bottom:none;}
-.mb-data-key{font-size:11px;color:var(--muted);flex-shrink:0;font-family:'Space Mono',monospace;}
-.mb-data-val{font-size:11px;color:var(--text);font-weight:600;text-align:right;font-family:'Space Mono',monospace;}
-.mb-data-val.green{color:var(--tv-teal);}
-.mb-data-val.red{color:var(--tv-red);}
-.mb-data-val.amber{color:var(--warn);}
-.mb-data-val.dim{color:var(--muted);}
-.mb-bullet{font-size:12px;color:var(--text);line-height:1.9;display:flex;align-items:flex-start;gap:6px;}
-.mb-bullet::before{content:'▸';color:var(--tv-blue);flex-shrink:0;font-size:10px;margin-top:2px;}
-.mb-bullet.green{color:var(--tv-teal);}
-.mb-bullet.green::before{color:var(--tv-teal);}
-.mb-bullet.red{color:var(--tv-red);}
-.mb-bullet.red::before{color:var(--tv-red);}
-.mb-bullet.amber{color:var(--warn);}
-.mb-bullet.amber::before{color:var(--warn);}
-.mb-mpc-highlight{background:rgba(41,98,255,0.08);border:1px solid rgba(41,98,255,0.2);border-radius:3px;padding:10px 14px;margin-bottom:10px;}
-.mb-mpc-date{font-size:18px;font-weight:700;font-family:'Space Mono',monospace;color:var(--tv-blue);}
-.mb-mpc-sub{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
-.mb-warn-bar{background:rgba(249,168,37,0.08);border:1px solid rgba(249,168,37,0.25);border-radius:3px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--warn);display:flex;align-items:flex-start;gap:10px;line-height:1.6;}
-.mb-skeleton{background:var(--panel2);border-radius:2px;height:11px;margin:6px 0;animation:mbPulse 1.4s ease-in-out infinite;}
-@keyframes mbPulse{0%,100%{opacity:.25;}50%{opacity:.55;}}
-.mb-skeleton.w80{width:80%;}.mb-skeleton.w60{width:60%;}.mb-skeleton.w90{width:90%;}
-.mb-err-text{color:var(--tv-red);font-size:11px;font-family:'Space Mono',monospace;}
-.mb-status-bar{display:flex;align-items:center;gap:8px;padding:8px 0 2px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.5px;}
-.mb-live-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);transition:background 0.3s;}
-.mb-live-dot.active{background:var(--tv-teal);box-shadow:0 0 6px rgba(38,166,154,0.5);animation:mbDotPulse 1.5s infinite;}
-@keyframes mbDotPulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-.mb-last-run{margin-left:auto;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;}
-.mb-tag{font-size:9px;padding:2px 7px;border-radius:3px;background:var(--panel2);color:var(--muted);border:1px solid var(--border);letter-spacing:0.5px;font-weight:700;}
-</style>
-
-<!-- Header card: date + run button -->
-<div class="card" style="margin-bottom:12px;">
-  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-    <div>
-      <div style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:0.3px;">📰 NSE/BSE Morning Briefing</div>
-      <div id="mb-dateDisplay" style="font-size:10px;color:var(--muted);margin-top:3px;font-family:'Space Mono',monospace;letter-spacing:0.5px;"></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span class="check-tag tag-risk" id="mb-warBadge" style="display:none;">⚠ MACRO RISK</span>
-      <button class="btn btn-accent btn-sm" id="mb-runBtn" onclick="mbRunBriefing()">▶ Run Briefing</button>
-    </div>
-  </div>
-  <div class="mb-status-bar">
-    <span class="mb-live-dot" id="mb-liveDot"></span>
-    <span id="mb-statusLine">ready — uses the app's OpenRouter key</span>
-    <span class="mb-last-run" id="mb-lastRun"></span>
-  </div>
-</div>
-
-<!-- Macro warning bar (hidden until triggered) -->
-<div class="mb-warn-bar" id="mb-warnBox" style="display:none;">
-  <span style="font-size:16px;flex-shrink:0;">⚡</span>
-  <span id="mb-warnText"></span>
-</div>
-
-<!-- Row 1: Indices + F&O -->
-<div class="mb-grid2">
-  <div class="mb-sec-card accent-teal">
-    <div class="mb-sec-lbl">📊 Indices &amp; Futures</div>
-    <div id="mb-sec1"><span class="mb-err-text" style="color:var(--muted);">Press Run Briefing →</span></div>
-  </div>
-  <div class="mb-sec-card accent-warn">
-    <div class="mb-sec-lbl">⚡ F&amp;O / Options Pulse</div>
-    <div id="mb-sec2"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
-  </div>
-</div>
-
-<!-- Row 2: Movers + News -->
-<div class="mb-grid2">
-  <div class="mb-sec-card accent-teal">
-    <div class="mb-sec-lbl">🏆 Top Movers</div>
-    <div id="mb-sec3"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
-  </div>
-  <div class="mb-sec-card accent-red">
-    <div class="mb-sec-lbl">📰 Macro News &amp; Events</div>
-    <div id="mb-sec4"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
-  </div>
-</div>
-
-<!-- Row 3: MPC + Setup + Global -->
-<div class="mb-grid3">
-  <div class="mb-sec-card accent-blue">
-    <div class="mb-sec-lbl">🏦 RBI MPC Calendar</div>
-    <div id="mb-sec5"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
-  </div>
-  <div class="mb-sec-card accent-red">
-    <div class="mb-sec-lbl">🎯 Trade Setup</div>
-    <div id="mb-sec6"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
-  </div>
-  <div class="mb-sec-card accent-blue">
-    <div class="mb-sec-lbl">🌏 Global Cues</div>
-    <div id="mb-sec7"><span class="mb-err-text" style="color:var(--muted);">awaiting data...</span></div>
-  </div>
-</div>
-
-<!-- Footer tags -->
-<div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:4px;">
-  <span class="mb-tag">NSE</span>
-  <span class="mb-tag">BSE</span>
-  <span class="mb-tag">F&amp;O</span>
-  <span class="mb-tag">OPENROUTER · PERPLEXITY SONAR</span>
-</div>
-
-</div><!-- /tab-briefing -->
-
 </div><!-- /container -->
-
-<!-- API KEY MODAL -->
-<div id="key-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;align-items:center;justify-content:center;">
-  <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px 24px;max-width:420px;width:90%;">
-    <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px;">🔑 OpenRouter API Key</div>
-    <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:20px;line-height:1.6;">Used by AI Log, AI Review &amp; Morning Briefing.<br>Get your key at <span style="color:var(--accent);">openrouter.ai/keys</span></div>
-    <div class="field-label" style="margin-bottom:6px;">API Key</div>
-    <input id="key-modal-input" type="password" class="j-input" placeholder="sk-or-v1-..." autocomplete="off" style="margin-bottom:6px;" />
-    <div id="key-modal-status" style="font-size:11px;color:var(--tv-teal);font-family:'Space Mono',monospace;min-height:16px;margin-bottom:16px;"></div>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-accent" onclick="saveKeyModal()" style="flex:1;justify-content:center;">💾 Save Key</button>
-      <button class="btn" onclick="closeKeyModal()">Cancel</button>
-    </div>
-  </div>
-</div>
 
 <!-- GUARDRAIL MODAL -->
 <div id="guardrail-modal">
@@ -2228,8 +2088,7 @@ Provide coaching with these sections:
 Under 250 words. Be direct. Reference actual data.`;
 
   try {
-    const OPENROUTER_KEY = getOpenRouterKey();
-    if (!OPENROUTER_KEY) { openKeyModal(); throw new Error('No OpenRouter key set'); }
+    const OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': window.location.origin, 'X-Title': 'Trading Assistant' }, body: JSON.stringify({ model: 'anthropic/claude-sonnet-4-5', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] }) });
     const data = await res.json();
     if (data.error) { throw new Error(data.error.message); }
@@ -3518,7 +3377,7 @@ Chart.defaults.font.family='Space Mono, monospace';
 window._renderAnalyticsEnhanced = renderAll;
 
 // ── TOAST & AUDIO ──────────────────────────────────
-var audioMuted=false;
+let audioMuted=false;
 function showToast(msg,warn){const t=document.getElementById('toast');t.textContent=msg;t.className=warn?'warn-toast show':'show';setTimeout(()=>t.className='',3500);if(!audioMuted)playAlert(warn?'warn':'good');}
 function toggleMute(){audioMuted=!audioMuted;const b=document.getElementById('mute-btn');b.textContent=audioMuted?'🔇 Muted':'🔔 Sound';b.style.color=audioMuted?'var(--danger)':'var(--accent)';if(!audioMuted)playAlert('good');}
 let audioCtx=null;
@@ -3615,256 +3474,6 @@ async function authSignOut() {
   }
   // Otherwise auth screen stays visible — don't auto-load trades
 })();
-</script>
-
-<script>
-// ── OPENROUTER KEY MANAGEMENT ────────────────────────────
-// Single source of truth for all AI features in this app
-
-function getOpenRouterKey() {
-  return localStorage.getItem('openrouter_key') || '';
-}
-
-function openKeyModal() {
-  const modal = document.getElementById('key-modal');
-  const inp = document.getElementById('key-modal-input');
-  const status = document.getElementById('key-modal-status');
-  const existing = getOpenRouterKey();
-  inp.value = existing;
-  status.textContent = existing ? '✓ Key loaded from storage' : '';
-  status.style.color = 'var(--tv-teal)';
-  modal.style.display = 'flex';
-  setTimeout(() => inp.focus(), 50);
-}
-
-function closeKeyModal() {
-  document.getElementById('key-modal').style.display = 'none';
-}
-
-function saveKeyModal() {
-  const val = document.getElementById('key-modal-input').value.trim();
-  const status = document.getElementById('key-modal-status');
-  if (!val) {
-    status.textContent = '⚠ Please enter a key';
-    status.style.color = 'var(--tv-red)';
-    return;
-  }
-  localStorage.setItem('openrouter_key', val);
-  // Update key button indicator
-  const keyBtn = document.getElementById('key-btn');
-  if (keyBtn) { keyBtn.style.color = 'var(--tv-teal)'; keyBtn.textContent = '🔑 Key Set'; }
-  status.textContent = '✓ Saved!';
-  status.style.color = 'var(--tv-teal)';
-  setTimeout(closeKeyModal, 800);
-  showToast('OpenRouter key saved ✅', false);
-}
-
-// Close modal on backdrop click
-document.getElementById('key-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeKeyModal();
-});
-
-// On load: update key button state
-(function initKeyBtn() {
-  const keyBtn = document.getElementById('key-btn');
-  if (!keyBtn) return;
-  if (getOpenRouterKey()) {
-    keyBtn.style.color = 'var(--tv-teal)';
-    keyBtn.textContent = '🔑 Key Set';
-  }
-})();
-
-// ── MORNING BRIEFING ─────────────────────────────────────
-
-function mbGetKey() {
-  return getOpenRouterKey();
-}
-
-// Init: set date label
-(function mbInit() {
-  const dateEl = document.getElementById('mb-dateDisplay');
-  if (dateEl) {
-    dateEl.textContent =
-      new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'}).toUpperCase()
-      + ' · LIVE WEB SEARCH';
-  }
-})();
-
-function mbSkel(id) {
-  document.getElementById(id).innerHTML =
-    '<div class="mb-skeleton mb-skeleton w90"></div>' +
-    '<div class="mb-skeleton mb-skeleton w80"></div>' +
-    '<div class="mb-skeleton mb-skeleton w60"></div>';
-}
-
-function mbStatus(msg) {
-  const el = document.getElementById('mb-statusLine');
-  if (el) el.textContent = msg;
-}
-
-async function mbRunBriefing() {
-  const apiKey = mbGetKey();
-  if (!apiKey) {
-    openKeyModal();
-    mbStatus('⚠ Enter your OpenRouter key to continue');
-    return;
-  }
-
-  const btn = document.getElementById('mb-runBtn');
-  const dot = document.getElementById('mb-liveDot');
-  btn.disabled = true;
-  btn.textContent = '⟳ Fetching...';
-  dot.classList.add('active');
-
-  ['mb-sec1','mb-sec2','mb-sec3','mb-sec4','mb-sec5','mb-sec6','mb-sec7'].forEach(mbSkel);
-  document.getElementById('mb-warnBox').style.display = 'none';
-  document.getElementById('mb-warBadge').style.display = 'none';
-  mbStatus('connecting to OpenRouter · Perplexity Sonar...');
-
-  const today = new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
-
-  const prompt = `You are a sharp pre-market briefing engine for an Indian NSE/BSE day trader. Today is ${today}.
-
-Search the web for current live market data. Return EXACTLY 7 sections. Each section starts with its SECTION tag on its own line. Use "BULLET:color:text" (color = green/red/amber/default). Use "ROW:key|value|color" for data rows. Max 6 items per section. Use real numbers.
-
-SECTION_1_INDICES
-ROW lines for: GIFT Nifty level+trend, Nifty 50 last close, Bank Nifty, Sensex, India VIX, USD/INR
-
-SECTION_2_FNO
-ROW lines for: PCR value+interpretation, Max Pain level, Highest Call OI strike (resistance), Highest Put OI strike (support), Nifty RSI, FII Futures bias
-
-SECTION_3_MOVERS
-BULLET lines: top 3 gainers (green) with %, top 3 losers (red) with %, any 52-week high/low
-
-SECTION_4_NEWS
-BULLET lines: top 4 market-moving news items today, color amber for warnings, red for bad news
-
-SECTION_5_MPC
-ROW lines for: Next MPC date, Repo rate, Last decision, Cumulative cuts, Market expectation
-
-SECTION_6_SETUP
-ROW lines for: Market bias, Support 1, Support 2, Resistance 1, Resistance 2
-Then BULLET lines for 2 trade ideas (amber) and 1 risk (red)
-
-SECTION_7_GLOBAL
-ROW lines for: S&P 500, Nasdaq, Dow Jones, Nikkei, Hang Seng, Brent Crude, Gold MCX
-
-Also output one line: WARN:your geopolitical/macro risk warning text here (or WARN:none if nothing major)`;
-
-  try {
-    mbStatus('fetching live market data...');
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey,
-        'HTTP-Referer': window.location.origin,
-        'X-Title': 'Trading Assistant'
-      },
-      body: JSON.stringify({
-        model: 'perplexity/sonar',
-        max_tokens: 1800,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(errData.error?.message || `HTTP ${response.status}`);
-    }
-
-    const data = await response.json();
-    const fullText = data.choices?.[0]?.message?.content || '';
-    if (!fullText) throw new Error('Empty response from API');
-
-    mbStatus('parsing briefing...');
-
-    // WARN bar
-    const warnMatch = fullText.match(/WARN:(.+)/);
-    if (warnMatch && warnMatch[1].trim().toLowerCase() !== 'none') {
-      document.getElementById('mb-warnBox').style.display = 'flex';
-      document.getElementById('mb-warnText').textContent = warnMatch[1].trim();
-      document.getElementById('mb-warBadge').style.display = 'inline-flex';
-    }
-
-    function mbParseSection(tag) {
-      const re = new RegExp(tag + '\\s*\\n([\\s\\S]*?)(?=SECTION_|WARN:|$)', 'i');
-      const m = fullText.match(re);
-      return m ? m[1].trim() : '';
-    }
-
-    function mbRenderSection(id, raw) {
-      const el = document.getElementById(id);
-      if (!raw) { el.innerHTML = '<span class="mb-err-text">no data</span>'; return; }
-      const lines = raw.split('\n').filter(l => l.trim());
-      let html = '';
-      lines.forEach(line => {
-        if (line.startsWith('ROW:')) {
-          const parts = line.replace('ROW:', '').split('|');
-          const k = parts[0]||'', v = parts[1]||'', c = (parts[2]||'').trim();
-          html += `<div class="mb-data-row"><span class="mb-data-key">${k}</span><span class="mb-data-val ${c}">${v}</span></div>`;
-        } else if (line.startsWith('BULLET:')) {
-          const parts = line.replace('BULLET:', '').split(':');
-          const c = parts[0]||'', t = parts.slice(1).join(':');
-          html += `<div class="mb-bullet ${c === 'default' ? '' : c}">${t}</div>`;
-        } else if (line.includes('|')) {
-          const p = line.split('|');
-          html += `<div class="mb-data-row"><span class="mb-data-key">${p[0]}</span><span class="mb-data-val">${p[1]||''}</span></div>`;
-        } else if (line.startsWith('•') || line.startsWith('-')) {
-          html += `<div class="mb-bullet">${line.replace(/^[•\-]\s*/,'')}</div>`;
-        } else if (line.trim()) {
-          html += `<div class="mb-bullet">${line.trim()}</div>`;
-        }
-      });
-      el.innerHTML = html || '<span class="mb-err-text">parse error</span>';
-    }
-
-    mbRenderSection('mb-sec1', mbParseSection('SECTION_1_INDICES'));
-    mbRenderSection('mb-sec2', mbParseSection('SECTION_2_FNO'));
-    mbRenderSection('mb-sec3', mbParseSection('SECTION_3_MOVERS'));
-    mbRenderSection('mb-sec4', mbParseSection('SECTION_4_NEWS'));
-
-    // MPC: first ROW becomes the highlight box
-    const mpcRaw = mbParseSection('SECTION_5_MPC');
-    const mpcLines = mpcRaw.split('\n').filter(l => l.trim());
-    let mpcHtml = '';
-    let firstMpc = true;
-    mpcLines.forEach(line => {
-      if (line.startsWith('ROW:')) {
-        const parts = line.replace('ROW:', '').split('|');
-        const k = parts[0]||'', v = parts[1]||'', c = (parts[2]||'').trim();
-        if (firstMpc) {
-          mpcHtml += `<div class="mb-mpc-highlight"><div class="mb-mpc-date">${v}</div><div class="mb-mpc-sub">${k}</div></div>`;
-          firstMpc = false;
-        } else {
-          mpcHtml += `<div class="mb-data-row"><span class="mb-data-key">${k}</span><span class="mb-data-val ${c}">${v}</span></div>`;
-        }
-      }
-    });
-    document.getElementById('mb-sec5').innerHTML = mpcHtml || '<span class="mb-err-text">no data</span>';
-
-    mbRenderSection('mb-sec6', mbParseSection('SECTION_6_SETUP'));
-    mbRenderSection('mb-sec7', mbParseSection('SECTION_7_GLOBAL'));
-
-    const now = new Date();
-    document.getElementById('mb-lastRun').textContent =
-      'updated ' + now.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit',hour12:true}) + ' IST';
-    mbStatus('briefing complete — have a great session 📈');
-    showToast('Morning Briefing ready ✅', false);
-
-  } catch (err) {
-    ['mb-sec1','mb-sec2','mb-sec3','mb-sec4','mb-sec5','mb-sec6','mb-sec7'].forEach(id => {
-      document.getElementById(id).innerHTML =
-        `<span class="mb-err-text">⚠ ${err.message}</span>`;
-    });
-    mbStatus('error — ' + err.message);
-    showToast('Briefing error: ' + err.message, true);
-  }
-
-  btn.disabled = false;
-  btn.textContent = '↺ Refresh';
-  dot.classList.remove('active');
-}
 </script>
 </body>
 </html>
