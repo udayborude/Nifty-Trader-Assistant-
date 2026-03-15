@@ -1279,7 +1279,7 @@ async function generateAIReview() {
   const pf        = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : '∞';
 
   // Per-trade summary (last 25, most recent first from Supabase order)
-  const tradeSummary = filteredTrades.slice(0, 25).map((t, i) => {
+  const tradeSummary = filteredTrades.slice(0, 15).map((t, i) => {
     const tags = [...(t.rules || []), ...(t.breaks || [])].join(', ') || 'none';
     return `T${i+1} [${t.date}] ${t.type||'?'} | ${t.result||'?'} | P&L ₹${t.totalPnl != null ? Math.round(t.totalPnl) : 'open'} | ${t.entryTime||'?'}→${t.exitTime||'?'} | Tags: ${tags}${t.note ? ' | Note: '+t.note : ''}`;
   }).join('\n');
@@ -1335,12 +1335,18 @@ Use 3-5 sections, 2-4 bullet points each. Use real numbers from the data. Colors
       },
       body: JSON.stringify({
         model: 'anthropic/claude-sonnet-4-5',
-        max_tokens: 1200,
+        max_tokens: 512,
         messages: [{ role: 'user', content: prompt }]
       })
     });
     const data = await res.json();
-    if (data.error) throw new Error(data.error.message || 'OpenRouter error');
+    if (data.error) {
+      const msg = data.error.message || 'OpenRouter error';
+      if (msg.includes('credits') || msg.includes('afford') || msg.includes('tokens')) {
+        throw new Error('Free tier limit — reduce max_tokens or add credits at openrouter.ai/settings/credits');
+      }
+      throw new Error(msg);
+    }
     const raw   = (data.choices?.[0]?.message?.content || '').trim();
     const clean = raw.replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
     const parsed = JSON.parse(clean);
@@ -1563,7 +1569,7 @@ function renderAIReview(data) {
       <div style="font-size:16px;font-weight:800;color:var(--text);">🔑 API Keys</div>
       <button onclick="closeKeyModal()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;">✕</button>
     </div>
-    <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:18px;line-height:1.6;">Each feature can use a separate OpenRouter key, or share one.<br>Get keys at <span style="color:var(--accent);">openrouter.ai/keys</span></div>
+    <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:18px;line-height:1.6;">Each feature can use a separate OpenRouter key, or share one.<br>Get keys at <span style="color:var(--accent);">openrouter.ai/keys</span><br><span style="color:var(--warn);">Free tier?</span> Use models ending in <span style="color:var(--text);">:free</span> e.g. <span style="color:var(--tv-teal);">google/gemini-2.0-flash-exp:free</span></div>
     <!-- Feature tabs -->
     <div style="display:flex;gap:0;background:var(--bg);border:1px solid var(--border);border-radius:6px;margin-bottom:18px;overflow:hidden;">
       <button class="km-tab active" data-feature="ailog"    onclick="switchKeyTab('ailog',this)"    style="flex:1;padding:8px 4px;background:var(--panel);border:none;border-right:1px solid var(--border);color:var(--accent);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:0.5px;transition:all .15s;">🤖 AI Log</button>
@@ -2241,7 +2247,7 @@ async function generateDailyReview(isRegen = false) {
   let histContext = '';
   if (prevReviews.length) { histContext = '\n\nPREVIOUS AI REVIEWS:\n' + prevReviews.slice(0, 3).map(r => `[${r.date}]: ${r.summary}`).join('\n'); }
   const todayTrades = trades.filter(t => t.date === today);
-  const allSummary = trades.slice(0, 30).map((t, i) => `Trade ${i+1} (${t.date}): ${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Time:${t.entryTime}→${t.exitTime}, Tags:[${t.rules.join(', ')}]${t.note?', Note:'+t.note:''}`).join('\n');
+  const allSummary = trades.slice(0, 15).map((t, i) => `Trade ${i+1} (${t.date}): ${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Time:${t.entryTime}→${t.exitTime}, Tags:[${t.rules.join(', ')}]${t.note?', Note:'+t.note:''}`).join('\n');
   const prompt = `You are a strict but caring trading coach for an options trader. Today is ${today}.
 TODAY'S TRADES: ${todayTrades.length ? todayTrades.map(t => `${t.type}, ${t.result}, Entry ₹${t.entryPrice}, Exit ₹${t.exitPrice||'open'}, P&L ₹${t.totalPnl!==null?Math.round(t.totalPnl):'open'}, Tags:[${t.rules.join(', ')}]`).join('\n') : 'No trades today.'}
 ALL RECENT TRADES: ${allSummary}
@@ -2258,12 +2264,13 @@ Under 250 words. Be direct. Reference actual data.`;
   try {
     const OPENROUTER_KEY = getOpenRouterKey();
     if (!OPENROUTER_KEY) { openKeyModal('ailog'); throw new Error('No AI Log key set — click 🔑 API Key to add one'); }
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': window.location.origin, 'X-Title': 'Trading Assistant' }, body: JSON.stringify({ model: 'anthropic/claude-sonnet-4-5', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] }) });
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': window.location.origin, 'X-Title': 'Trading Assistant' }, body: JSON.stringify({ model: 'anthropic/claude-sonnet-4-5', max_tokens: 512, messages: [{ role: 'user', content: prompt }] }) });
     const data = await res.json();
     if (!res.ok || data.error) {
       const msg = (data.error && data.error.message) || data.message || 'HTTP ' + res.status;
       if (res.status === 401 || res.status === 403) throw new Error('Invalid API key (' + res.status + ') — ' + msg);
       if (res.status === 429) throw new Error('Rate limit exceeded — wait a moment and retry');
+      if (msg.includes('credits') || msg.includes('afford') || msg.includes('tokens')) throw new Error('Free tier limit — add credits at openrouter.ai/settings/credits or use a free model (e.g. google/gemini-2.0-flash-exp:free)');
       throw new Error(msg);
     }
     const text = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
@@ -3890,7 +3897,7 @@ async function mbRunBriefing() {
 
   const prompt = `You are a sharp pre-market briefing engine for an Indian NSE/BSE day trader. Today is ${today}.
 
-Search the web for current live market data. Return EXACTLY 7 sections. Each section starts with its SECTION tag on its own line. Use "BULLET:color:text" (color = green/red/amber/default). Use "ROW:key|value|color" for data rows. Max 6 items per section. Use real numbers.
+Search the web for current live market data. Return EXACTLY 7 sections. Each section starts with its SECTION tag on its own line. Use "BULLET:color:text" (color = green/red/amber/default). Use "ROW:key|value|color" for data rows. Max 4 items per section. Be concise. Use real numbers.
 
 SECTION_1_INDICES
 ROW lines for: GIFT Nifty level+trend, Nifty 50 last close, Bank Nifty, Sensex, India VIX, USD/INR
@@ -3928,14 +3935,18 @@ Also output one line: WARN:your geopolitical/macro risk warning text here (or WA
       },
       body: JSON.stringify({
         model: 'perplexity/sonar',
-        max_tokens: 1800,
+        max_tokens: 600,
         messages: [{ role: 'user', content: prompt }]
       })
     });
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      throw new Error(errData.error?.message || `HTTP ${response.status}`);
+      const errMsg = errData.error?.message || `HTTP ${response.status}`;
+      if (errMsg.includes('credits') || errMsg.includes('afford') || errMsg.includes('tokens')) {
+        throw new Error('Free tier limit — add credits at openrouter.ai/settings/credits or switch to a free model');
+      }
+      throw new Error(errMsg);
     }
 
     const data = await response.json();
