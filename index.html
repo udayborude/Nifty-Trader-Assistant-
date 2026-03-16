@@ -1877,9 +1877,9 @@ function evalPQResult(){
   // Liquidity confirmation layer
   let liqNote='';
   if(pqLIQ==='yes'){
-    liqNote='<br><span style="color:var(--accent);font-size:10px;">⚡ No overhead resistance — premium can move freely. Buyside liquidity will be taken. Valid entry.</span>';
+    liqNote='<br><span style="color:var(--accent);font-size:10px;">⚡ No overhead resistance — premium can move freely. Buyside liquidity will be taken. Extra Hold.</span>';
   } else if(pqLIQ==='no'){
-    liqNote='<br><span style="color:var(--danger);font-size:10px;">🧱 Overhead resistance present — premium will struggle to move. Do NOT enter. Wait for resistance to clear.</span>';
+    liqNote='<br><span style="color:var(--danger);font-size:10px;">🧱 Overhead resistance present — premium will struggle to move. Book early Profits.</span>';
   }
   el.style.background=c.bg;el.style.borderColor=c.bc;el.style.color=c.col;
   el.innerHTML=c.icon+' <strong>'+c.title+'</strong><br><span style="opacity:.8;font-size:10px;">'+c.msg+'</span>'+liqNote;
