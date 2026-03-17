@@ -914,7 +914,7 @@ svg.ring{overflow:visible;}
         <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="HTF checked"            style="font-size:11px;padding:7px 10px;">HTF checked</button>
         <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="EMA terrain followed"   style="font-size:11px;padding:7px 10px;">EMA terrain followed</button>
         <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="Not waited for 5 min candle close"        style="font-size:11px;padding:7px 10px;color:var(--danger);">Not waited for 5 min candle close ⚠️</button>
-        <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="Ignored SL"             style="font-size:11px;padding:7px 10px;color:var(--danger);">Ignored SL ⚠️</button>
+        <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="Low Quality Pullback "             style="font-size:11px;padding:7px 10px;color:var(--danger);">Low Quality Pullback  ⚠️</button>
         <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="Traded first 3 candles" style="font-size:11px;padding:7px 10px;color:var(--danger);">First 3 candles ⚠️</button>
         <button class="ans-btn rule-tag-btn" onclick="toggleRuleTag(this)" data-rule="Revenge trade"          style="font-size:11px;padding:7px 10px;color:var(--danger);">Revenge trade ⚠️</button>
       </div>
@@ -1908,7 +1908,7 @@ function toggleCheck(el){el.classList.toggle('checked');const items=document.que
 //  JOURNAL — SUPABASE-BACKED
 // ══════════════════════════════════════════════════
 window.trades=[]; let trades=window.trades, tradeType=null, ruleTags=[];
-const BAD=['Not waited for 5 min candle close','Ignored SL','Traded first 3 candles','Revenge trade'];
+const BAD=['Not waited for 5 min candle close','Low Quality Pullback ','Traded first 3 candles','Revenge trade'];
 let guardrailOverride=false, pendingTrade=null;
 
 function setEntryDate(){document.getElementById('entry-date-display').textContent=todayStr();}
@@ -2663,7 +2663,7 @@ function renderStreak(trades){
 // ══════════════════════════════════════════════════════════════════
 function renderEdgeTable(trades){
   const goodRules=['Waited for pullback','Waited 5min candle close','AVWAP confirmed','HTF checked','EMA terrain followed'];
-  const badRules=['Not waited for 5 min candle close','Ignored SL','Traded first 3 candles','Revenge trade'];
+  const badRules=['Not waited for 5 min candle close','Low Quality Pullback ','Traded first 3 candles','Revenge trade'];
   const eEmp=document.getElementById('edge-empty');
 
   // Build tag map
