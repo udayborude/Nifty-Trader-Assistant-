@@ -2983,9 +2983,10 @@ function renderRisk(trades){
 //  BEST / WORST TRADES
 // ══════════════════════════════════════════════════════════════════
 function renderBestWorst(trades){
-  const sorted=[...trades].filter(t=>t.result!=='OPEN').sort((a,b)=>b.totalPnl-a.totalPnl);
-  const top3=sorted.slice(0,3);
-  const bot3=sorted.slice(-3).reverse();
+  const closed=[...trades].filter(t=>t.result!=='OPEN').sort((a,b)=>b.totalPnl-a.totalPnl);
+  const top3=closed.slice(0,3);
+  const losers=closed.filter(t=>t.totalPnl<0).sort((a,b)=>a.totalPnl-b.totalPnl);
+  const bot3=losers.slice(0,3);
   document.getElementById('best-trades').innerHTML=top3.map(t=>`
     <div class="bw-row">
       <div><div class="bw-meta">${t.date} · ${t.type}</div><div class="bw-meta">${t.entryTime}→${t.exitTime}</div></div>
@@ -2997,7 +2998,7 @@ function renderBestWorst(trades){
       <div><div class="bw-meta">${t.date} · ${t.type}</div><div class="bw-meta">${t.entryTime}→${t.exitTime}</div></div>
       <div class="bw-pnl" style="color:var(--danger)">₹${Math.round(t.totalPnl).toLocaleString('en-IN')}</div>
     </div>
-  `).join('')||'<div class="empty"><span class="empty-icon">📉</span>No closed trades</div>';
+  `).join('')||'<div class="empty"><span class="empty-icon">🎯</span>No losing trades — great work!</div>';
 }
 
 // ══════════════════════════════════════════════════════════════════
