@@ -3084,7 +3084,8 @@ function renderDailyPnL(trades){
   const totalDays = entries.length;
   const greenDays = entries.filter(e=>e.pnl>=0).length;
   const best  = entries.reduce((a,b)=>b.pnl>a.pnl?b:a);
-  const worst = entries.reduce((a,b)=>b.pnl<a.pnl?b:a);
+  const losingDays = entries.filter(e=>e.pnl<0);
+  const worst = losingDays.length ? losingDays.reduce((a,b)=>b.pnl<a.pnl?b:a) : null;
   const avgDaily = entries.reduce((s,e)=>s+e.pnl,0)/totalDays;
 
   badge.textContent = greenDays+'/'+totalDays+' green days';
@@ -3092,7 +3093,7 @@ function renderDailyPnL(trades){
 
   kpiEl.innerHTML = [
     {val:'₹'+Math.round(best.pnl).toLocaleString('en-IN'),  lbl:'Best Day',    col:'var(--accent)'},
-    {val:'₹'+Math.round(worst.pnl).toLocaleString('en-IN'), lbl:'Worst Day',   col:'var(--danger)'},
+    {val: worst ? '₹'+Math.round(worst.pnl).toLocaleString('en-IN') : '🎯 None', lbl:'Worst Day', col: worst ? 'var(--danger)' : 'var(--tv-teal)'},
     {val:Math.round(avgDaily>=0?avgDaily:-avgDaily).toLocaleString('en-IN')+(avgDaily>=0?' avg':' avg loss'), lbl:'Avg Daily P&L', col:avgDaily>=0?'var(--accent)':'var(--danger)'},
     {val:greenDays+' / '+totalDays,                         lbl:'Green Days',  col:'var(--accent)'},
   ].map(k=>`<div class="dpnl-kpi"><div class="dk-val" style="color:${k.col}">${k.val}</div><div class="dk-lbl">${k.lbl}</div></div>`).join('');
