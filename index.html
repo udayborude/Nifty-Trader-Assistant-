@@ -1163,6 +1163,67 @@ svg.ring{overflow:visible;}
     </div>
   </div>
 
+  <!-- ── MENTAL STATE ANALYTICS ── -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="card-title"><span class="dot"></span>Mental State · Analytics</div>
+
+    <!-- HIGHLIGHT CARDS -->
+    <div class="row r2" style="margin-bottom:14px;">
+      <div id="ms-best-card" style="border-radius:4px;padding:12px;border:1px solid var(--border);background:rgba(38,166,154,0.06);">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tv-teal);margin-bottom:5px;">Sharpest state</div>
+        <div id="ms-best-name" style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;">—</div>
+        <div id="ms-best-sub" style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">No data yet</div>
+      </div>
+      <div id="ms-worst-card" style="border-radius:4px;padding:12px;border:1px solid var(--border);background:rgba(239,83,80,0.06);">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--danger);margin-bottom:5px;">Costliest state</div>
+        <div id="ms-worst-name" style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;">—</div>
+        <div id="ms-worst-sub" style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">No data yet</div>
+      </div>
+    </div>
+
+    <!-- STATE vs OUTCOME + DISTRIBUTION -->
+    <div class="row r2" style="margin-bottom:14px;">
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">State vs outcome</div>
+        <div style="display:flex;gap:4px;margin-bottom:6px;font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;">
+          <span style="min-width:112px;"></span><span style="flex:1;text-align:right;">avg P&amp;L</span><span style="min-width:36px;text-align:right;">WR</span>
+        </div>
+        <div id="ms-outcome-rows"><div class="empty" style="padding:16px 0;"><span class="empty-icon" style="font-size:18px;">🧠</span>Log sessions to see</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Session distribution · last 30 days</div>
+        <div id="ms-dist-rows"><div class="empty" style="padding:16px 0;"><span class="empty-icon" style="font-size:18px;">📊</span>No sessions logged</div></div>
+        <div id="ms-dist-footer" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;"></div>
+      </div>
+    </div>
+
+    <!-- OVERTRADING + DISCIPLINE -->
+    <div class="row r2" style="margin-bottom:14px;">
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Avg trades per session</div>
+        <div id="ms-trades-rows"><div class="empty" style="padding:16px 0;"><span class="empty-icon" style="font-size:18px;">🔢</span>No data yet</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Avg rule breaks per session</div>
+        <div id="ms-breaks-rows"><div class="empty" style="padding:16px 0;"><span class="empty-icon" style="font-size:18px;">📋</span>No data yet</div></div>
+      </div>
+    </div>
+
+    <!-- READINESS vs PNL SCATTER -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Readiness score vs daily P&amp;L</div>
+      <div style="position:relative;height:180px;"><canvas id="ms-scatter-chart" role="img" aria-label="Scatter chart of readiness score vs daily P&L">Log sessions and trades to see correlation.</canvas></div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;" id="ms-scatter-legend"></div>
+    </div>
+
+    <!-- STATE STREAK -->
+    <div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">State streak · last 7 sessions</div>
+      <div id="ms-streak-strip" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;"></div>
+      <div id="ms-streak-warning" style="display:none;padding:10px 14px;border-radius:4px;font-size:11px;font-family:'Space Mono',monospace;line-height:1.6;"></div>
+    </div>
+  </div>
+
   <!-- ── ROW 4: EDGE ANALYSIS + RISK ── -->
   <div class="section-title">Edge & Risk Analysis</div>
   <div class="row r2" style="margin-bottom:32px;">
@@ -1751,6 +1812,10 @@ async function restoreTodaySession(){
     if(btn) selectTemp(btn, s.state);
     const msg=document.getElementById('save-session-msg');
     if(msg){ msg.textContent='Restored: '+s.state+' ('+today+')'; msg.style.color='var(--muted)'; }
+  }
+  // Re-render analytics with session data now loaded
+  if(typeof renderMentalStateAnalytics==='function' && window.trades){
+    renderMentalStateAnalytics(window.trades.slice().reverse());
   }
 }
 
@@ -2399,6 +2464,7 @@ function renderAll(){
   renderDayOfWeek(trades);
   renderRRScatter(trades);
   renderDailyPnL(trades);
+  renderMentalStateAnalytics(trades);
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -3537,6 +3603,217 @@ Chart.defaults.font.family='Space Mono, monospace';
 
 
 // Hook into original app tab switch
+// ══════════════════════════════════════════════════════════════════
+//  MENTAL STATE ANALYTICS
+// ══════════════════════════════════════════════════════════════════
+const MS_META={
+  calm:          {label:'Calm',          color:'#1D9E75', bg:'rgba(38,166,154,0.08)',  border:'rgba(38,166,154,0.3)'},
+  sleep_deprived:{label:'Sleep Deprived',color:'#BA7517', bg:'rgba(186,117,23,0.08)', border:'rgba(186,117,23,0.3)'},
+  hurried:       {label:'Hurried',       color:'#EF9F27', bg:'rgba(239,159,39,0.08)', border:'rgba(239,159,39,0.3)'},
+  distracted:    {label:'Distracted',    color:'#D85A30', bg:'rgba(216,90,48,0.08)',  border:'rgba(216,90,48,0.3)'},
+  agitated:      {label:'Agitated',      color:'#E24B4A', bg:'rgba(226,75,74,0.08)',  border:'rgba(226,75,74,0.3)'},
+};
+const MS_ORDER=['calm','sleep_deprived','hurried','distracted','agitated'];
+let msScatterChart=null;
+
+function renderMentalStateAnalytics(trades){
+  const sessions=window._sessionCache||{};
+  const sessionDates=Object.keys(sessions);
+  if(!sessionDates.length){resetMSEmpty();return;}
+
+  // ── Build daily P&L map from trades ───────────────────────────
+  const byDate={};
+  trades.filter(t=>t.result!=='OPEN').forEach(t=>{
+    if(!byDate[t.date])byDate[t.date]={pnl:0,count:0,wins:0,breaks:0};
+    byDate[t.date].pnl+=(t.totalPnl||0);
+    byDate[t.date].count++;
+    if(t.result==='WIN')byDate[t.date].wins++;
+    byDate[t.date].breaks+=(t.breaks?.length||0);
+  });
+
+  // ── Aggregate per state ────────────────────────────────────────
+  const stateMap={};
+  MS_ORDER.forEach(s=>stateMap[s]={pnlSum:0,days:0,wins:0,total:0,breaks:0,readSum:0,scatterPts:[]});
+
+  sessionDates.forEach(date=>{
+    const sess=sessions[date];
+    const state=sess.state;
+    if(!stateMap[state])return;
+    const d=byDate[date];
+    if(!d)return; // session logged but no trades that day — skip for outcome stats
+    stateMap[state].pnlSum+=d.pnl;
+    stateMap[state].days++;
+    stateMap[state].wins+=d.wins;
+    stateMap[state].total+=d.count;
+    stateMap[state].breaks+=d.breaks;
+    stateMap[state].readSum+=(sess.readiness||0);
+    stateMap[state].scatterPts.push({x:sess.readiness||0,y:Math.round(d.pnl)});
+  });
+
+  // ── State vs Outcome rows ──────────────────────────────────────
+  const outcomeRows=MS_ORDER.map(s=>{
+    const m=stateMap[s];
+    if(!m.days)return '';
+    const meta=MS_META[s];
+    const avgPnl=Math.round(m.pnlSum/m.days);
+    const wr=Math.round((m.wins/m.total)*100);
+    const maxAbs=Math.max(...MS_ORDER.map(k=>Math.abs(stateMap[k].days?stateMap[k].pnlSum/stateMap[k].days:0)),1);
+    const barW=Math.min(100,Math.round(Math.abs(avgPnl)/maxAbs*100));
+    const pnlStr=(avgPnl>=0?'+':'')+'₹'+Math.abs(avgPnl).toLocaleString('en-IN');
+    return `<div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border);">
+      <div style="width:7px;height:7px;border-radius:50%;background:${meta.color};flex-shrink:0;"></div>
+      <div style="font-size:12px;min-width:110px;color:var(--text);">${meta.label}</div>
+      <div style="flex:1;height:5px;background:var(--panel2);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${barW}%;background:${meta.color};border-radius:3px;"></div></div>
+      <div style="font-size:11px;font-weight:700;min-width:80px;text-align:right;color:${avgPnl>=0?'var(--tv-teal)':'var(--danger)'};">${pnlStr}</div>
+      <div style="font-size:10px;color:var(--muted);min-width:32px;text-align:right;">${wr}%</div>
+    </div>`;
+  }).join('');
+  document.getElementById('ms-outcome-rows').innerHTML=outcomeRows||'<div class="empty" style="padding:16px 0;"><span class="empty-icon" style="font-size:18px;">🧠</span>Log sessions with trades to see</div>';
+
+  // ── Distribution (last 30 days) ────────────────────────────────
+  const last30=sessionDates.sort().slice(-30);
+  const distCount={};MS_ORDER.forEach(s=>distCount[s]=0);
+  last30.forEach(d=>{const s=sessions[d].state;if(distCount[s]!==undefined)distCount[s]++;});
+  const maxDist=Math.max(...Object.values(distCount),1);
+  const distRows=MS_ORDER.map(s=>{
+    if(!distCount[s])return '';
+    const meta=MS_META[s];
+    const barW=Math.round(distCount[s]/maxDist*100);
+    return `<div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:12px;min-width:110px;color:var(--text);">${meta.label}</div>
+      <div style="flex:1;height:7px;background:var(--panel2);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${barW}%;background:${meta.color};border-radius:4px;"></div></div>
+      <div style="font-size:11px;font-weight:700;min-width:24px;text-align:right;color:var(--muted);">${distCount[s]}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('ms-dist-rows').innerHTML=distRows||'<div class="empty" style="padding:16px 0;">No sessions</div>';
+  const calmPct=last30.length?Math.round(distCount.calm/last30.length*100):0;
+  const footer=document.getElementById('ms-dist-footer');
+  footer.style.display='block';
+  footer.textContent=last30.length+' sessions · '+calmPct+'% calm days';
+
+  // ── Avg trades per session ─────────────────────────────────────
+  const tradeCounts={};MS_ORDER.forEach(s=>tradeCounts[s]=[]);
+  sessionDates.forEach(d=>{const s=sessions[d].state;const day=byDate[d];if(day&&tradeCounts[s])tradeCounts[s].push(day.count);});
+  const maxAvgTrades=Math.max(...MS_ORDER.map(s=>tradeCounts[s].length?tradeCounts[s].reduce((a,b)=>a+b,0)/tradeCounts[s].length:0),1);
+  document.getElementById('ms-trades-rows').innerHTML=MS_ORDER.map(s=>{
+    if(!tradeCounts[s].length)return '';
+    const avg=(tradeCounts[s].reduce((a,b)=>a+b,0)/tradeCounts[s].length).toFixed(1);
+    const barW=Math.round(parseFloat(avg)/maxAvgTrades*100);
+    const meta=MS_META[s];
+    return `<div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:12px;min-width:110px;color:var(--text);">${meta.label}</div>
+      <div style="flex:1;height:5px;background:var(--panel2);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${barW}%;background:${meta.color};border-radius:3px;"></div></div>
+      <div style="font-size:11px;font-weight:700;min-width:28px;text-align:right;color:var(--muted);">${avg}</div>
+    </div>`;
+  }).join('')||'<div class="empty" style="padding:16px 0;">No data yet</div>';
+
+  // ── Avg rule breaks per session ────────────────────────────────
+  const breakCounts={};MS_ORDER.forEach(s=>breakCounts[s]=[]);
+  sessionDates.forEach(d=>{const s=sessions[d].state;const day=byDate[d];if(day&&breakCounts[s])breakCounts[s].push(day.breaks);});
+  const maxAvgBreaks=Math.max(...MS_ORDER.map(s=>breakCounts[s].length?breakCounts[s].reduce((a,b)=>a+b,0)/breakCounts[s].length:0),1);
+  document.getElementById('ms-breaks-rows').innerHTML=MS_ORDER.map(s=>{
+    if(!breakCounts[s].length)return '';
+    const avg=(breakCounts[s].reduce((a,b)=>a+b,0)/breakCounts[s].length).toFixed(1);
+    const barW=Math.round(parseFloat(avg)/maxAvgBreaks*100);
+    const meta=MS_META[s];
+    return `<div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:12px;min-width:110px;color:var(--text);">${meta.label}</div>
+      <div style="flex:1;height:5px;background:var(--panel2);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${barW}%;background:${meta.color};border-radius:3px;"></div></div>
+      <div style="font-size:11px;font-weight:700;min-width:28px;text-align:right;color:var(--muted);">${avg}</div>
+    </div>`;
+  }).join('')||'<div class="empty" style="padding:16px 0;">No data yet</div>';
+
+  // ── Best / Worst highlight cards ───────────────────────────────
+  const statesWithData=MS_ORDER.filter(s=>stateMap[s].days>0);
+  if(statesWithData.length){
+    const best=statesWithData.reduce((a,b)=>(stateMap[b].pnlSum/stateMap[b].days)>(stateMap[a].pnlSum/stateMap[a].days)?b:a);
+    const worst=statesWithData.reduce((a,b)=>(stateMap[b].pnlSum/stateMap[b].days)<(stateMap[a].pnlSum/stateMap[a].days)?b:a);
+    const bm=MS_META[best],bd=stateMap[best];
+    const wm=MS_META[worst],wd=stateMap[worst];
+    const bAvg=Math.round(bd.pnlSum/bd.days);
+    const wAvg=Math.round(wd.pnlSum/wd.days);
+    const bWR=Math.round((bd.wins/bd.total)*100);
+    const wWR=Math.round((wd.wins/wd.total)*100);
+    document.getElementById('ms-best-card').style.borderColor=bm.border;
+    document.getElementById('ms-best-name').textContent=bm.label;
+    document.getElementById('ms-best-sub').textContent='₹'+Math.abs(bAvg).toLocaleString('en-IN')+' avg · '+bWR+'% WR · '+bd.days+' sessions';
+    document.getElementById('ms-worst-card').style.borderColor=wm.border;
+    document.getElementById('ms-worst-name').textContent=wm.label;
+    document.getElementById('ms-worst-sub').textContent=(wAvg<0?'-':'')+'₹'+Math.abs(wAvg).toLocaleString('en-IN')+' avg · '+wWR+'% WR · '+wd.days+' sessions';
+  }
+
+  // ── Scatter chart ──────────────────────────────────────────────
+  const scatterEl=document.getElementById('ms-scatter-chart');
+  if(msScatterChart){try{msScatterChart.destroy();}catch(e){}}
+  const allPts=[];const ptColors=[];
+  MS_ORDER.forEach(s=>{
+    stateMap[s].scatterPts.forEach(p=>{allPts.push(p);ptColors.push(MS_META[s].color);});
+  });
+  if(allPts.length){
+    msScatterChart=new Chart(scatterEl,{
+      type:'scatter',
+      data:{datasets:[{data:allPts,pointBackgroundColor:ptColors,pointBorderColor:'transparent',pointRadius:6,pointHoverRadius:8}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const p=allPts[ctx.dataIndex];const pstr=(p.y>=0?'+':'')+'₹'+Math.abs(p.y).toLocaleString('en-IN');return 'Readiness: '+p.x+'% · '+pstr;}}}},
+        scales:{
+          x:{min:0,max:100,title:{display:true,text:'Readiness score',font:{size:10},color:'#787b86'},grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:10},color:'#787b86',callback:v=>v+'%'}},
+          y:{title:{display:true,text:'Daily P&L (₹)',font:{size:10},color:'#787b86'},grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:10},color:'#787b86',callback:v=>(v>=0?'+':'')+'₹'+(Math.abs(v)/1000).toFixed(1)+'k'}}
+        }
+      }
+    });
+  }
+
+  // Scatter legend
+  document.getElementById('ms-scatter-legend').innerHTML=MS_ORDER.filter(s=>stateMap[s].scatterPts.length).map(s=>`
+    <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">
+      <span style="width:8px;height:8px;border-radius:50%;background:${MS_META[s].color};display:inline-block;"></span>${MS_META[s].label}
+    </span>`).join('');
+
+  // ── Streak strip (last 7 sessions) ────────────────────────────
+  const last7=sessionDates.sort().slice(-7);
+  const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  document.getElementById('ms-streak-strip').innerHTML=last7.map(d=>{
+    const s=sessions[d].state;
+    const meta=MS_META[s];
+    const [dd,mm,yy]=d.split('/');
+    const dayName=dayNames[new Date(yy,mm-1,dd).getDay()];
+    const initial=meta.label.charAt(0);
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+      <div style="width:34px;height:34px;border-radius:4px;background:${meta.bg};border:1px solid ${meta.border};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:${meta.color};">${initial}</div>
+      <div style="font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;">${dayName}</div>
+    </div>`;
+  }).join('');
+
+  // Streak warning: 2+ consecutive negative states
+  const negStates=['sleep_deprived','hurried','distracted','agitated'];
+  let streak=0,streakState=null;
+  for(let i=last7.length-1;i>=0;i--){
+    const s=sessions[last7[i]].state;
+    if(negStates.includes(s)){if(streakState===null||s===streakState){streak++;streakState=s;}else break;}else break;
+  }
+  const warnEl=document.getElementById('ms-streak-warning');
+  if(streak>=2){
+    const meta=MS_META[streakState];
+    warnEl.style.display='block';
+    warnEl.style.background=meta.bg;
+    warnEl.style.border='1px solid '+meta.border;
+    warnEl.style.color=meta.color;
+    warnEl.innerHTML='<span style="font-weight:700;">Streak warning</span> — you logged '+meta.label+' '+streak+' sessions in a row. Consider reduced size or a walk-away rule.';
+  } else {
+    warnEl.style.display='none';
+  }
+}
+
+function resetMSEmpty(){
+  ['ms-outcome-rows','ms-dist-rows','ms-trades-rows','ms-breaks-rows'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.innerHTML='<div class="empty" style="padding:16px 0;"><span class="empty-icon" style="font-size:18px;">🧠</span>No sessions logged yet</div>';
+  });
+  document.getElementById('ms-streak-strip').innerHTML='';
+  document.getElementById('ms-streak-warning').style.display='none';
+  document.getElementById('ms-dist-footer').style.display='none';
+}
+
 window._renderAnalyticsEnhanced = renderAll;
 
 // ── TOAST & AUDIO ──────────────────────────────────
