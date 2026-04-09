@@ -561,20 +561,20 @@ svg.ring{overflow:visible;}
 
     <!-- STATE SELECTOR -->
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;">
-      <div class="emotion-btn" onclick="selectTemp(this,'calm')">
-        <span class="emoji">&#x1F9CA;</span>Calm<div class="temp-sub" style="color:var(--tv-teal);">IDEAL</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'zen')">
+        <span class="emoji">🧘</span>Zen<div class="temp-sub" style="color:#42a5f5;">PEAK</div>
       </div>
-      <div class="emotion-btn" onclick="selectTemp(this,'sleep_deprived')">
-        <span class="emoji">&#x1F634;</span>Sleep Deprived<div class="temp-sub" style="color:var(--warn);">CAUTION</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'cold')">
+        <span class="emoji">🧊</span>Calm<div class="temp-sub" style="color:var(--accent);">IDEAL</div>
       </div>
-      <div class="emotion-btn" onclick="selectTemp(this,'hurried')">
-        <span class="emoji">&#x26A1;</span>Hurried<div class="temp-sub" style="color:var(--warn);">CAUTION</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'warm')">
+        <span class="emoji">🌤️</span>Focused<div class="temp-sub" style="color:var(--warn);">GOOD</div>
       </div>
-      <div class="emotion-btn" onclick="selectTemp(this,'distracted')">
-        <span class="emoji">&#x1F300;</span>Distracted<div class="temp-sub" style="color:var(--accent2);">RISKY</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'hot')">
+        <span class="emoji">🔥</span>Heated<div class="temp-sub" style="color:var(--accent2);">CAUTION</div>
       </div>
-      <div class="emotion-btn" onclick="selectTemp(this,'agitated')">
-        <span class="emoji">&#x1F525;</span>Agitated<div class="temp-sub" style="color:var(--danger);">SKIP DAY</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'burnt')">
+        <span class="emoji">💀</span>Burnt<div class="temp-sub" style="color:var(--danger);">SKIP DAY</div>
       </div>
     </div>
 
@@ -586,7 +586,7 @@ svg.ring{overflow:visible;}
       <div id="temp-indicator" style="position:absolute;top:-7px;width:20px;height:20px;background:var(--text);border-radius:50%;border:3px solid var(--bg);transition:left 0.4s ease;transform:translateX(-50%);left:10%;"></div>
     </div>
     <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;margin-bottom:18px;">
-      <span style="color:var(--tv-teal)">CALM</span><span style="color:var(--warn)">SLEEP DEP</span><span style="color:var(--warn)">HURRIED</span><span style="color:var(--accent2)">DISTRACTED</span><span style="color:var(--danger)">AGITATED</span>
+      <span style="color:#42a5f5">ZEN</span><span style="color:var(--accent)">CALM</span><span style="color:var(--warn)">FOCUSED</span><span style="color:var(--accent2)">HEATED</span><span style="color:var(--danger)">BURNT</span>
     </div>
 
     <!-- READINESS SCORE + CONDITIONS -->
@@ -623,10 +623,6 @@ svg.ring{overflow:visible;}
     <div id="tc-verdict" style="margin-top:16px;padding:14px 16px;border-radius:10px;font-family:'Space Mono',monospace;font-size:12px;line-height:1.7;display:none;border:1px solid;"></div>
     <div class="progress-bar" style="margin-top:12px;"><div class="progress-fill" id="temp-check-progress" style="width:0%"></div></div>
     <div class="progress-label" id="temp-check-label">0 / 8 conditions met · Readiness: 0%</div>
-    <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
-      <button class="btn btn-accent" onclick="saveSessionState()" id="save-session-btn">&#x1F4BE; Save Session State</button>
-      <span id="save-session-msg" style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);"></span>
-    </div>
   </div>
 </div>
 
@@ -1579,7 +1575,6 @@ async function loadTrades() {
     // Re-render analytics if that tab is currently visible
     if(document.getElementById('tab-analytics').classList.contains('active'))renderAll();
     setDbStatus('connected');
-    restoreTodaySession();
   } catch(e) {
     setDbStatus('error');
     showToast('Could not load trades from DB', true);
@@ -1686,73 +1681,13 @@ function toggleBelief(el){el.classList.toggle('checked');const items=document.qu
 // ── TEMP CHECK ─────────────────────────────────────
 // ── TEMPERATURE CHECK ──────────────────────────────
 const tempData={
-  calm:          {pct:10, cls:'selected',     col:'var(--tv-teal)',  bg:'rgba(38,166,154,0.08)', border:'rgba(38,166,154,0.2)',  score:25, msg:'🧊 Calm — clear mind, full patience. Ideal state to execute your plan.'},
-  sleep_deprived:{pct:32, cls:'selected',     col:'var(--warn)',     bg:'rgba(249,168,37,0.08)', border:'rgba(249,168,37,0.2)',  score:0,  msg:'😴 Sleep deprived — reaction time and decision quality are degraded. Reduce size.'},
-  hurried:       {pct:54, cls:'selected',     col:'var(--warn)',     bg:'rgba(249,168,37,0.08)', border:'rgba(249,168,37,0.2)',  score:-5, msg:'⚡ Hurried — prep was skipped. No plan = no trade. Take 5 minutes to review levels.'},
-  distracted:    {pct:76, cls:'selected-bad', col:'var(--accent2)',  bg:'rgba(255,107,53,0.06)', border:'rgba(249,168,37,0.2)',  score:-10,msg:'🌀 Distracted — split attention leads to misread price action. Remove distractions first.'},
-  agitated:      {pct:95, cls:'selected-bad', col:'var(--danger)',   bg:'rgba(239,83,80,0.08)',  border:'rgba(239,83,80,0.2)',   score:-20,msg:'🔥 Agitated — emotional charge active. High risk of revenge trading. Do not trade today.'},
+  zen:   {pct:5,  cls:'selected',     col:'#42a5f5', bg:'rgba(124,156,255,0.06)',border:'rgba(124,156,255,0.2)', score:25, msg:'🧘 Peak state — clear mind, zero noise. Trade with full size.'},
+  cold:  {pct:25, cls:'selected',     col:'var(--tv-teal)', bg:'rgba(38,166,154,0.08)',border:'rgba(38,166,154,0.2)', score:20, msg:'🧊 Ice cold — disciplined and patient. Ideal trading state.'},
+  warm:  {pct:50, cls:'selected',     col:'var(--warn)', bg:'rgba(249,168,37,0.08)',border:'rgba(249,168,37,0.2)', score:10, msg:'🌤️ Warm and focused — solid. Watch for slight impatience.'},
+  hot:   {pct:75, cls:'selected-bad', col:'var(--accent2)', bg:'rgba(255,107,53,0.06)',border:'rgba(249,168,37,0.2)', score:0,  msg:'🔥 Overheated — reduce size by 50%. Breathe before entry.'},
+  burnt: {pct:95, cls:'selected-bad', col:'var(--danger)', bg:'rgba(239,83,80,0.08)',border:'rgba(239,83,80,0.2)', score:-20, msg:'💀 Burnt out — do NOT trade today. Protect your capital.'},
 };
 let currentTempScore=0, currentTempState=null;
-
-// ── SESSION STATE SAVE / LOAD ───────────────────────
-async function saveSessionState(){
-  if(!currentTempState){
-    document.getElementById('save-session-msg').textContent='Select a state first.';
-    document.getElementById('save-session-msg').style.color='var(--warn)';
-    return;
-  }
-  const btn=document.getElementById('save-session-btn');
-  const msg=document.getElementById('save-session-msg');
-  btn.disabled=true; btn.textContent='Saving...';
-  const date=todayStr();
-  const score=parseInt(document.getElementById('tc-score-txt').textContent)||0;
-  const record={ date, state:currentTempState, readiness:score, saved_at:new Date().toISOString() };
-  try{
-    // Upsert by date — one session state per day
-    await dbFetch('sessions', {
-      method:'POST',
-      body:JSON.stringify(record),
-      headers:{...HEADERS,'Prefer':'resolution=merge-duplicates,return=representation','on_conflict':'date'}
-    });
-    msg.textContent='Saved for '+date+' ✓';
-    msg.style.color='var(--tv-teal)';
-    window._sessionCache = window._sessionCache||{};
-    window._sessionCache[date]=record;
-  }catch(e){
-    // Table may not exist yet — store in memory for this session
-    window._sessionCache = window._sessionCache||{};
-    window._sessionCache[date]=record;
-    msg.textContent='Saved locally (create sessions table to persist) ✓';
-    msg.style.color='var(--warn)';
-    console.warn('sessions table not found, cached in memory:',e);
-  }
-  btn.disabled=false; btn.textContent='💾 Save Session State';
-  setTimeout(()=>{ msg.textContent=''; },4000);
-}
-
-async function loadAllSessions(){
-  try{
-    const rows=await dbFetch('sessions?select=date,state,readiness&order=date.desc');
-    window._sessionCache={};
-    rows.forEach(r=>{ window._sessionCache[r.date]=r; });
-    return window._sessionCache;
-  }catch(e){
-    return window._sessionCache||{};
-  }
-}
-
-// Auto-restore today's saved state on load
-async function restoreTodaySession(){
-  const sessions=await loadAllSessions();
-  const today=todayStr();
-  if(sessions[today]){
-    const s=sessions[today];
-    const btn=document.querySelector(`.emotion-btn[onclick*="${s.state}"]`);
-    if(btn) selectTemp(btn, s.state);
-    const msg=document.getElementById('save-session-msg');
-    if(msg){ msg.textContent='Restored: '+s.state+' ('+today+')'; msg.style.color='var(--muted)'; }
-  }
-}
 
 function selectTemp(el,state){
   document.querySelectorAll('.emotion-btn').forEach(b=>b.classList.remove('selected','selected-bad'));
@@ -1829,9 +1764,9 @@ function updateReadinessScore(){
     vEl.style.display='block';
     const warns=[];
     conds.forEach(c=>{if(!c.classList.contains('checked')&&tcWarnings[c.id])warns.push(tcWarnings[c.id]);});
-    if(currentTempState==='agitated'){
+    if(currentTempState==='burnt'){
       vEl.style.background='rgba(239,83,80,0.08)';vEl.style.borderColor='rgba(239,83,80,0.25)';vEl.style.color='var(--danger)';
-      vEl.innerHTML='🔴 DO NOT TRADE TODAY<br><span style="opacity:.7">Agitated state overrides everything. Rest, recover, return tomorrow.</span>';
+      vEl.innerHTML='🔴 DO NOT TRADE TODAY<br><span style="opacity:.7">Burnt state overrides everything. Rest, recover, return tomorrow.</span>';
     } else if(score>=70){
       vEl.style.background='rgba(41,98,255,0.08)';vEl.style.borderColor='rgba(41,98,255,0.2)';vEl.style.color='var(--accent)';
       vEl.innerHTML='🟢 CLEARED TO TRADE<br><span style="opacity:.7">Mental state and conditions aligned. Execute your plan.</span>';
