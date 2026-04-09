@@ -1737,7 +1737,7 @@ function switchTab(name,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   if(btn)btn.classList.add('active');
-  if(name==='analytics')renderAnalytics().catch(e=>console.error('Analytics render error:',e));
+  if(name==='analytics')renderAnalytics();
   if(name==='ailog'){renderAIHistory();checkTodayReviewExists();}
 }
 
@@ -1767,13 +1767,14 @@ async function saveSessionState(){
   btn.disabled=true; btn.textContent='Saving...';
   const date=todayStr();
   const score=parseInt(document.getElementById('tc-score-txt').textContent)||0;
-  const record={ date, state:currentTempState, readiness:score, saved_at:new Date().toISOString() };
+  const userId=window._currentUser?.id||null;
+  const record={ date, state:currentTempState, readiness:score, saved_at:new Date().toISOString(), user_id:userId };
   try{
-    // Upsert by date — one session state per day
+    // Upsert by date + user_id — one session state per day per user
     await dbFetch('sessions', {
       method:'POST',
       body:JSON.stringify(record),
-      headers:{...HEADERS,'Prefer':'resolution=merge-duplicates,return=representation','on_conflict':'date'}
+      headers:{...HEADERS,'Prefer':'resolution=merge-duplicates,return=representation','on_conflict':'date,user_id'}
     });
     msg.textContent='Saved for '+date+' ✓';
     msg.style.color='var(--tv-teal)';
@@ -1793,7 +1794,9 @@ async function saveSessionState(){
 
 async function loadAllSessions(){
   try{
-    const rows=await dbFetch('sessions?select=date,state,readiness&order=date.desc');
+    const userId=window._currentUser?.id||null;
+    const filter=userId?`&user_id=eq.${userId}`:'';
+    const rows=await dbFetch('sessions?select=date,state,readiness&order=date.desc'+filter);
     window._sessionCache={};
     rows.forEach(r=>{ window._sessionCache[r.date]=r; });
     return window._sessionCache;
@@ -2215,11 +2218,8 @@ async function clearTrades(){
 }
 
 // ── ANALYTICS (Enhanced — delegates to renderAll below) ──────────────
-async function renderAnalytics(){
-  if(typeof renderAll==='function'){
-    await loadAllSessions();
-    renderAll();
-  }
+function renderAnalytics(){
+  if(typeof renderAll==='function')renderAll();
 }
 
 // ── CSV EXPORT ─────────────────────────────────────
@@ -3622,15 +3622,7 @@ let msScatterChart=null;
 function renderMentalStateAnalytics(trades){
   const sessions=window._sessionCache||{};
   const sessionDates=Object.keys(sessions);
-  if(!sessionDates.length){
-    // Try loading from Supabase one more time in case cache missed
-    loadAllSessions().then(loaded=>{
-      const dates=Object.keys(loaded||{});
-      if(dates.length) renderMentalStateAnalytics(trades);
-      else resetMSEmpty();
-    }).catch(()=>resetMSEmpty());
-    return;
-  }
+  if(!sessionDates.length){resetMSEmpty();return;}
 
   // ── Build daily P&L map from trades ───────────────────────────
   const byDate={};
@@ -3902,6 +3894,7 @@ async function authSubmit() {
 }
 
 function onAuthSuccess(user) {
+  window._currentUser = user;
   document.getElementById('auth-screen').classList.add('hidden');
   const logoutBtn = document.getElementById('logout-btn');
   logoutBtn.classList.add('visible');
@@ -3913,6 +3906,8 @@ function onAuthSuccess(user) {
 async function authSignOut() {
   if (!confirm('Log out?')) return;
   await _supa.auth.signOut();
+  window._currentUser = null;
+  window._sessionCache = {};
   document.getElementById('auth-screen').classList.remove('hidden');
   document.getElementById('logout-btn').classList.remove('visible');
 }
