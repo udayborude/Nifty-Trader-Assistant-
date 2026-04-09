@@ -1640,7 +1640,7 @@ async function loadTrades() {
     // Re-render analytics if that tab is currently visible
     if(document.getElementById('tab-analytics').classList.contains('active'))renderAll();
     setDbStatus('connected');
-    restoreTodaySession();
+    await restoreTodaySession();
   } catch(e) {
     setDbStatus('error');
     showToast('Could not load trades from DB', true);
@@ -1732,12 +1732,12 @@ function updateClock(){
 setInterval(updateClock,1000);updateClock();
 
 // ── TABS ───────────────────────────────────────────
-function switchTab(name,btn){
+async function switchTab(name,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   if(btn)btn.classList.add('active');
-  if(name==='analytics')renderAnalytics();
+  if(name==='analytics'){await loadAllSessions();renderAnalytics();}
   if(name==='ailog'){renderAIHistory();checkTodayReviewExists();}
 }
 
@@ -1767,13 +1767,14 @@ async function saveSessionState(){
   btn.disabled=true; btn.textContent='Saving...';
   const date=todayStr();
   const score=parseInt(document.getElementById('tc-score-txt').textContent)||0;
-  const record={ date, state:currentTempState, readiness:score, saved_at:new Date().toISOString() };
+  const { data: { user } } = await _supa.auth.getUser();
+  const record={ date, state:currentTempState, readiness:score, saved_at:new Date().toISOString(), user_id: user.id };
   try{
-    // Upsert by date — one session state per day
-    await dbFetch('sessions', {
+    // Upsert by (date, user_id) — one session state per user per day
+    await dbFetch('sessions?on_conflict=date,user_id', {
       method:'POST',
       body:JSON.stringify(record),
-      headers:{...HEADERS,'Prefer':'resolution=merge-duplicates,return=representation','on_conflict':'date'}
+      headers:{...HEADERS,'Prefer':'resolution=merge-duplicates,return=representation'}
     });
     msg.textContent='Saved for '+date+' ✓';
     msg.style.color='var(--tv-teal)';
@@ -1793,7 +1794,8 @@ async function saveSessionState(){
 
 async function loadAllSessions(){
   try{
-    const rows=await dbFetch('sessions?select=date,state,readiness&order=date.desc');
+    const { data: { user } } = await _supa.auth.getUser();
+    const rows=await dbFetch('sessions?select=date,state,readiness&order=date.desc&user_id=eq.'+user.id);
     window._sessionCache={};
     rows.forEach(r=>{ window._sessionCache[r.date]=r; });
     return window._sessionCache;
