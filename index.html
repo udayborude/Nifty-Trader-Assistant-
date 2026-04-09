@@ -1625,7 +1625,9 @@ function setDbStatus(state) {
 }
 
 async function dbFetch(path, opts = {}) {
-  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: HEADERS, ...opts });
+  const { headers: extraHeaders, ...restOpts } = opts;
+  const mergedHeaders = { ...HEADERS, ...(extraHeaders || {}) };
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: mergedHeaders, ...restOpts });
   if (!res.ok) { const e = await res.text(); throw new Error(e); }
   return res.status === 204 ? null : res.json();
 }
@@ -1774,7 +1776,7 @@ async function saveSessionState(){
     await dbFetch('sessions?on_conflict=date,user_id', {
       method:'POST',
       body:JSON.stringify(record),
-      headers:{...HEADERS,'Prefer':'resolution=merge-duplicates,return=representation'}
+      headers:{'Prefer':'resolution=merge-duplicates,return=minimal'}
     });
     msg.textContent='Saved for '+date+' ✓';
     msg.style.color='var(--tv-teal)';
@@ -1784,9 +1786,9 @@ async function saveSessionState(){
     // Table may not exist yet — store in memory for this session
     window._sessionCache = window._sessionCache||{};
     window._sessionCache[date]=record;
-    msg.textContent='Saved locally (create sessions table to persist) ✓';
-    msg.style.color='var(--warn)';
-    console.warn('sessions table not found, cached in memory:',e);
+    msg.textContent='DB Error: '+e.message;
+    msg.style.color='var(--danger)';
+    console.error('saveSessionState failed:', e.message);
   }
   btn.disabled=false; btn.textContent='💾 Save Session State';
   setTimeout(()=>{ msg.textContent=''; },4000);
