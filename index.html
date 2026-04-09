@@ -623,6 +623,18 @@ svg.ring{overflow:visible;}
     <div id="tc-verdict" style="margin-top:16px;padding:14px 16px;border-radius:10px;font-family:'Space Mono',monospace;font-size:12px;line-height:1.7;display:none;border:1px solid;"></div>
     <div class="progress-bar" style="margin-top:12px;"><div class="progress-fill" id="temp-check-progress" style="width:0%"></div></div>
     <div class="progress-label" id="temp-check-label">0 / 8 conditions met · Readiness: 0%</div>
+
+    <!-- SAVE STATE BUTTON -->
+    <div style="margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-accent" onclick="saveMentalState()" id="save-state-btn" style="gap:6px;">
+        💾 Save Today's Mental State
+      </button>
+      <div id="save-state-status" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;"></div>
+    </div>
+    <!-- TODAY'S SAVED STATE BADGE -->
+    <div id="today-state-banner" style="display:none;margin-top:12px;padding:10px 14px;border-radius:6px;background:rgba(41,98,255,0.06);border:1px solid rgba(41,98,255,0.2);font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);line-height:1.7;">
+      <strong>✅ Today's state saved.</strong> <span id="today-state-summary"></span>
+    </div>
   </div>
 </div>
 
@@ -1028,6 +1040,48 @@ svg.ring{overflow:visible;}
     <div id="ai-review-empty" style="display:none;padding:28px 0;text-align:center;">
       <div style="font-size:28px;opacity:.4;margin-bottom:8px;">🤖</div>
       <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;">No trades in selected period.<br>Log some trades first.</div>
+    </div>
+  </div>
+
+  <!-- ── MENTAL STATE ANALYTICS ── -->
+  <div class="section-title" id="mental-state-section">🧠 Mental State vs Performance</div>
+  <div id="mental-state-analytics" style="margin-bottom:12px;">
+    <div id="mental-empty-banner" style="display:none;padding:18px 20px;border-radius:4px;background:var(--panel);border:1px solid var(--border);font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-align:center;line-height:1.8;">
+      <div style="font-size:24px;margin-bottom:6px;">🧠</div>
+      No mental state data yet.<br>
+      Go to <strong style="color:var(--accent);">Pre-Session</strong> tab, fill your temperature check and click <strong style="color:var(--accent);">Save Today's Mental State</strong>.
+    </div>
+    <div id="mental-loaded-content" style="display:none;">
+      <!-- Row 1: State PnL + Readiness Scatter -->
+      <div class="row r2" style="margin-bottom:12px;">
+        <div class="card">
+          <div class="card-title"><span class="dot"></span>Avg P&L by Mental State</div>
+          <div id="mental-state-bars" style="padding:4px 0;"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="dot"></span>Readiness Score vs Daily P&L<span class="badge" id="mental-corr-badge">—</span></div>
+          <div class="chart-wrap" style="height:180px;"><canvas id="mental-scatter-chart"></canvas></div>
+          <div id="mental-scatter-empty" class="empty" style="display:none;"><span class="empty-icon">🔍</span>Need matching dates with both trade and state data</div>
+        </div>
+      </div>
+      <!-- Row 2: State history timeline + Condition impact -->
+      <div class="row r2" style="margin-bottom:12px;">
+        <div class="card">
+          <div class="card-title"><span class="dot"></span>Mental State History · Last 14 Days</div>
+          <div id="mental-history-bars" style="padding:4px 0;"></div>
+          <div id="mental-history-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Save your state for a few days to see trends</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="dot"></span>Condition Impact on P&L</div>
+          <div id="mental-condition-bars" style="padding:4px 0;"></div>
+          <div id="mental-condition-empty" class="empty" style="display:none;"><span class="empty-icon">📊</span>Need more data to calculate condition impact</div>
+        </div>
+      </div>
+      <!-- Row 3: Summary insight -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-title"><span class="dot"></span>Mental Edge Insights</div>
+        <div id="mental-insights" style="font-size:12px;font-family:'Space Mono',monospace;color:var(--muted);line-height:1.8;"></div>
+      </div>
     </div>
   </div>
 
@@ -1636,6 +1690,73 @@ async function deleteAIReview(id) {
   await dbFetch('ai_reviews?id=eq.' + id, { method: 'DELETE', headers: { ...HEADERS, 'Prefer': 'return=minimal' } });
   renderAIHistory();
   showToast('Review deleted', true);
+}
+
+// ══════════════════════════════════════════════════
+//  MENTAL STATE — SUPABASE SAVE / LOAD
+// ══════════════════════════════════════════════════
+async function saveMentalState() {
+  const btn = document.getElementById('save-state-btn');
+  const statusEl = document.getElementById('save-state-status');
+  if (!currentTempState) { showToast('Select your mental state first (Zen / Calm / Focused...)', true); return; }
+  const score = parseInt(document.getElementById('tc-score-txt').textContent) || 0;
+  const date = todayStr();
+  // Collect conditions
+  const conditions = {};
+  document.querySelectorAll('.tc-cond').forEach(el => {
+    conditions[el.id] = el.classList.contains('checked');
+  });
+  const record = {
+    date,
+    state: currentTempState,
+    readiness: score,
+    conditions,
+    beliefs: document.querySelectorAll('.belief-item.checked').length,
+    ts: Date.now()
+  };
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+  try {
+    // Upsert: delete existing for today first, then insert
+    await dbFetch('mental_states?date=eq.' + encodeURIComponent(date), { method: 'DELETE', headers: { ...HEADERS, 'Prefer': 'return=minimal' } });
+    await dbFetch('mental_states', {
+      method: 'POST',
+      body: JSON.stringify({ id: Date.now(), data: record }),
+      headers: { ...HEADERS, 'Prefer': 'return=minimal' }
+    });
+    statusEl.textContent = 'Saved at ' + getISTDate().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('today-state-banner').style.display = 'block';
+    const stateLabels = { zen: '🧘 Zen', cold: '🧊 Calm', warm: '🌤️ Focused', hot: '🔥 Heated', burnt: '💀 Burnt' };
+    document.getElementById('today-state-summary').textContent =
+      `State: ${stateLabels[currentTempState] || currentTempState} · Readiness: ${score}%`;
+    showToast('Mental state saved ✅', false);
+  } catch(e) {
+    showToast('Save failed — check Supabase mental_states table exists', true);
+    console.error('Mental state save error:', e);
+  }
+  btn.disabled = false;
+  btn.textContent = '💾 Save Today\'s Mental State';
+}
+
+async function loadMentalStates() {
+  try {
+    const rows = await dbFetch('mental_states?select=id,data&order=id.desc&limit=60');
+    return rows.map(r => ({ ...r.data, _dbid: r.id }));
+  } catch(e) { return []; }
+}
+
+// Load today's saved state on startup
+async function loadTodayMentalState() {
+  const states = await loadMentalStates();
+  const today = todayStr();
+  const todayState = states.find(s => s.date === today);
+  if (todayState) {
+    document.getElementById('today-state-banner').style.display = 'block';
+    const stateLabels = { zen: '🧘 Zen', cold: '🧊 Calm', warm: '🌤️ Focused', hot: '🔥 Heated', burnt: '💀 Burnt' };
+    document.getElementById('today-state-summary').textContent =
+      `State: ${stateLabels[todayState.state] || todayState.state} · Readiness: ${todayState.readiness}%`;
+    document.getElementById('save-state-status').textContent = 'Already saved today';
+  }
 }
 
 // ══════════════════════════════════════════════════
@@ -2334,6 +2455,7 @@ function renderAll(){
   renderDayOfWeek(trades);
   renderRRScatter(trades);
   renderDailyPnL(trades);
+  renderMentalStateAnalytics(trades);
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -3474,6 +3596,221 @@ Chart.defaults.font.family='Space Mono, monospace';
 // Hook into original app tab switch
 window._renderAnalyticsEnhanced = renderAll;
 
+// ══════════════════════════════════════════════════
+//  MENTAL STATE ANALYTICS
+// ══════════════════════════════════════════════════
+async function renderMentalStateAnalytics(trades) {
+  const states = await loadMentalStates();
+  const emptyBanner = document.getElementById('mental-empty-banner');
+  const loadedContent = document.getElementById('mental-loaded-content');
+
+  if (!states.length) {
+    emptyBanner.style.display = 'block';
+    loadedContent.style.display = 'none';
+    return;
+  }
+  emptyBanner.style.display = 'none';
+  loadedContent.style.display = 'block';
+
+  // Build daily PnL map from filtered trades
+  const dailyPnl = {};
+  trades.forEach(t => {
+    if (!dailyPnl[t.date]) dailyPnl[t.date] = 0;
+    dailyPnl[t.date] += (t.totalPnl || 0);
+  });
+
+  // ── 1. AVG PNL BY STATE ────────────────────────
+  const stateInfo = {
+    zen:   { label: '🧘 Zen', col: '#42a5f5' },
+    cold:  { label: '🧊 Calm', col: '#26a69a' },
+    warm:  { label: '🌤️ Focused', col: '#f9a825' },
+    hot:   { label: '🔥 Heated', col: '#ff7043' },
+    burnt: { label: '💀 Burnt', col: '#ef5350' },
+  };
+  const stateAgg = {};
+  states.forEach(s => {
+    if (!stateAgg[s.state]) stateAgg[s.state] = { pnls: [], readiness: [], count: 0 };
+    const pnl = dailyPnl[s.date];
+    if (pnl !== undefined) stateAgg[s.state].pnls.push(pnl);
+    stateAgg[s.state].readiness.push(s.readiness || 0);
+    stateAgg[s.state].count++;
+  });
+
+  const stateOrder = ['zen', 'cold', 'warm', 'hot', 'burnt'];
+  const maxAbsPnl = Math.max(1, ...Object.values(stateAgg).map(v => v.pnls.length ? Math.abs(v.pnls.reduce((a,b)=>a+b,0)/v.pnls.length) : 0));
+  const stateBarsEl = document.getElementById('mental-state-bars');
+  stateBarsEl.innerHTML = stateOrder.filter(s => stateAgg[s]).map(s => {
+    const info = stateInfo[s];
+    const agg = stateAgg[s];
+    const avgPnl = agg.pnls.length ? agg.pnls.reduce((a,b)=>a+b,0)/agg.pnls.length : null;
+    const avgR = agg.readiness.length ? Math.round(agg.readiness.reduce((a,b)=>a+b,0)/agg.readiness.length) : 0;
+    const pct = avgPnl !== null ? Math.round(Math.abs(avgPnl)/maxAbsPnl*100) : 0;
+    const col = avgPnl === null ? 'var(--muted)' : avgPnl >= 0 ? 'var(--accent)' : 'var(--danger)';
+    const pnlStr = avgPnl !== null ? (avgPnl>=0?'+':'')+'₹'+Math.round(avgPnl).toLocaleString('en-IN') : 'No trade days';
+    return `<div class="wl-bar-row" style="margin-bottom:8px;align-items:center;">
+      <span style="min-width:90px;font-size:11px;font-family:'Space Mono',monospace;color:${info.col};">${info.label}</span>
+      <div class="wl-bar-track" style="flex:1;">
+        <div class="wl-bar-fill" style="width:${pct}%;background:${col};"></div>
+      </div>
+      <span style="min-width:90px;text-align:right;font-size:11px;font-family:'Space Mono',monospace;color:${col};">${pnlStr}</span>
+      <span style="min-width:60px;text-align:right;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">${agg.count}d · R:${avgR}%</span>
+    </div>`;
+  }).join('');
+
+  // ── 2. READINESS vs PNL SCATTER ───────────────
+  const matchedDays = states.filter(s => dailyPnl[s.date] !== undefined);
+  const scatterEl = document.getElementById('mental-scatter-chart');
+  const scatterEmpty = document.getElementById('mental-scatter-empty');
+  if (matchedDays.length < 2) {
+    scatterEl.style.display = 'none';
+    scatterEmpty.style.display = 'flex';
+  } else {
+    scatterEl.style.display = 'block';
+    scatterEmpty.style.display = 'none';
+    const scatterData = matchedDays.map(s => ({ x: s.readiness, y: dailyPnl[s.date], state: s.state }));
+    const stateColors = { zen:'#42a5f5', cold:'#26a69a', warm:'#f9a825', hot:'#ff7043', burnt:'#ef5350' };
+    if (charts.mentalScatter) { try { charts.mentalScatter.destroy(); } catch(e){} }
+    charts.mentalScatter = new Chart(scatterEl.getContext('2d'), {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: scatterData.map(d => ({ x: d.x, y: d.y })),
+          backgroundColor: scatterData.map(d => (stateColors[d.state] || '#787b86') + 'cc'),
+          pointRadius: 7, pointHoverRadius: 9,
+          borderColor: scatterData.map(d => stateColors[d.state] || '#787b86'),
+          borderWidth: 1.5
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = scatterData[ctx.dataIndex];
+              return ` Readiness ${d.x}% · P&L ${d.y>=0?'+':''}₹${Math.round(d.y).toLocaleString('en-IN')} · ${stateInfo[d.state]?.label||d.state}`;
+            }
+          }
+        }},
+        scales: {
+          x: { title: { display: true, text: 'Readiness Score %', color: '#787b86', font: { size: 10 } }, ticks: { color: '#787b86', font: { size: 10 } }, grid: { color: 'rgba(54,60,78,.8)' } },
+          y: { title: { display: true, text: 'Daily P&L (₹)', color: '#787b86', font: { size: 10 } }, ticks: { color: '#787b86', font: { size: 10 }, callback: v => (v>=0?'+':'')+Math.round(v/1000)+'k' }, grid: { color: 'rgba(54,60,78,.8)' } }
+        }
+      }
+    });
+    // Correlation badge
+    const xs = scatterData.map(d=>d.x), ys = scatterData.map(d=>d.y);
+    const n = xs.length, meanX = xs.reduce((a,b)=>a+b)/n, meanY = ys.reduce((a,b)=>a+b)/n;
+    const num = xs.reduce((s,x,i)=>s+(x-meanX)*(ys[i]-meanY),0);
+    const den = Math.sqrt(xs.reduce((s,x)=>s+(x-meanX)**2,0)*ys.reduce((s,y)=>s+(y-meanY)**2,0));
+    const corr = den > 0 ? (num/den).toFixed(2) : '—';
+    const corrBadge = document.getElementById('mental-corr-badge');
+    if (corrBadge) { corrBadge.textContent = `r = ${corr}`; corrBadge.style.color = corr > 0 ? 'var(--accent)' : 'var(--danger)'; }
+  }
+
+  // ── 3. HISTORY TIMELINE (last 14 entries) ─────
+  const histEl = document.getElementById('mental-history-bars');
+  const histEmpty = document.getElementById('mental-history-empty');
+  const recent = states.slice(0, 14).reverse();
+  if (!recent.length) { histEl.innerHTML = ''; histEmpty.style.display = 'flex'; }
+  else {
+    histEmpty.style.display = 'none';
+    histEl.innerHTML = recent.map(s => {
+      const info = stateInfo[s.state] || { label: s.state, col: 'var(--muted)' };
+      const pnl = dailyPnl[s.date];
+      const pnlStr = pnl !== undefined ? (pnl>=0?'<span style="color:var(--accent);">+₹'+Math.round(pnl).toLocaleString('en-IN')+'</span>':'<span style="color:var(--danger);">₹'+Math.round(pnl).toLocaleString('en-IN')+'</span>') : '<span style="color:var(--muted);">No trades</span>';
+      const shortDate = s.date.split('/').slice(0,2).join('/');
+      const barW = s.readiness || 0;
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">
+        <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:36px;">${shortDate}</span>
+        <span style="font-size:11px;min-width:80px;font-family:'Space Mono',monospace;color:${info.col};">${info.label}</span>
+        <div style="flex:1;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;">
+          <div style="width:${barW}%;height:100%;background:${info.col};border-radius:3px;transition:width .4s;"></div>
+        </div>
+        <span style="font-family:'Space Mono',monospace;font-size:10px;min-width:36px;text-align:right;color:var(--muted);">${barW}%</span>
+        <span style="font-family:'Space Mono',monospace;font-size:10px;min-width:80px;text-align:right;">${pnlStr}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── 4. CONDITION IMPACT ────────────────────────
+  const condEl = document.getElementById('mental-condition-bars');
+  const condEmpty = document.getElementById('mental-condition-empty');
+  const condKeys = { 'tc-sleep':'😴 Sleep', 'tc-hydrate':'💧 Hydration', 'tc-focus':'🧠 Focus', 'tc-social':'📵 No Social', 'tc-yt':'📺 No Content', 'tc-space':'🖥️ Clean Space', 'tc-bias':'⚖️ No Bias', 'tc-revenge':'🎯 No Revenge' };
+  const condStats = {};
+  Object.keys(condKeys).forEach(k => condStats[k] = { withPnls: [], withoutPnls: [] });
+  states.forEach(s => {
+    const pnl = dailyPnl[s.date];
+    if (pnl === undefined || !s.conditions) return;
+    Object.keys(condKeys).forEach(k => {
+      if (s.conditions[k]) condStats[k].withPnls.push(pnl);
+      else condStats[k].withoutPnls.push(pnl);
+    });
+  });
+  const condWithData = Object.entries(condStats).filter(([,v]) => v.withPnls.length >= 1 || v.withoutPnls.length >= 1);
+  if (condWithData.length < 2) { condEl.innerHTML = ''; condEmpty.style.display = 'flex'; }
+  else {
+    condEmpty.style.display = 'none';
+    const avgFn = arr => arr.length ? arr.reduce((a,b)=>a+b)/arr.length : null;
+    const maxImpact = Math.max(1, ...condWithData.map(([,v]) => {
+      const w = avgFn(v.withPnls), wo = avgFn(v.withoutPnls);
+      return w !== null && wo !== null ? Math.abs(w - wo) : 0;
+    }));
+    condEl.innerHTML = condWithData.map(([k, v]) => {
+      const w = avgFn(v.withPnls), wo = avgFn(v.withoutPnls);
+      const impact = w !== null && wo !== null ? w - wo : null;
+      const barW = impact !== null ? Math.round(Math.abs(impact)/maxImpact*100) : 0;
+      const col = impact === null ? 'var(--muted)' : impact >= 0 ? 'var(--accent)' : 'var(--danger)';
+      const impactStr = impact !== null ? (impact>=0?'+':'')+'₹'+Math.round(impact).toLocaleString('en-IN') : '—';
+      return `<div class="wl-bar-row" style="margin-bottom:7px;align-items:center;">
+        <span style="min-width:100px;font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);">${condKeys[k]}</span>
+        <div class="wl-bar-track" style="flex:1;">
+          <div class="wl-bar-fill" style="width:${barW}%;background:${col};"></div>
+        </div>
+        <span style="min-width:70px;text-align:right;font-size:10px;font-family:'Space Mono',monospace;color:${col};" title="Impact on daily P&L when condition met vs not">${impactStr}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── 5. INSIGHTS ────────────────────────────────
+  const insightsEl = document.getElementById('mental-insights');
+  const insights = [];
+  if (matchedDays.length >= 3) {
+    const highR = matchedDays.filter(s => s.readiness >= 70);
+    const lowR  = matchedDays.filter(s => s.readiness < 50);
+    const avgHighPnl = highR.length ? highR.reduce((s,d)=>s+dailyPnl[d.date],0)/highR.length : null;
+    const avgLowPnl  = lowR.length  ? lowR.reduce((s,d)=>s+dailyPnl[d.date],0)/lowR.length  : null;
+    if (avgHighPnl !== null && avgLowPnl !== null) {
+      const diff = Math.round(avgHighPnl - avgLowPnl);
+      const col = diff >= 0 ? 'var(--accent)' : 'var(--danger)';
+      insights.push(`📊 High readiness days (≥70%) average <span style="color:${col};font-weight:700;">${diff>=0?'+':''}₹${Math.round(avgHighPnl).toLocaleString('en-IN')}/day</span> vs ₹${Math.round(avgLowPnl).toLocaleString('en-IN')}/day on low readiness days — a <span style="color:${col};">${diff>=0?'+':''}₹${Math.abs(diff).toLocaleString('en-IN')} edge</span>.`);
+    }
+    // Best state
+    const bestState = stateOrder.filter(s=>stateAgg[s]&&stateAgg[s].pnls.length).sort((a,b)=>{
+      const avgA = stateAgg[a].pnls.reduce((x,y)=>x+y,0)/stateAgg[a].pnls.length;
+      const avgB = stateAgg[b].pnls.reduce((x,y)=>x+y,0)/stateAgg[b].pnls.length;
+      return avgB - avgA;
+    })[0];
+    if (bestState) {
+      const bInfo = stateInfo[bestState];
+      const bAvg = Math.round(stateAgg[bestState].pnls.reduce((a,b)=>a+b)/stateAgg[bestState].pnls.length);
+      insights.push(`🏆 Your best trading state is <span style="color:${bInfo.col};font-weight:700;">${bInfo.label}</span> with an average of ${bAvg>=0?'+':''}₹${bAvg.toLocaleString('en-IN')}/day across ${stateAgg[bestState].pnls.length} trading days.`);
+    }
+    // Worst condition missing
+    const worstCond = Object.entries(condStats).filter(([,v]) => v.withPnls.length>=1 && v.withoutPnls.length>=1).sort((a,b)=>{
+      const wA = a[1].withPnls.reduce((x,y)=>x+y,0)/a[1].withPnls.length - a[1].withoutPnls.reduce((x,y)=>x+y,0)/a[1].withoutPnls.length;
+      const wB = b[1].withPnls.reduce((x,y)=>x+y,0)/b[1].withPnls.length - b[1].withoutPnls.reduce((x,y)=>x+y,0)/b[1].withoutPnls.length;
+      return wB - wA;
+    })[0];
+    if (worstCond) {
+      const impact = Math.round(worstCond[1].withPnls.reduce((a,b)=>a+b)/worstCond[1].withPnls.length - worstCond[1].withoutPnls.reduce((a,b)=>a+b)/worstCond[1].withoutPnls.length);
+      insights.push(`💡 <strong style="color:var(--accent);">${condKeys[worstCond[0]]}</strong> has the biggest P&L impact — checking it improves daily P&L by <span style="color:var(--accent);">+₹${Math.abs(impact).toLocaleString('en-IN')}</span> on average.`);
+    }
+  } else {
+    insights.push('📌 Save your mental state for at least 3 trading days to see deeper insights and correlations.');
+  }
+  insightsEl.innerHTML = insights.map(i => `<div style="padding:8px 0;border-bottom:1px solid var(--border);">${i}</div>`).join('') || '<div style="color:var(--muted);">Keep logging your state daily — insights appear after 3+ days of data.</div>';
+}
+
 // ── TOAST & AUDIO ──────────────────────────────────
 let audioMuted=false;
 function showToast(msg,warn){const t=document.getElementById('toast');t.textContent=msg;t.className=warn?'warn-toast show':'show';setTimeout(()=>t.className='',3500);if(!audioMuted)playAlert(warn?'warn':'good');}
@@ -3555,6 +3892,7 @@ function onAuthSuccess(user) {
   logoutBtn.title = user.email;
   // Load app data now that user is authenticated
   loadTrades();
+  loadTodayMentalState();
 }
 
 async function authSignOut() {
