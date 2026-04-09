@@ -1737,7 +1737,7 @@ function switchTab(name,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   if(btn)btn.classList.add('active');
-  if(name==='analytics')renderAnalytics();
+  if(name==='analytics')renderAnalytics().catch(e=>console.error('Analytics render error:',e));
   if(name==='ailog'){renderAIHistory();checkTodayReviewExists();}
 }
 
@@ -2215,8 +2215,11 @@ async function clearTrades(){
 }
 
 // ── ANALYTICS (Enhanced — delegates to renderAll below) ──────────────
-function renderAnalytics(){
-  if(typeof renderAll==='function')renderAll();
+async function renderAnalytics(){
+  if(typeof renderAll==='function'){
+    await loadAllSessions();
+    renderAll();
+  }
 }
 
 // ── CSV EXPORT ─────────────────────────────────────
@@ -3619,7 +3622,15 @@ let msScatterChart=null;
 function renderMentalStateAnalytics(trades){
   const sessions=window._sessionCache||{};
   const sessionDates=Object.keys(sessions);
-  if(!sessionDates.length){resetMSEmpty();return;}
+  if(!sessionDates.length){
+    // Try loading from Supabase one more time in case cache missed
+    loadAllSessions().then(loaded=>{
+      const dates=Object.keys(loaded||{});
+      if(dates.length) renderMentalStateAnalytics(trades);
+      else resetMSEmpty();
+    }).catch(()=>resetMSEmpty());
+    return;
+  }
 
   // ── Build daily P&L map from trades ───────────────────────────
   const byDate={};
