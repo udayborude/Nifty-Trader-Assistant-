@@ -1043,48 +1043,6 @@ svg.ring{overflow:visible;}
     </div>
   </div>
 
-  <!-- ── MENTAL STATE ANALYTICS ── -->
-  <div class="section-title" id="mental-state-section">🧠 Mental State vs Performance</div>
-  <div id="mental-state-analytics" style="margin-bottom:12px;">
-    <div id="mental-empty-banner" style="display:none;padding:18px 20px;border-radius:4px;background:var(--panel);border:1px solid var(--border);font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-align:center;line-height:1.8;">
-      <div style="font-size:24px;margin-bottom:6px;">🧠</div>
-      No mental state data yet.<br>
-      Go to <strong style="color:var(--accent);">Pre-Session</strong> tab, fill your temperature check and click <strong style="color:var(--accent);">Save Today's Mental State</strong>.
-    </div>
-    <div id="mental-loaded-content" style="display:none;">
-      <!-- Row 1: State PnL + Readiness Scatter -->
-      <div class="row r2" style="margin-bottom:12px;">
-        <div class="card">
-          <div class="card-title"><span class="dot"></span>Avg P&L by Mental State</div>
-          <div id="mental-state-bars" style="padding:4px 0;"></div>
-        </div>
-        <div class="card">
-          <div class="card-title"><span class="dot"></span>Readiness Score vs Daily P&L<span class="badge" id="mental-corr-badge">—</span></div>
-          <div class="chart-wrap" style="height:180px;"><canvas id="mental-scatter-chart"></canvas></div>
-          <div id="mental-scatter-empty" class="empty" style="display:none;"><span class="empty-icon">🔍</span>Need matching dates with both trade and state data</div>
-        </div>
-      </div>
-      <!-- Row 2: State history timeline + Condition impact -->
-      <div class="row r2" style="margin-bottom:12px;">
-        <div class="card">
-          <div class="card-title"><span class="dot"></span>Mental State History · Last 14 Days</div>
-          <div id="mental-history-bars" style="padding:4px 0;"></div>
-          <div id="mental-history-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Save your state for a few days to see trends</div>
-        </div>
-        <div class="card">
-          <div class="card-title"><span class="dot"></span>Condition Impact on P&L</div>
-          <div id="mental-condition-bars" style="padding:4px 0;"></div>
-          <div id="mental-condition-empty" class="empty" style="display:none;"><span class="empty-icon">📊</span>Need more data to calculate condition impact</div>
-        </div>
-      </div>
-      <!-- Row 3: Summary insight -->
-      <div class="card" style="margin-bottom:12px;">
-        <div class="card-title"><span class="dot"></span>Mental Edge Insights</div>
-        <div id="mental-insights" style="font-size:12px;font-family:'Space Mono',monospace;color:var(--muted);line-height:1.8;"></div>
-      </div>
-    </div>
-  </div>
-
   <!-- ── ROW 1: EQUITY + WIN BREAKDOWN ── -->
   <div class="section-title">Curve & Distribution</div>
   <div class="row r13" style="margin-bottom:12px;">
@@ -1210,6 +1168,48 @@ svg.ring{overflow:visible;}
       <div class="card-title"><span class="dot"></span>Monthly P&L Calendar</div>
       <div class="chart-wrap chart-h180"><canvas id="monthly-chart"></canvas></div>
       <div id="monthly-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Log trades across months to see trend</div>
+    </div>
+  </div>
+
+  <!-- ── MENTAL STATE ANALYTICS ── -->
+  <div class="section-title" id="mental-state-section">🧠 Mental State vs Performance</div>
+  <div id="mental-state-analytics" style="margin-bottom:12px;">
+    <div id="mental-empty-banner" style="display:none;padding:18px 20px;border-radius:4px;background:var(--panel);border:1px solid var(--border);font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-align:center;line-height:1.8;">
+      <div style="font-size:24px;margin-bottom:6px;">🧠</div>
+      No mental state data yet.<br>
+      Go to <strong style="color:var(--accent);">Pre-Session</strong> tab, fill your temperature check and click <strong style="color:var(--accent);">Save Today's Mental State</strong>.
+    </div>
+    <div id="mental-loaded-content" style="display:none;">
+      <!-- Row 1: State PnL + Readiness Scatter -->
+      <div class="row r2" style="margin-bottom:12px;">
+        <div class="card">
+          <div class="card-title"><span class="dot"></span>Avg P&L by Mental State</div>
+          <div id="mental-state-bars" style="padding:4px 0;"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="dot"></span>Readiness Score vs Daily P&L<span class="badge" id="mental-corr-badge">—</span></div>
+          <div class="chart-wrap" style="height:180px;"><canvas id="mental-scatter-chart"></canvas></div>
+          <div id="mental-scatter-empty" class="empty" style="display:none;"><span class="empty-icon">🔍</span>Need matching dates with both trade and state data</div>
+        </div>
+      </div>
+      <!-- Row 2: State history timeline + Condition impact -->
+      <div class="row r2" style="margin-bottom:12px;">
+        <div class="card">
+          <div class="card-title"><span class="dot"></span>Mental State History · Last 14 Days</div>
+          <div id="mental-history-bars" style="padding:4px 0;"></div>
+          <div id="mental-history-empty" class="empty" style="display:none;"><span class="empty-icon">📅</span>Save your state for a few days to see trends</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="dot"></span>Condition Impact on P&L</div>
+          <div id="mental-condition-bars" style="padding:4px 0;"></div>
+          <div id="mental-condition-empty" class="empty" style="display:none;"><span class="empty-icon">📊</span>Need more data to calculate condition impact</div>
+        </div>
+      </div>
+      <!-- Row 3: Summary insight -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-title"><span class="dot"></span>Mental Edge Insights</div>
+        <div id="mental-insights" style="font-size:12px;font-family:'Space Mono',monospace;color:var(--muted);line-height:1.8;"></div>
+      </div>
     </div>
   </div>
 
