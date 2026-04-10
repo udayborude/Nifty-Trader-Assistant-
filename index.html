@@ -561,20 +561,20 @@ svg.ring{overflow:visible;}
 
     <!-- STATE SELECTOR -->
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;">
-      <div class="emotion-btn" onclick="selectTemp(this,'zen')">
-        <span class="emoji">🧘</span>Zen<div class="temp-sub" style="color:#42a5f5;">PEAK</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'calm')">
+        <span class="emoji">🧊</span>Calm<div class="temp-sub" style="color:#26a69a;">IDEAL</div>
       </div>
-      <div class="emotion-btn" onclick="selectTemp(this,'cold')">
-        <span class="emoji">🧊</span>Calm<div class="temp-sub" style="color:var(--accent);">IDEAL</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'hurried')">
+        <span class="emoji">⚡</span>Hurried<div class="temp-sub" style="color:var(--warn);">CAUTION</div>
       </div>
-      <div class="emotion-btn" onclick="selectTemp(this,'warm')">
-        <span class="emoji">🌤️</span>Focused<div class="temp-sub" style="color:var(--warn);">GOOD</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'sleepy')">
+        <span class="emoji">😴</span>Sleep Dep<div class="temp-sub" style="color:#42a5f5;">REDUCE</div>
       </div>
-      <div class="emotion-btn" onclick="selectTemp(this,'hot')">
-        <span class="emoji">🔥</span>Heated<div class="temp-sub" style="color:var(--accent2);">CAUTION</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'nervous')">
+        <span class="emoji">😰</span>Nervous<div class="temp-sub" style="color:var(--accent2);">CAUTION</div>
       </div>
-      <div class="emotion-btn" onclick="selectTemp(this,'burnt')">
-        <span class="emoji">💀</span>Burnt<div class="temp-sub" style="color:var(--danger);">SKIP DAY</div>
+      <div class="emotion-btn" onclick="selectTemp(this,'agitated')">
+        <span class="emoji">😤</span>Agitated<div class="temp-sub" style="color:var(--danger);">SKIP DAY</div>
       </div>
     </div>
 
@@ -586,7 +586,7 @@ svg.ring{overflow:visible;}
       <div id="temp-indicator" style="position:absolute;top:-7px;width:20px;height:20px;background:var(--text);border-radius:50%;border:3px solid var(--bg);transition:left 0.4s ease;transform:translateX(-50%);left:10%;"></div>
     </div>
     <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;margin-bottom:18px;">
-      <span style="color:#42a5f5">ZEN</span><span style="color:var(--accent)">CALM</span><span style="color:var(--warn)">FOCUSED</span><span style="color:var(--accent2)">HEATED</span><span style="color:var(--danger)">BURNT</span>
+      <span style="color:#26a69a">CALM</span><span style="color:var(--warn)">HURRIED</span><span style="color:#42a5f5">SLEEP DEP</span><span style="color:var(--accent2)">NERVOUS</span><span style="color:var(--danger)">AGITATED</span>
     </div>
 
     <!-- READINESS SCORE + CONDITIONS -->
@@ -1728,7 +1728,7 @@ async function saveMentalState() {
     });
     statusEl.textContent = 'Saved at ' + getISTDate().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('today-state-banner').style.display = 'block';
-    const stateLabels = { zen: '🧘 Zen', cold: '🧊 Calm', warm: '🌤️ Focused', hot: '🔥 Heated', burnt: '💀 Burnt' };
+    const stateLabels = { calm: '🧊 Calm', hurried: '⚡ Hurried', sleepy: '😴 Sleep Dep', nervous: '😰 Nervous', agitated: '😤 Agitated' };
     document.getElementById('today-state-summary').textContent =
       `State: ${stateLabels[currentTempState] || currentTempState} · Readiness: ${score}%`;
     showToast('Mental state saved ✅', false);
@@ -1754,7 +1754,7 @@ async function loadTodayMentalState() {
   const todayState = states.find(s => s.date === today);
   if (todayState) {
     document.getElementById('today-state-banner').style.display = 'block';
-    const stateLabels = { zen: '🧘 Zen', cold: '🧊 Calm', warm: '🌤️ Focused', hot: '🔥 Heated', burnt: '💀 Burnt' };
+    const stateLabels = { calm: '🧊 Calm', hurried: '⚡ Hurried', sleepy: '😴 Sleep Dep', nervous: '😰 Nervous', agitated: '😤 Agitated' };
     document.getElementById('today-state-summary').textContent =
       `State: ${stateLabels[todayState.state] || todayState.state} · Readiness: ${todayState.readiness}%`;
     document.getElementById('save-state-status').textContent = 'Already saved today';
@@ -1804,11 +1804,11 @@ function toggleBelief(el){el.classList.toggle('checked');const items=document.qu
 // ── TEMP CHECK ─────────────────────────────────────
 // ── TEMPERATURE CHECK ──────────────────────────────
 const tempData={
-  zen:   {pct:5,  cls:'selected',     col:'#42a5f5', bg:'rgba(124,156,255,0.06)',border:'rgba(124,156,255,0.2)', score:25, msg:'🧘 Peak state — clear mind, zero noise. Trade with full size.'},
-  cold:  {pct:25, cls:'selected',     col:'var(--tv-teal)', bg:'rgba(38,166,154,0.08)',border:'rgba(38,166,154,0.2)', score:20, msg:'🧊 Ice cold — disciplined and patient. Ideal trading state.'},
-  warm:  {pct:50, cls:'selected',     col:'var(--warn)', bg:'rgba(249,168,37,0.08)',border:'rgba(249,168,37,0.2)', score:10, msg:'🌤️ Warm and focused — solid. Watch for slight impatience.'},
-  hot:   {pct:75, cls:'selected-bad', col:'var(--accent2)', bg:'rgba(255,107,53,0.06)',border:'rgba(249,168,37,0.2)', score:0,  msg:'🔥 Overheated — reduce size by 50%. Breathe before entry.'},
-  burnt: {pct:95, cls:'selected-bad', col:'var(--danger)', bg:'rgba(239,83,80,0.08)',border:'rgba(239,83,80,0.2)', score:-20, msg:'💀 Burnt out — do NOT trade today. Protect your capital.'},
+  calm:     {pct:10,  cls:'selected',     col:'#26a69a',          bg:'rgba(38,166,154,0.08)',   border:'rgba(38,166,154,0.2)',  score:25,  msg:'🧊 Calm & composed — ideal state. Clear mind, full discipline. Trade your plan.'},
+  hurried:  {pct:30,  cls:'selected',     col:'var(--warn)',       bg:'rgba(249,168,37,0.08)',   border:'rgba(249,168,37,0.2)', score:5,   msg:'⚡ Hurried — you feel rushed. Slow down before entry. Take 3 deep breaths per trade.'},
+  sleepy:   {pct:50,  cls:'selected-bad', col:'#42a5f5',          bg:'rgba(66,165,245,0.08)',   border:'rgba(66,165,245,0.2)', score:-5,  msg:'😴 Sleep deprived — reaction time is off. Reduce position size by 50%. No aggressive entries.'},
+  nervous:  {pct:72,  cls:'selected-bad', col:'var(--accent2)',    bg:'rgba(255,107,53,0.06)',   border:'rgba(249,168,37,0.2)', score:-10, msg:'😰 Nervous — anxiety distorts your read of price action. Sit on hands for first 30 min.'},
+  agitated: {pct:92,  cls:'selected-bad', col:'var(--danger)',     bg:'rgba(239,83,80,0.08)',    border:'rgba(239,83,80,0.2)',  score:-25, msg:'😤 Agitated — do NOT trade today. Agitation leads to revenge trades and blown stops.'},
 };
 let currentTempScore=0, currentTempState=null;
 
@@ -1887,9 +1887,9 @@ function updateReadinessScore(){
     vEl.style.display='block';
     const warns=[];
     conds.forEach(c=>{if(!c.classList.contains('checked')&&tcWarnings[c.id])warns.push(tcWarnings[c.id]);});
-    if(currentTempState==='burnt'){
+    if(currentTempState==='agitated'){
       vEl.style.background='rgba(239,83,80,0.08)';vEl.style.borderColor='rgba(239,83,80,0.25)';vEl.style.color='var(--danger)';
-      vEl.innerHTML='🔴 DO NOT TRADE TODAY<br><span style="opacity:.7">Burnt state overrides everything. Rest, recover, return tomorrow.</span>';
+      vEl.innerHTML='🔴 DO NOT TRADE TODAY<br><span style="opacity:.7">Agitated state overrides everything. Rest, recover, return tomorrow.</span>';
     } else if(score>=70){
       vEl.style.background='rgba(41,98,255,0.08)';vEl.style.borderColor='rgba(41,98,255,0.2)';vEl.style.color='var(--accent)';
       vEl.innerHTML='🟢 CLEARED TO TRADE<br><span style="opacity:.7">Mental state and conditions aligned. Execute your plan.</span>';
@@ -3623,11 +3623,11 @@ async function renderMentalStateAnalytics(trades) {
 
   // ── 1. AVG PNL BY STATE ────────────────────────
   const stateInfo = {
-    zen:   { label: '🧘 Zen', col: '#42a5f5' },
-    cold:  { label: '🧊 Calm', col: '#26a69a' },
-    warm:  { label: '🌤️ Focused', col: '#f9a825' },
-    hot:   { label: '🔥 Heated', col: '#ff7043' },
-    burnt: { label: '💀 Burnt', col: '#ef5350' },
+    calm:     { label: '🧊 Calm',      col: '#26a69a' },
+    hurried:  { label: '⚡ Hurried',   col: '#f9a825' },
+    sleepy:   { label: '😴 Sleep Dep', col: '#42a5f5' },
+    nervous:  { label: '😰 Nervous',   col: '#ff7043' },
+    agitated: { label: '😤 Agitated',  col: '#ef5350' },
   };
   const stateAgg = {};
   states.forEach(s => {
@@ -3638,7 +3638,7 @@ async function renderMentalStateAnalytics(trades) {
     stateAgg[s.state].count++;
   });
 
-  const stateOrder = ['zen', 'cold', 'warm', 'hot', 'burnt'];
+  const stateOrder = ['calm', 'hurried', 'sleepy', 'nervous', 'agitated'];
   const maxAbsPnl = Math.max(1, ...Object.values(stateAgg).map(v => v.pnls.length ? Math.abs(v.pnls.reduce((a,b)=>a+b,0)/v.pnls.length) : 0));
   const stateBarsEl = document.getElementById('mental-state-bars');
   stateBarsEl.innerHTML = stateOrder.filter(s => stateAgg[s]).map(s => {
