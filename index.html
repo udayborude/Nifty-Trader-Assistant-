@@ -1614,7 +1614,9 @@ function setDbStatus(state) {
 }
 
 async function dbFetch(path, opts = {}) {
-  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: HEADERS, ...opts });
+  const mergedHeaders = { ...HEADERS, ...(opts.headers || {}) };
+  const { headers: _, ...restOpts } = opts;
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: mergedHeaders, ...restOpts });
   if (!res.ok) { const e = await res.text(); throw new Error(e); }
   return res.status === 204 ? null : res.json();
 }
@@ -1718,11 +1720,11 @@ async function saveMentalState() {
   btn.textContent = '⏳ Saving...';
   try {
     // Upsert: delete existing for today first, then insert
-    await dbFetch('mental_states?date=eq.' + encodeURIComponent(date), { method: 'DELETE', headers: { ...HEADERS, 'Prefer': 'return=minimal' } });
+    await dbFetch('mental_states?data->>date=eq.' + encodeURIComponent(date), { method: 'DELETE', headers: { 'Prefer': 'return=minimal' } });
     await dbFetch('mental_states', {
       method: 'POST',
       body: JSON.stringify({ id: Date.now(), data: record }),
-      headers: { ...HEADERS, 'Prefer': 'return=minimal' }
+      headers: { 'Prefer': 'return=minimal' }
     });
     statusEl.textContent = 'Saved at ' + getISTDate().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('today-state-banner').style.display = 'block';
