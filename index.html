@@ -259,31 +259,40 @@ canvas{width:100%!important;}
 .disc-score{font-family:'Space Mono',monospace;font-size:11px;min-width:34px;text-align:right;}
 .disc-pnl{font-family:'Space Mono',monospace;font-size:11px;min-width:68px;text-align:right;}
 
-/* ── EDGE TABLE ──────────────────────────────────── */
 /* ── EDGE BREAKDOWN ──────────────────────────────── */
 .edge-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
 .edge-kpi{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 8px;text-align:center;}
 .edge-kpi .ek-val{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;line-height:1.1;}
 .edge-kpi .ek-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
-.edge-sec-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:12px 0 6px;}
-.edge-rule-card{background:var(--panel2);border:1px solid var(--border);border-radius:0 8px 8px 0;border-left:3px solid var(--border);padding:12px 12px 10px;margin-bottom:7px;}
-.edge-rule-card.good{border-left-color:#26a69a;}
-.edge-rule-card.bad{border-left-color:#ef5350;}
-.edge-rule-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;}
-.edge-rule-name{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.edge-score-pill{font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;border-radius:20px;letter-spacing:.8px;border:1px solid;white-space:nowrap;flex-shrink:0;}
-.esp-strong{color:#26a69a;background:rgba(38,166,154,.1);border-color:rgba(38,166,154,.3);}
-.esp-moderate{color:#f9a825;background:rgba(249,168,37,.1);border-color:rgba(249,168,37,.3);}
-.esp-weak{color:#42a5f5;background:rgba(66,165,245,.1);border-color:rgba(66,165,245,.3);}
-.esp-drain{color:#ef5350;background:rgba(239,83,80,.12);border-color:rgba(239,83,80,.35);}
-.edge-wr-wrap{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.edge-wr-track{flex:1;height:5px;background:var(--dim);border-radius:3px;overflow:hidden;}
-.edge-wr-fill{height:100%;border-radius:3px;transition:width .5s ease;}
-.edge-wr-pct{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;min-width:32px;text-align:right;}
-.edge-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
-.edge-stat-cell{text-align:center;}
-.edge-stat-cell .esv{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
-.edge-stat-cell .esl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.edge-sec-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:14px 0 7px;}
+.lift-card{background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:0 6px 6px 0;padding:10px 12px;margin-bottom:7px;}
+.lift-card.pos{border-left-color:#26a69a;}.lift-card.neg{border-left-color:#ef5350;}.lift-card.neu{border-left-color:#f9a825;}
+.lift-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px;}
+.lift-name{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lift-pill{font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;border-radius:20px;border:1px solid;white-space:nowrap;flex-shrink:0;}
+.lp-pos{color:#26a69a;background:rgba(38,166,154,.1);border-color:rgba(38,166,154,.3);}
+.lp-neg{color:#ef5350;background:rgba(239,83,80,.12);border-color:rgba(239,83,80,.3);}
+.lp-few{color:#787b86;background:rgba(120,123,134,.1);border-color:rgba(120,123,134,.25);}
+.lift-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-family:'Space Mono',monospace;font-size:10px;}
+.lift-lbl{color:var(--muted);min-width:52px;}
+.lift-bar-track{flex:1;height:4px;background:var(--dim);border-radius:2px;overflow:hidden;}
+.lift-bar-fill{height:100%;border-radius:2px;transition:width .5s;}
+.lift-val{min-width:56px;text-align:right;font-size:10px;font-weight:700;}
+.lift-delta{font-family:'Space Mono',monospace;font-size:10px;margin-top:4px;padding-top:5px;border-top:1px solid var(--border);}
+.comp-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(54,60,78,.5);}
+.comp-row:last-child{border-bottom:none;}
+.comp-score-lbl{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:52px;}
+.comp-bar-track{flex:1;height:8px;background:var(--dim);border-radius:4px;overflow:hidden;}
+.comp-bar-fill{height:100%;border-radius:4px;transition:width .5s;}
+.comp-pnl{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;min-width:72px;text-align:right;}
+.comp-cnt{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);min-width:28px;text-align:right;}
+.trend-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(54,60,78,.4);}
+.trend-row:last-child{border-bottom:none;}
+.trend-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:54px;}
+.trend-bar-track{flex:1;height:6px;background:var(--dim);border-radius:3px;overflow:hidden;}
+.trend-bar-fill{height:100%;border-radius:3px;background:#2962ff;transition:width .5s;}
+.trend-pct{font-family:'Space Mono',monospace;font-size:10px;min-width:36px;text-align:right;}
+.trend-pnl{font-family:'Space Mono',monospace;font-size:10px;min-width:68px;text-align:right;}
 .edge-insight{background:rgba(38,166,154,.07);border:1px solid rgba(38,166,154,.2);border-radius:6px;padding:10px 12px;font-family:'Space Mono',monospace;font-size:10px;color:var(--text);line-height:1.7;margin-bottom:6px;}
 .edge-insight.warn{background:rgba(239,83,80,.07);border-color:rgba(239,83,80,.2);}
 
@@ -1205,30 +1214,47 @@ svg.ring{overflow:visible;}
   <div class="row r2" style="margin-bottom:32px;">
     <div class="card">
       <div class="card-title"><span class="dot"></span>Setup Edge Breakdown</div>
+
       <!-- KPI strip -->
       <div class="edge-kpi-row" id="edge-kpi-row" style="display:none;">
-        <div class="edge-kpi"><div class="ek-val" id="ek-followed">—</div><div class="ek-lbl">Rules Followed</div></div>
-        <div class="edge-kpi"><div class="ek-val" id="ek-broken">—</div><div class="ek-lbl">Rules Broken</div></div>
-        <div class="edge-kpi"><div class="ek-val" id="ek-best-wr">—</div><div class="ek-lbl">Best Tag WR</div></div>
-        <div class="edge-kpi"><div class="ek-val" id="ek-worst-wr">—</div><div class="ek-lbl">Worst Tag WR</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-perfect-rate">—</div><div class="ek-lbl">Perfect Trade %</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-perfect-pnl">—</div><div class="ek-lbl">Perfect Avg P&L</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-avg-compliance">—</div><div class="ek-lbl">Avg Compliance</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-break-cost">—</div><div class="ek-lbl">Avg Break Cost</div></div>
       </div>
-      <!-- Good tags -->
-      <div id="edge-good-wrap" style="display:none;">
-        <div class="edge-sec-lbl">Edge-positive</div>
-        <div id="edge-good-list"></div>
+
+      <!-- Section 1: Rule Lift -->
+      <div id="edge-lift-wrap" style="display:none;">
+        <div class="edge-sec-lbl">Rule lift — with vs without</div>
+        <div id="edge-lift-list"></div>
       </div>
-      <!-- Bad tags -->
-      <div id="edge-bad-wrap" style="display:none;">
-        <div class="edge-sec-lbl">Edge-negative</div>
-        <div id="edge-bad-list"></div>
+
+      <!-- Section 2: Break Cost -->
+      <div id="edge-break-wrap" style="display:none;">
+        <div class="edge-sec-lbl">Break cost — per violation</div>
+        <div id="edge-break-list"></div>
       </div>
+
+      <!-- Section 3: Compliance Score curve -->
+      <div id="edge-compliance-wrap" style="display:none;">
+        <div class="edge-sec-lbl">Compliance score vs avg P&L</div>
+        <div id="edge-compliance-list"></div>
+      </div>
+
+      <!-- Section 4: Discipline trend -->
+      <div id="edge-trend-wrap" style="display:none;">
+        <div class="edge-sec-lbl">Discipline trend — last 14 days</div>
+        <div id="edge-trend-list"></div>
+      </div>
+
       <!-- Auto insights -->
       <div id="edge-insights" style="display:none;">
         <div class="edge-sec-lbl">Auto insights</div>
         <div id="edge-insights-list"></div>
       </div>
+
       <!-- Empty state -->
-      <div id="edge-empty" class="empty"><span class="empty-icon">🔬</span>Log tagged trades to see edge breakdown</div>
+      <div id="edge-empty" class="empty"><span class="empty-icon">🔬</span>Log tagged trades to see rule analytics</div>
     </div>
     <div class="card">
       <div class="card-title"><span class="dot"></span>Premium Risk Meter</div>
@@ -2774,128 +2800,285 @@ function renderStreak(trades){
 //  EDGE TABLE
 // ══════════════════════════════════════════════════════════════════
 function renderEdgeTable(trades){
-  const goodRules=['Waited for pullback','Waited 5min candle close','AVWAP confirmed','HTF checked','EMA terrain followed'];
-  const badRules=['Not waited for 5 min candle close','Low Quality Pullback ','Traded first 3 candles','Revenge trade'];
-  const eEmp=document.getElementById('edge-empty');
+  const GOOD=['Waited for pullback','Waited 5min candle close','AVWAP confirmed','HTF checked','EMA terrain followed'];
+  const BAD_RULES=['Not waited for 5 min candle close','Low Quality Pullback','Traded first 3 candles','Revenge trade'];
+  const ALL_RULES=[...GOOD,...BAD_RULES];
+  const MAX_GOOD=GOOD.length;
 
-  // Build tag map
-  const tagMap={};
-  trades.forEach(t=>{
-    (t.rules||[]).forEach(r=>{
-      if(!tagMap[r])tagMap[r]={trades:0,wins:0,totalPnl:0,grossWin:0,grossLoss:0};
-      tagMap[r].trades++;
-      if(t.result==='WIN'){tagMap[r].wins++;tagMap[r].grossWin+=(t.totalPnl||0);}
-      if(t.result==='LOSS') tagMap[r].grossLoss+=Math.abs(t.totalPnl||0);
-      tagMap[r].totalPnl+=(t.totalPnl||0);
-    });
-  });
-  const entries=Object.entries(tagMap);
-  if(!entries.length){
+  // only closed trades with a result and at least one rule tagged
+  const closed=trades.filter(t=>t.result&&t.result!=='OPEN'&&t.totalPnl!==null);
+  const tagged=closed.filter(t=>(t.rules||[]).length>0);
+
+  const eEmp=document.getElementById('edge-empty');
+  const sections=['edge-kpi-row','edge-lift-wrap','edge-break-wrap','edge-compliance-wrap','edge-trend-wrap','edge-insights'];
+
+  if(!tagged.length){
     eEmp.style.display='flex';
-    ['edge-kpi-row','edge-good-wrap','edge-bad-wrap','edge-insights'].forEach(id=>{document.getElementById(id).style.display='none';});
+    sections.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
     return;
   }
   eEmp.style.display='none';
 
-  // KPIs
-  const followedTags=entries.filter(([t])=>goodRules.includes(t));
-  const brokenTags=entries.filter(([t])=>badRules.includes(t));
-  const wrs=entries.map(([,d])=>d.trades?Math.round(d.wins/d.trades*100):0);
-  const bestWR=wrs.length?Math.max(...wrs):0;
-  const worstWR=wrs.length?Math.min(...wrs):0;
-  document.getElementById('ek-followed').textContent=followedTags.length;
-  document.getElementById('ek-followed').style.color='var(--tv-teal)';
-  document.getElementById('ek-broken').textContent=brokenTags.length;
-  document.getElementById('ek-broken').style.color=brokenTags.length>0?'var(--danger)':'var(--muted)';
-  document.getElementById('ek-best-wr').textContent=bestWR+'%';
-  document.getElementById('ek-best-wr').style.color=bestWR>=60?'var(--tv-teal)':bestWR>=50?'var(--warn)':'var(--danger)';
-  document.getElementById('ek-worst-wr').textContent=worstWR+'%';
-  document.getElementById('ek-worst-wr').style.color=worstWR<40?'var(--danger)':'var(--warn)';
-  document.getElementById('edge-kpi-row').style.display='grid';
+  function pnlStr(v){return (v>=0?'+':'')+'₹'+Math.round(Math.abs(v)).toLocaleString('en-IN');}
+  function wrOf(arr){const w=arr.filter(t=>t.result==='WIN').length;return arr.length?Math.round(w/arr.length*100):0;}
+  function avgPnl(arr){return arr.length?arr.reduce((s,t)=>s+(t.totalPnl||0),0)/arr.length:0;}
 
-  // Edge score classifier
-  function edgeScore(d){
-    const wr=d.trades?d.wins/d.trades*100:0;
-    const pf=d.grossLoss>0?d.grossWin/d.grossLoss:(d.grossWin>0?3:0);
-    if(d.totalPnl<0)return{label:'EDGE DRAIN',cls:'esp-drain'};
-    if(wr>=60&&pf>=1.5)return{label:'STRONG EDGE',cls:'esp-strong'};
-    if(wr>=50)return{label:'MODERATE',cls:'esp-moderate'};
-    return{label:'WEAK EDGE',cls:'esp-weak'};
-  }
+  // ── 1. RULE LIFT: with vs without ─────────────────────────────────────
+  const liftCards=GOOD.map(rule=>{
+    const normRule=rule.trim();
+    const withRule=tagged.filter(t=>(t.rules||[]).map(r=>r.trim()).includes(normRule));
+    const withoutRule=tagged.filter(t=>!(t.rules||[]).map(r=>r.trim()).includes(normRule));
+    const wrWith=wrOf(withRule), wrWithout=wrOf(withoutRule);
+    const avgWith=avgPnl(withRule), avgWithout=avgPnl(withoutRule);
+    const liftWR=wrWith-wrWithout;
+    const liftPnl=avgWith-avgWithout;
+    const n=withRule.length;
+    const few=n<3;
+    return {rule,n,wrWith,wrWithout,avgWith,avgWithout,liftWR,liftPnl,few};
+  });
 
-  // Build a rule card
-  function buildCard(tag, d, isGood){
-    const wr=d.trades?Math.round(d.wins/d.trades*100):0;
-    const avgPnl=d.trades?d.totalPnl/d.trades:0;
-    const pf=d.grossLoss>0?(d.grossWin/d.grossLoss).toFixed(1)+'×':(d.grossWin>0?'∞':'0×');
-    const es=edgeScore(d);
-    const wrColor=wr>=60?'var(--tv-teal)':wr>=50?'var(--warn)':'var(--danger)';
-    const pnlColor=avgPnl>=0?'var(--tv-teal)':'var(--danger)';
-    const totalColor=d.totalPnl>=0?'var(--tv-teal)':'var(--danger)';
-    const totalStr=(d.totalPnl>=0?'+':'')+'₹'+Math.round(d.totalPnl).toLocaleString('en-IN');
-    const avgStr=(avgPnl>=0?'+':'')+'₹'+Math.round(avgPnl).toLocaleString('en-IN');
-    const barW=Math.min(100,wr);
-    const barColor=wr>=60?'#26a69a':wr>=50?'#f9a825':'#ef5350';
-    const shortTag=tag.length>26?tag.substring(0,24)+'…':tag;
-    return `<div class="edge-rule-card ${isGood?'good':'bad'}">
-      <div class="edge-rule-header">
-        <span class="edge-rule-name" title="${tag}">${shortTag}</span>
-        <span class="edge-score-pill ${es.cls}">${es.label}</span>
+  const liftWrap=document.getElementById('edge-lift-wrap');
+  const liftList=document.getElementById('edge-lift-list');
+  liftList.innerHTML=liftCards.sort((a,b)=>b.liftPnl-a.liftPnl).map(d=>{
+    const pillCls=d.few?'lp-few':d.liftPnl>=0?'lp-pos':'lp-neg';
+    const cardCls=d.few?'neu':d.liftPnl>=0?'pos':'neg';
+    const pillTxt=d.few?'FEW DATA':d.liftPnl>=0?'ADDS EDGE':'WEAK LIFT';
+    const wrMax=Math.max(d.wrWith,d.wrWithout,1);
+    const wrWithW=Math.round(d.wrWith/wrMax*100);
+    const wrWithoutW=Math.round(d.wrWithout/wrMax*100);
+    const wrColor=d.wrWith>=60?'var(--tv-teal)':d.wrWith>=50?'var(--warn)':'var(--danger)';
+    const wrOutColor=d.wrWithout>=60?'var(--tv-teal)':d.wrWithout>=50?'var(--warn)':'var(--danger)';
+    const deltaColor=d.liftPnl>=0?'var(--tv-teal)':'var(--danger)';
+    const deltaArrow=d.liftPnl>=0?'▲':'▼';
+    const shortRule=d.rule.length>24?d.rule.substring(0,22)+'…':d.rule;
+    return `<div class="lift-card ${cardCls}">
+      <div class="lift-header">
+        <span class="lift-name" title="${d.rule}">${shortRule}</span>
+        <span class="lift-pill ${pillCls}">${pillTxt}</span>
       </div>
-      <div class="edge-wr-wrap">
-        <div class="edge-wr-track"><div class="edge-wr-fill" style="width:${barW}%;background:${barColor}"></div></div>
-        <span class="edge-wr-pct" style="color:${wrColor}">${wr}%</span>
+      <div class="lift-row">
+        <span class="lift-lbl">With (${d.n})</span>
+        <div class="lift-bar-track"><div class="lift-bar-fill" style="width:${wrWithW}%;background:${wrColor}"></div></div>
+        <span class="lift-val" style="color:${wrColor}">${d.wrWith}% WR</span>
+        <span class="lift-val" style="color:${d.avgWith>=0?'var(--tv-teal)':'var(--danger)'}">${pnlStr(d.avgWith)}</span>
       </div>
-      <div class="edge-stats-row">
-        <div class="edge-stat-cell"><div class="esv">${d.trades}</div><div class="esl">Trades</div></div>
-        <div class="edge-stat-cell"><div class="esv" style="color:${pnlColor}">${avgStr}</div><div class="esl">Avg P&L</div></div>
-        <div class="edge-stat-cell"><div class="esv" style="color:${totalColor}">${totalStr}</div><div class="esl">Total P&L</div></div>
-        <div class="edge-stat-cell"><div class="esv" style="color:${d.totalPnl>=0?'var(--tv-teal)':'var(--danger)'}">${pf}</div><div class="esl">Prof. Factor</div></div>
+      <div class="lift-row">
+        <span class="lift-lbl">Without (${tagged.length-d.n})</span>
+        <div class="lift-bar-track"><div class="lift-bar-fill" style="width:${wrWithoutW}%;background:${wrOutColor}"></div></div>
+        <span class="lift-val" style="color:${wrOutColor}">${d.wrWithout}% WR</span>
+        <span class="lift-val" style="color:${d.avgWithout>=0?'var(--tv-teal)':'var(--danger)'}">${pnlStr(d.avgWithout)}</span>
       </div>
+      <div class="lift-delta" style="color:${deltaColor}">${deltaArrow} ${Math.abs(d.liftWR)}pp WR lift · ${pnlStr(Math.abs(d.liftPnl))} avg P&L ${d.liftPnl>=0?'better':'worse'} per trade when followed</div>
     </div>`;
+  }).join('');
+  liftWrap.style.display='block';
+
+  // ── 2. BREAK COST: per violation ──────────────────────────────────────
+  const breakCards=BAD_RULES.map(rule=>{
+    const normRule=rule.trim();
+    const withBreak=tagged.filter(t=>(t.rules||[]).map(r=>r.trim()).includes(normRule));
+    const clean=tagged.filter(t=>!(t.rules||[]).map(r=>r.trim()).includes(normRule));
+    const avgBrk=avgPnl(withBreak), avgClean=avgPnl(clean);
+    const cost=avgBrk-avgClean;
+    const n=withBreak.length;
+    return {rule,n,avgBrk,avgClean,cost};
+  }).filter(d=>d.n>0);
+
+  const breakWrap=document.getElementById('edge-break-wrap');
+  const breakList=document.getElementById('edge-break-list');
+  if(breakCards.length){
+    breakList.innerHTML=breakCards.sort((a,b)=>a.cost-b.cost).map(d=>{
+      const costColor=d.cost<0?'var(--danger)':'var(--tv-teal)';
+      const shortRule=d.rule.trim().length>24?d.rule.trim().substring(0,22)+'…':d.rule.trim();
+      return `<div class="lift-card neg">
+        <div class="lift-header">
+          <span class="lift-name" title="${d.rule.trim()}">${shortRule}</span>
+          <span class="lift-pill lp-neg">${d.n} BREAK${d.n>1?'S':''}</span>
+        </div>
+        <div class="lift-row">
+          <span class="lift-lbl">Broken</span>
+          <span class="lift-val" style="color:${d.avgBrk>=0?'var(--tv-teal)':'var(--danger)'}">avg ${pnlStr(d.avgBrk)}</span>
+        </div>
+        <div class="lift-row">
+          <span class="lift-lbl">Clean trades</span>
+          <span class="lift-val" style="color:${d.avgClean>=0?'var(--tv-teal)':'var(--danger)'}">avg ${pnlStr(d.avgClean)}</span>
+        </div>
+        <div class="lift-delta" style="color:${costColor}">Cost per violation: ${pnlStr(Math.abs(d.cost))} ${d.cost<0?'worse than clean trades':'vs clean trades'}</div>
+      </div>`;
+    }).join('');
+    breakWrap.style.display='block';
+  } else {
+    breakWrap.style.display='none';
   }
 
-  // Separate good / bad / neutral — sort by total P&L desc within each group
-  const goodEntries=entries.filter(([t])=>goodRules.includes(t)).sort((a,b)=>b[1].totalPnl-a[1].totalPnl);
-  const badEntries=entries.filter(([t])=>badRules.includes(t)).sort((a,b)=>a[1].totalPnl-b[1].totalPnl);
-  const neutralEntries=entries.filter(([t])=>!goodRules.includes(t)&&!badRules.includes(t)).sort((a,b)=>b[1].totalPnl-a[1].totalPnl);
-  const allGood=[...goodEntries,...neutralEntries.filter(([,d])=>d.totalPnl>=0)];
-  const allBad=[...badEntries,...neutralEntries.filter(([,d])=>d.totalPnl<0)];
+  // ── 3. COMPLIANCE SCORE CURVE ─────────────────────────────────────────
+  // score = how many GOOD rules tagged on that trade (0 to MAX_GOOD)
+  const scoreBuckets={};
+  for(let i=0;i<=MAX_GOOD;i++) scoreBuckets[i]={trades:[],label:i===0?'0 rules':i===MAX_GOOD?'All '+MAX_GOOD:i+' rule'+(i>1?'s':'')};
+  tagged.forEach(t=>{
+    const score=(t.rules||[]).map(r=>r.trim()).filter(r=>GOOD.map(g=>g.trim()).includes(r)).length;
+    scoreBuckets[score].trades.push(t);
+  });
 
-  const goodWrap=document.getElementById('edge-good-wrap');
-  const goodList=document.getElementById('edge-good-list');
-  if(allGood.length){
-    goodList.innerHTML=allGood.map(([t,d])=>buildCard(t,d,true)).join('');
-    goodWrap.style.display='block';
-  } else goodWrap.style.display='none';
+  const compWrap=document.getElementById('edge-compliance-wrap');
+  const compList=document.getElementById('edge-compliance-list');
+  const bucketEntries=Object.entries(scoreBuckets).filter(([,b])=>b.trades.length>0);
+  if(bucketEntries.length>1){
+    const allAvgs=bucketEntries.map(([,b])=>avgPnl(b.trades));
+    const maxAbsAvg=Math.max(...allAvgs.map(Math.abs),1);
+    compList.innerHTML=bucketEntries.map(([score,b])=>{
+      const avg=avgPnl(b.trades);
+      const wr=wrOf(b.trades);
+      const barPct=Math.round((Math.abs(avg)/maxAbsAvg)*100);
+      const barColor=avg>=0?'#26a69a':'#ef5350';
+      const pnlColor=avg>=0?'var(--tv-teal)':'var(--danger)';
+      const isAll=parseInt(score)===MAX_GOOD;
+      return `<div class="comp-row" style="${isAll?'background:rgba(41,98,255,0.05);border-radius:3px;padding:5px 4px;':''}">
+        <span class="comp-score-lbl">${b.label}</span>
+        <div class="comp-bar-track"><div class="comp-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div>
+        <span class="comp-pnl" style="color:${pnlColor}">${avg>=0?'+':''}₹${Math.round(Math.abs(avg)).toLocaleString('en-IN')}</span>
+        <span class="comp-cnt" style="color:${wr>=60?'var(--tv-teal)':wr>=50?'var(--warn)':'var(--muted)'}">${wr}%WR</span>
+        <span class="comp-cnt">${b.trades.length}t</span>
+      </div>`;
+    }).join('');
+    compWrap.style.display='block';
+  } else {
+    compWrap.style.display='none';
+  }
 
-  const badWrap=document.getElementById('edge-bad-wrap');
-  const badList=document.getElementById('edge-bad-list');
-  if(allBad.length){
-    badList.innerHTML=allBad.map(([t,d])=>buildCard(t,d,false)).join('');
-    badWrap.style.display='block';
-  } else badWrap.style.display='none';
+  // ── 4. DISCIPLINE TREND — last 14 days ───────────────────────────────
+  const trendWrap=document.getElementById('edge-trend-wrap');
+  const trendList=document.getElementById('edge-trend-list');
+  const byDay={};
+  tagged.forEach(t=>{
+    if(!t.date)return;
+    if(!byDay[t.date])byDay[t.date]=[];
+    byDay[t.date].push(t);
+  });
+  const dayKeys=Object.keys(byDay).sort().slice(-14);
+  if(dayKeys.length>=2){
+    trendList.innerHTML=dayKeys.map(date=>{
+      const dayTrades=byDay[date];
+      const totalGoodTagged=dayTrades.reduce((s,t)=>{
+        return s+(t.rules||[]).map(r=>r.trim()).filter(r=>GOOD.map(g=>g.trim()).includes(r)).length;
+      },0);
+      const maxPossible=dayTrades.length*MAX_GOOD;
+      const compPct=maxPossible?Math.round(totalGoodTagged/maxPossible*100):0;
+      const dayPnl=dayTrades.reduce((s,t)=>s+(t.totalPnl||0),0);
+      const pnlColor=dayPnl>=0?'var(--tv-teal)':'var(--danger)';
+      const compColor=compPct>=70?'var(--tv-teal)':compPct>=40?'var(--warn)':'var(--danger)';
+      const shortDate=date.slice(5);
+      return `<div class="trend-row">
+        <span class="trend-date">${shortDate}</span>
+        <div class="trend-bar-track"><div class="trend-bar-fill" style="width:${compPct}%;background:${compColor}"></div></div>
+        <span class="trend-pct" style="color:${compColor}">${compPct}%</span>
+        <span class="trend-pnl" style="color:${pnlColor}">${pnlStr(dayPnl)}</span>
+      </div>`;
+    }).join('');
+    trendWrap.style.display='block';
+  } else {
+    trendWrap.style.display='none';
+  }
 
-  // Auto insights
+  // ── KPIs ──────────────────────────────────────────────────────────────
+  // Perfect trade: all GOOD rules tagged + zero BAD rules tagged
+  const perfectTrades=tagged.filter(t=>{
+    const rs=(t.rules||[]).map(r=>r.trim());
+    const followedAll=GOOD.every(g=>rs.includes(g.trim()));
+    const brokeSome=BAD_RULES.some(b=>rs.includes(b.trim()));
+    return followedAll&&!brokeSome;
+  });
+  const perfectRate=tagged.length?Math.round(perfectTrades.length/tagged.length*100):0;
+  const perfectAvg=perfectTrades.length?avgPnl(perfectTrades):null;
+  const allAvg=avgPnl(tagged);
+
+  // avg compliance % across all tagged trades
+  const totalCompliance=tagged.reduce((s,t)=>{
+    const goodTagged=(t.rules||[]).map(r=>r.trim()).filter(r=>GOOD.map(g=>g.trim()).includes(r)).length;
+    return s+(goodTagged/MAX_GOOD);
+  },0);
+  const avgCompliance=Math.round(totalCompliance/tagged.length*100);
+
+  // avg break cost (difference between broken vs clean)
+  const tradesWith=tagged.filter(t=>(t.breaks||[]).length>0);
+  const tradesClean=tagged.filter(t=>(t.breaks||[]).length===0);
+  const breakCost=tradesWith.length&&tradesClean.length?avgPnl(tradesWith)-avgPnl(tradesClean):null;
+
+  const kpiRow=document.getElementById('edge-kpi-row');
+  const ekPR=document.getElementById('ek-perfect-rate');
+  const ekPPnl=document.getElementById('ek-perfect-pnl');
+  const ekAC=document.getElementById('ek-avg-compliance');
+  const ekBC=document.getElementById('ek-break-cost');
+
+  ekPR.textContent=perfectRate+'%';
+  ekPR.style.color=perfectRate>=30?'var(--tv-teal)':perfectRate>=15?'var(--warn)':'var(--danger)';
+
+  if(perfectAvg!==null){
+    ekPPnl.textContent=(perfectAvg>=0?'+':'')+'₹'+Math.round(Math.abs(perfectAvg)).toLocaleString('en-IN');
+    ekPPnl.style.color=perfectAvg>=0?'var(--tv-teal)':'var(--danger)';
+  } else {
+    ekPPnl.textContent='—';ekPPnl.style.color='var(--muted)';
+  }
+
+  ekAC.textContent=avgCompliance+'%';
+  ekAC.style.color=avgCompliance>=70?'var(--tv-teal)':avgCompliance>=50?'var(--warn)':'var(--danger)';
+
+  if(breakCost!==null){
+    ekBC.textContent=(breakCost>=0?'+':'')+'₹'+Math.round(Math.abs(breakCost)).toLocaleString('en-IN');
+    ekBC.style.color=breakCost<0?'var(--danger)':'var(--muted)';
+  } else {
+    ekBC.textContent='—';ekBC.style.color='var(--muted)';
+  }
+  kpiRow.style.display='grid';
+
+  // ── AUTO INSIGHTS ─────────────────────────────────────────────────────
   const insightWrap=document.getElementById('edge-insights');
   const insightList=document.getElementById('edge-insights-list');
   const insights=[];
-  const topWinners=allGood.filter(([,d])=>d.totalPnl>0).slice(0,2);
-  if(topWinners.length){
-    const total=topWinners.reduce((s,[,d])=>s+d.totalPnl,0);
-    const names=topWinners.map(([t])=>t.length>22?t.substring(0,20)+'…':t).join(' + ');
-    insights.push({text:`Your top edge${topWinners.length>1?'s':''} — ${names} — generated ₹${Math.round(total).toLocaleString('en-IN')} combined. Keep executing these setups.`,warn:false});
+
+  // best lift rule (enough data)
+  const bestLift=liftCards.filter(d=>d.n>=3).sort((a,b)=>b.liftPnl-a.liftPnl)[0];
+  if(bestLift&&bestLift.liftPnl>0){
+    insights.push({text:`"${bestLift.rule}" is your strongest rule — following it adds +${Math.round(bestLift.liftPnl).toLocaleString('en-IN')}₹ avg P&L and +${bestLift.liftWR}pp win rate per trade vs skipping it.`,warn:false});
   }
-  const topDrains=allBad.filter(([,d])=>d.totalPnl<0).slice(0,2);
-  if(topDrains.length){
-    const lost=Math.abs(topDrains.reduce((s,[,d])=>s+d.totalPnl,0));
-    const names=topDrains.map(([t])=>t.length>22?t.substring(0,20)+'…':t).join(' + ');
-    insights.push({text:`${names} cost ₹${Math.round(lost).toLocaleString('en-IN')}. Eliminating these habits would directly add to your bottom line.`,warn:true});
+
+  // worst break
+  if(breakCards.length){
+    const worst=breakCards.sort((a,b)=>a.cost-b.cost)[0];
+    if(worst.cost<0){
+      insights.push({text:`Breaking "${worst.rule.trim()}" costs you ₹${Math.round(Math.abs(worst.cost)).toLocaleString('en-IN')} per trade on average vs clean trades. It has happened ${worst.n} time${worst.n>1?'s':''}.`,warn:true});
+    }
   }
+
+  // perfect trade premium
+  if(perfectTrades.length>=2&&perfectAvg!==null){
+    const diff=perfectAvg-allAvg;
+    if(diff>0){
+      insights.push({text:`Your ${perfectTrades.length} perfect trades (all rules, no breaks) avg ₹${Math.round(perfectAvg).toLocaleString('en-IN')} — that's +₹${Math.round(diff).toLocaleString('en-IN')} more than your overall avg. Process = edge.`,warn:false});
+    }
+  }
+
+  // compliance trend warning
+  if(dayKeys.length>=3){
+    const last3=dayKeys.slice(-3).map(d=>{
+      const dt=byDay[d];
+      const tot=dt.reduce((s,t)=>{
+        return s+(t.rules||[]).map(r=>r.trim()).filter(r=>GOOD.map(g=>g.trim()).includes(r)).length;
+      },0);
+      return tot/(dt.length*MAX_GOOD);
+    });
+    const avgLast3=last3.reduce((s,v)=>s+v,0)/3;
+    if(avgLast3<0.4){
+      insights.push({text:`Your discipline has dropped — avg compliance over the last 3 days is only ${Math.round(avgLast3*100)}%. Check what rules you are skipping most.`,warn:true});
+    }
+  }
+
   if(insights.length){
     insightList.innerHTML=insights.map(i=>`<div class="edge-insight ${i.warn?'warn':''}">${i.text}</div>`).join('');
     insightWrap.style.display='block';
-  } else insightWrap.style.display='none';
+  } else {
+    insightWrap.style.display='none';
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════
