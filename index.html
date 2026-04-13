@@ -280,24 +280,7 @@ canvas{width:100%!important;}
 .lift-val{min-width:56px;text-align:right;font-size:10px;font-weight:700;}
 .lift-delta{font-family:'Space Mono',monospace;font-size:10px;margin-top:4px;padding-top:5px;border-top:1px solid var(--border);}
 
-/* heatmap */
-.hm-table{width:100%;border-collapse:collapse;font-family:'Space Mono',monospace;font-size:9px;}
-.hm-table th{color:var(--muted);padding:3px 4px;text-align:center;font-weight:700;letter-spacing:.5px;font-size:8px;}
-.hm-table th.hm-row-lbl{text-align:left;min-width:80px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.hm-table td.hm-cell{width:40px;height:34px;text-align:center;vertical-align:middle;border-radius:3px;cursor:default;transition:opacity .15s;padding:0 2px;}
-.hm-table td.hm-cell:hover{opacity:.8;}
-.hm-table td.hm-self{background:rgba(54,60,78,.4);color:var(--muted);font-size:8px;}
-.hm-val{font-size:10px;font-weight:700;display:block;line-height:1.1;}
-.hm-cnt{font-size:8px;color:inherit;opacity:.7;display:block;}
-/* skipped rule */
-.skip-rule-row{padding:8px 0;border-bottom:1px solid rgba(54,60,78,.5);}
-.skip-rule-row:last-child{border-bottom:none;}
-.skip-rule-name{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--text);margin-bottom:5px;}
-.skip-split{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.skip-col{background:var(--panel2);border-radius:3px;padding:7px 10px;}
-.skip-col-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
-.skip-col-val{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
-.skip-col-sub{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
+
 .edge-insight{background:rgba(38,166,154,.07);border:1px solid rgba(38,166,154,.2);border-radius:6px;padding:10px 12px;font-family:'Space Mono',monospace;font-size:10px;color:var(--text);line-height:1.7;margin-bottom:6px;}
 .edge-insight.warn{background:rgba(239,83,80,.07);border-color:rgba(239,83,80,.2);}
 
@@ -1238,19 +1221,6 @@ svg.ring{overflow:visible;}
       <div id="edge-break-wrap" style="display:none;">
         <div class="edge-sec-lbl">Break cost — per violation</div>
         <div id="edge-break-list"></div>
-      </div>
-
-      <!-- Section 3: Rule combination heatmap -->
-      <div id="edge-heatmap-wrap" style="display:none;">
-        <div class="edge-sec-lbl">Rule combination heatmap</div>
-        <div id="edge-heatmap-legend" style="display:flex;gap:12px;margin-bottom:8px;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);"></div>
-        <div id="edge-heatmap-grid"></div>
-      </div>
-
-      <!-- Section 4: Most-skipped rule -->
-      <div id="edge-skipped-wrap" style="display:none;">
-        <div class="edge-sec-lbl">Most-skipped rule — winning vs losing days</div>
-        <div id="edge-skipped-list"></div>
       </div>
 
       <!-- Auto insights -->
@@ -2816,7 +2786,7 @@ function renderEdgeTable(trades){
   const tagged=closed.filter(t=>(t.rules||[]).length>0);
 
   const eEmp=document.getElementById('edge-empty');
-  const sections=['edge-kpi-row','edge-lift-wrap','edge-break-wrap','edge-heatmap-wrap','edge-skipped-wrap','edge-insights'];
+  const sections=['edge-kpi-row','edge-lift-wrap','edge-break-wrap','edge-insights'];
 
   if(!tagged.length){
     eEmp.style.display='flex';
@@ -2917,132 +2887,6 @@ function renderEdgeTable(trades){
     breakWrap.style.display='none';
   }
 
-  // ── 3. RULE COMBINATION HEATMAP ──────────────────────────────────────
-  // For each pair of GOOD rules, show avg P&L of trades where BOTH were followed
-  const hmWrap=document.getElementById('edge-heatmap-wrap');
-  const hmGrid=document.getElementById('edge-heatmap-grid');
-  const hmLegend=document.getElementById('edge-heatmap-legend');
-
-  // build pair matrix
-  const pairData={};
-  GOOD.forEach(a=>{
-    GOOD.forEach(b=>{
-      const key=a+'|||'+b;
-      const tradesWithBoth=tagged.filter(t=>{
-        const rs=(t.rules||[]).map(r=>r.trim());
-        return rs.includes(a.trim())&&rs.includes(b.trim());
-      });
-      pairData[key]={n:tradesWithBoth.length,avg:avgPnl(tradesWithBoth),wr:wrOf(tradesWithBoth)};
-    });
-  });
-
-  // colour helper: map avg P&L to a cell bg
-  const allPairAvgs=GOOD.flatMap(a=>GOOD.filter(b=>b!==a).map(b=>pairData[a+'|||'+b].avg)).filter(v=>!isNaN(v));
-  const maxAbs=Math.max(...allPairAvgs.map(Math.abs),1);
-  function hmColor(avg,n){
-    if(n<2)return{bg:'rgba(54,60,78,0.35)',fg:'var(--muted)'};
-    const intensity=Math.min(Math.abs(avg)/maxAbs,1);
-    if(avg>=0){
-      const g=Math.round(80+intensity*86); // 80→166
-      return{bg:`rgba(38,${g},154,${0.12+intensity*0.28})`,fg:'#26a69a'};
-    } else {
-      const r=Math.round(180+intensity*59);
-      return{bg:`rgba(${r},83,80,${0.12+intensity*0.28})`,fg:'#ef5350'};
-    }
-  }
-
-  // short labels for columns (up to 8 chars)
-  const hmShort=GOOD.map(r=>{
-    const words=r.trim().split(' ');
-    if(words.length===1)return words[0].substring(0,8);
-    return words.map(w=>w[0].toUpperCase()).join('');
-  });
-
-  let tableHTML=`<table class="hm-table"><thead><tr><th class="hm-row-lbl"></th>`;
-  GOOD.forEach((_,ci)=>{ tableHTML+=`<th title="${GOOD[ci]}">${hmShort[ci]}</th>`; });
-  tableHTML+=`</tr></thead><tbody>`;
-  GOOD.forEach((ruleA,ri)=>{
-    const shortA=ruleA.trim().length>12?ruleA.trim().substring(0,11)+'…':ruleA.trim();
-    tableHTML+=`<tr><th class="hm-row-lbl" title="${ruleA.trim()}">${shortA}</th>`;
-    GOOD.forEach((ruleB,ci)=>{
-      if(ri===ci){
-        // diagonal: show single-rule stats
-        const d=pairData[ruleA+'|||'+ruleA];
-        const self=tagged.filter(t=>(t.rules||[]).map(r=>r.trim()).includes(ruleA.trim()));
-        const selfAvg=avgPnl(self);
-        const sc=hmColor(selfAvg,self.length);
-        const selfStr=self.length<2?'—':(selfAvg>=0?'+':'')+Math.round(selfAvg/1000*10)/10+'k';
-        tableHTML+=`<td class="hm-cell hm-self" style="background:${sc.bg};color:${sc.fg}" title="${ruleA.trim()} alone · ${self.length} trades"><span class="hm-val">${selfStr}</span><span class="hm-cnt">${self.length}t</span></td>`;
-      } else {
-        const {n,avg}=pairData[ruleA+'|||'+ruleB];
-        const c=hmColor(avg,n);
-        const valStr=n<2?'—':(avg>=0?'+':'')+Math.round(avg/1000*10)/10+'k';
-        tableHTML+=`<td class="hm-cell" style="background:${c.bg};color:${c.fg}" title="${ruleA.trim()} + ${ruleB.trim()} · ${n} trades · avg ${avg>=0?'+':''}₹${Math.round(avg)}"><span class="hm-val">${valStr}</span><span class="hm-cnt">${n}t</span></td>`;
-      }
-    });
-    tableHTML+=`</tr>`;
-  });
-  tableHTML+=`</tbody></table>`;
-  hmGrid.innerHTML=tableHTML;
-  hmLegend.innerHTML=`<span style="color:#26a69a;">■</span> positive avg P&L &nbsp;·&nbsp; <span style="color:#ef5350;">■</span> negative &nbsp;·&nbsp; <span style="color:var(--muted);">■</span> &lt;2 trades &nbsp;·&nbsp; values in ₹k`;
-  hmWrap.style.display='block';
-
-  // ── 4. MOST-SKIPPED RULE ON WINNING vs LOSING DAYS ───────────────────
-  const skipWrap=document.getElementById('edge-skipped-wrap');
-  const skipList=document.getElementById('edge-skipped-list');
-
-  // group trades by date, split into winning days (net PnL>=0) and losing days
-  const byDay={};
-  tagged.forEach(t=>{ if(!t.date){return;} if(!byDay[t.date])byDay[t.date]=[]; byDay[t.date].push(t); });
-  const winDays=[],lossDays=[];
-  Object.values(byDay).forEach(dayTrades=>{
-    const dayPnl=dayTrades.reduce((s,t)=>s+(t.totalPnl||0),0);
-    if(dayPnl>=0) winDays.push(...dayTrades);
-    else lossDays.push(...dayTrades);
-  });
-
-  if(winDays.length>0||lossDays.length>0){
-    // for each GOOD rule: skip rate = % of trades where it was NOT tagged
-    const skipStats=GOOD.map(rule=>{
-      const normRule=rule.trim();
-      const winSkip=winDays.length?winDays.filter(t=>!(t.rules||[]).map(r=>r.trim()).includes(normRule)).length:0;
-      const winSkipPct=winDays.length?Math.round(winSkip/winDays.length*100):0;
-      const lossSkip=lossDays.length?lossDays.filter(t=>!(t.rules||[]).map(r=>r.trim()).includes(normRule)).length:0;
-      const lossSkipPct=lossDays.length?Math.round(lossSkip/lossDays.length*100):0;
-      const diff=lossSkipPct-winSkipPct; // positive = skipped more on losing days
-      return{rule,winSkipPct,lossSkipPct,winSkip,winTotal:winDays.length,lossSkip,lossTotal:lossDays.length,diff};
-    }).sort((a,b)=>b.diff-a.diff); // most "dangerous to skip" first
-
-    skipList.innerHTML=skipStats.map(d=>{
-      const winColor=d.winSkipPct>=50?'var(--danger)':d.winSkipPct>=30?'var(--warn)':'var(--tv-teal)';
-      const lossColor=d.lossSkipPct>=50?'var(--danger)':d.lossSkipPct>=30?'var(--warn)':'var(--tv-teal)';
-      const diffArrow=d.diff>0?'▲':'▼';
-      const diffColor=d.diff>10?'var(--danger)':d.diff>0?'var(--warn)':'var(--tv-teal)';
-      const shortRule=d.rule.length>28?d.rule.substring(0,26)+'…':d.rule;
-      return `<div class="skip-rule-row">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-          <span class="skip-rule-name">${shortRule}</span>
-          <span style="font-family:'Space Mono',monospace;font-size:9px;color:${diffColor};">${diffArrow} ${Math.abs(d.diff)}pp more skipped on loss days</span>
-        </div>
-        <div class="skip-split">
-          <div class="skip-col">
-            <div class="skip-col-lbl">Winning days</div>
-            <div class="skip-col-val" style="color:${winColor}">${d.winSkipPct}% skipped</div>
-            <div class="skip-col-sub">${d.winSkip} of ${d.winTotal} trades</div>
-          </div>
-          <div class="skip-col">
-            <div class="skip-col-lbl">Losing days</div>
-            <div class="skip-col-val" style="color:${lossColor}">${d.lossSkipPct}% skipped</div>
-            <div class="skip-col-sub">${d.lossSkip} of ${d.lossTotal} trades</div>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-    skipWrap.style.display='block';
-  } else {
-    skipWrap.style.display='none';
-  }
-
   // ── KPIs ──────────────────────────────────────────────────────────────
   // Perfect trade: all GOOD rules tagged + zero BAD rules tagged
   const perfectTrades=tagged.filter(t=>{
@@ -3121,28 +2965,6 @@ function renderEdgeTable(trades){
     }
   }
 
-  // compliance trend warning — replaced with skipped-rule insight
-  if(winDays.length>0&&lossDays.length>0){
-    const skipStats2=GOOD.map(rule=>{
-      const normRule=rule.trim();
-      const winSkipPct=winDays.length?Math.round(winDays.filter(t=>!(t.rules||[]).map(r=>r.trim()).includes(normRule)).length/winDays.length*100):0;
-      const lossSkipPct=lossDays.length?Math.round(lossDays.filter(t=>!(t.rules||[]).map(r=>r.trim()).includes(normRule)).length/lossDays.length*100):0;
-      return{rule,diff:lossSkipPct-winSkipPct,lossSkipPct};
-    }).sort((a,b)=>b.diff-a.diff);
-    const topSkip=skipStats2[0];
-    if(topSkip&&topSkip.diff>=15){
-      insights.push({text:`"${topSkip.rule}" is your most dangerous rule to skip — it's absent ${topSkip.lossSkipPct}% of trades on losing days, ${topSkip.diff}pp more than on winning days.`,warn:true});
-    }
-  }
-
-  // best rule pair from heatmap
-  let bestPair=null,bestPairAvg=-Infinity;
-  GOOD.forEach((a,ai)=>{ GOOD.forEach((b,bi)=>{ if(ai>=bi)return; const d=pairData[a+'|||'+b]; if(d.n>=3&&d.avg>bestPairAvg){bestPairAvg=d.avg;bestPair={a,b,n:d.n,avg:d.avg};} }); });
-  if(bestPair&&bestPair.avg>0){
-    const shortA=bestPair.a.trim().length>20?bestPair.a.trim().substring(0,18)+'…':bestPair.a.trim();
-    const shortB=bestPair.b.trim().length>20?bestPair.b.trim().substring(0,18)+'…':bestPair.b.trim();
-    insights.push({text:`Best rule combo: "${shortA}" + "${shortB}" → avg +₹${Math.round(bestPair.avg).toLocaleString('en-IN')} across ${bestPair.n} trades. Prioritise getting both in place before entry.`,warn:false});
-  }
 
   if(insights.length){
     insightList.innerHTML=insights.map(i=>`<div class="edge-insight ${i.warn?'warn':''}">${i.text}</div>`).join('');
