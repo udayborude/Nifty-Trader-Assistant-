@@ -1301,6 +1301,138 @@ svg.ring{overflow:visible;}
       <div id="type-split-bars"></div>
     </div>
   </div>
+
+  <!-- ── NEXT 10 TRADES PROJECTION ── -->
+  <div class="section-title">Next 10 Trades · PnL Projection</div>
+
+  <!-- Projection KPI Strip -->
+  <div class="kpi-strip" id="proj-kpi-strip" style="grid-template-columns:repeat(5,1fr);margin-bottom:12px;">
+    <div class="kpi green">
+      <div class="kpi-label">Exp. Value / Trade</div>
+      <div class="kpi-value" id="proj-ev" style="color:var(--tv-teal)">—</div>
+      <div class="kpi-delta" id="proj-ev-d"></div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Next 10 Expected</div>
+      <div class="kpi-value" id="proj-n10" style="color:var(--tv-teal)">—</div>
+      <div class="kpi-delta">EV × 10 trades</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-label">Break-even WR</div>
+      <div class="kpi-value" id="proj-bewr" style="color:var(--warn)">—</div>
+      <div class="kpi-delta" id="proj-bewr-d"></div>
+    </div>
+    <div class="kpi info">
+      <div class="kpi-label">Kelly Fraction</div>
+      <div class="kpi-value" id="proj-kelly" style="color:var(--info)">—</div>
+      <div class="kpi-delta" id="proj-kelly-d"></div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Profit Probability</div>
+      <div class="kpi-value" id="proj-prob" style="color:var(--tv-teal)">—</div>
+      <div class="kpi-delta">next 10-trade run</div>
+    </div>
+  </div>
+
+  <div class="row r2" style="margin-bottom:12px;">
+    <!-- Monte Carlo -->
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Monte Carlo Range · 1,000 Simulations</div>
+      <div id="proj-mc-bars">
+        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--danger);font-size:10px;">P10 (bad)</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-p10-fill" style="width:20%;background:var(--danger);"></div></div><span class="wl-bar-val" id="proj-p10" style="color:var(--danger)">—</span></div>
+        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--warn);font-size:10px;">P25</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-p25-fill" style="width:40%;background:var(--warn);"></div></div><span class="wl-bar-val" id="proj-p25" style="color:var(--warn)">—</span></div>
+        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--accent);font-size:10px;">Median</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-med-fill" style="width:60%;background:var(--accent);"></div></div><span class="wl-bar-val" id="proj-med" style="color:var(--accent)">—</span></div>
+        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--tv-teal);font-size:10px;">P90 (good)</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-p90-fill" style="width:85%;background:var(--tv-teal);"></div></div><span class="wl-bar-val" id="proj-p90" style="color:var(--tv-teal)">—</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+        <div style="text-align:center;"><div class="kpi-label">Max Loss Exp.</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--danger);" id="proj-worst">—</div></div>
+        <div style="text-align:center;"><div class="kpi-label">Profit Prob.</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--tv-teal);" id="proj-prob2">—</div></div>
+        <div style="text-align:center;"><div class="kpi-label">Simulations</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--muted);">1,000</div></div>
+      </div>
+    </div>
+
+    <!-- Scenario Table + Streak Exposure -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--tv-red);"></span>Bear / Base / Bull · 10-Trade Scenarios</div>
+      <div id="proj-scenarios"></div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+        <div class="card-title" style="border:none;padding-bottom:0;margin-bottom:8px;"><span class="dot" style="background:var(--danger);"></span>Max Loss Streak Exposure</div>
+        <div style="display:flex;flex-direction:column;gap:3px;" id="proj-streak-rows"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row r3" style="margin-bottom:12px;">
+    <!-- Clean Trade EV Lift -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--tv-teal);"></span>Discipline Edge · Clean vs Broken</div>
+      <div style="display:flex;flex-direction:column;gap:2px;" id="proj-discipline-rows"></div>
+    </div>
+
+    <!-- Break-even Analysis -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--warn);"></span>Break-even Win Rate Analysis</div>
+      <div style="display:flex;flex-direction:column;gap:2px;" id="proj-bewr-rows"></div>
+      <div style="margin-top:10px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;"><span>B/E WR</span><span>ACTUAL WR</span></div>
+        <div style="height:6px;background:var(--panel2);border-radius:3px;position:relative;overflow:visible;">
+          <div id="proj-be-fill" style="position:absolute;height:100%;background:rgba(38,166,154,0.3);border-radius:0 3px 3px 0;transition:all .5s;"></div>
+          <div id="proj-be-marker" style="position:absolute;top:-4px;width:2px;height:14px;background:var(--warn);border-radius:1px;transition:left .5s;"></div>
+          <div id="proj-wr-marker" style="position:absolute;top:-4px;width:2px;height:14px;background:var(--tv-teal);border-radius:1px;transition:left .5s;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);"><span>0%</span><span>50%</span><span>100%</span></div>
+      </div>
+    </div>
+
+    <!-- Kelly Fraction -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--info);"></span>Kelly Fraction · Optimal Sizing</div>
+      <div style="display:flex;flex-direction:column;gap:2px;" id="proj-kelly-rows"></div>
+      <div style="margin-top:10px;">
+        <div style="height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;">
+          <div id="proj-kelly-bar" style="height:100%;background:var(--info);border-radius:3px;transition:width .5s;width:0%;"></div>
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;margin-top:5px;" id="proj-kelly-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Simulator -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="card-title"><span class="dot" style="background:var(--accent2);"></span>Live Edge Simulator · Adjust Your Parameters</div>
+    <div class="row r2" style="margin-bottom:0;gap:16px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px;letter-spacing:.5px;">Win Rate</span>
+          <input type="range" id="sim-wr-slider" min="20" max="90" value="60" step="1" style="flex:1;accent-color:var(--accent);cursor:pointer;">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text);min-width:36px;" id="sim-wr-lbl">60%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px;letter-spacing:.5px;">Avg Win (₹)</span>
+          <input type="range" id="sim-aw-slider" min="100" max="3000" value="700" step="50" style="flex:1;accent-color:var(--tv-teal);cursor:pointer;">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text);min-width:52px;" id="sim-aw-lbl">₹700</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px;letter-spacing:.5px;">Avg Loss (₹)</span>
+          <input type="range" id="sim-al-slider" min="100" max="3000" value="400" step="50" style="flex:1;accent-color:var(--danger);cursor:pointer;">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text);min-width:52px;" id="sim-al-lbl">₹400</span>
+        </div>
+      </div>
+      <div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:12px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-bottom:4px;">EXPECTED VALUE / TRADE</div>
+          <div style="font-family:'Space Mono',monospace;font-size:28px;font-weight:700;" id="sim-ev-big">—</div>
+          <div style="height:1px;background:var(--border);margin:10px 0;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;">
+            <div><div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;">10T EXP.</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="sim-n10-big">—</div></div>
+            <div><div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;">R:R</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="sim-rr-big">—</div></div>
+            <div><div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;">KELLY</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="sim-kelly-big">—</div></div>
+          </div>
+        </div>
+        <div id="sim-warn-box" style="display:none;margin-top:6px;padding:8px 10px;border:1px solid rgba(239,83,80,.3);border-radius:3px;background:rgba(239,83,80,.07);font-family:'Space Mono',monospace;font-size:10px;color:var(--danger);letter-spacing:.5px;line-height:1.5;"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -2449,6 +2581,7 @@ function renderAll(){
   renderRRScatter(trades);
   renderDailyPnL(trades);
   renderMentalStateAnalytics(trades);
+  renderProjection(trades);
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -3878,7 +4011,194 @@ async function renderMentalStateAnalytics(trades) {
   insightsEl.innerHTML = insights.map(i => `<div style="padding:8px 0;border-bottom:1px solid var(--border);">${i}</div>`).join('') || '<div style="color:var(--muted);">Keep logging your state daily — insights appear after 3+ days of data.</div>';
 }
 
-// ── TOAST & AUDIO ──────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+//  NEXT 10 TRADES PROJECTION
+// ══════════════════════════════════════════════════════════════════
+function renderProjection(trades){
+  const closed=trades.filter(t=>t.result!=='OPEN');
+  const wins=closed.filter(t=>t.result==='WIN');
+  const losses=closed.filter(t=>t.result==='LOSS');
+  const _set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  const _fmt=(n)=>(n>=0?'+':'')+'\u20B9'+Math.abs(Math.round(n)).toLocaleString('en-IN');
+  const _col=(n)=>n>=0?'var(--tv-teal)':'var(--danger)';
+
+  if(!closed.length){
+    ['proj-ev','proj-n10','proj-bewr','proj-kelly','proj-prob'].forEach(id=>_set(id,'—'));
+    return;
+  }
+
+  const avgWin=wins.length?wins.reduce((s,t)=>s+(t.totalPnl||0),0)/wins.length:0;
+  const avgLoss=losses.length?Math.abs(losses.reduce((s,t)=>s+(t.totalPnl||0),0)/losses.length):1;
+  const wr=closed.length?wins.length/closed.length:0;
+  const ev=wr*avgWin-(1-wr)*avgLoss;
+  const beWR=avgLoss/(avgWin+avgLoss)*100;
+  const rr=avgWin/Math.max(1,avgLoss);
+  const kelly=Math.max(0,(wr-(1-wr)/Math.max(0.01,rr))*100);
+  const margin=wr*100-beWR;
+
+  // Monte Carlo
+  function runMC(wrr,aw,al,n,iters){
+    const s=[];
+    for(let i=0;i<iters;i++){let t=0;for(let j=0;j<n;j++)t+=Math.random()<wrr?aw:-al;s.push(t);}
+    return s.sort((a,b)=>a-b);
+  }
+  const sims=runMC(wr,avgWin,avgLoss,10,1000);
+  const profitProb=Math.round(sims.filter(s=>s>0).length/10);
+  function pctile(arr,p){return arr[Math.floor(p/100*(arr.length-1))];}
+  const p10=pctile(sims,10),p25=pctile(sims,25),med=pctile(sims,50),p90=pctile(sims,90),worst=sims[0];
+
+  // KPI strip
+  _set('proj-ev',_fmt(ev));
+  document.getElementById('proj-ev').style.color=_col(ev);
+  _set('proj-ev-d',ev>=0?'edge confirmed':'negative edge');
+  document.getElementById('proj-ev-d').style.color=_col(ev);
+  _set('proj-n10',_fmt(ev*10));
+  document.getElementById('proj-n10').style.color=_col(ev);
+  _set('proj-bewr',Math.round(beWR*10)/10+'%');
+  _set('proj-bewr-d',(margin>=0?'+':'')+Math.round(margin*10)/10+'% margin');
+  document.getElementById('proj-bewr-d').style.color=margin>=10?'var(--tv-teal)':margin>=0?'var(--warn)':'var(--danger)';
+  _set('proj-kelly',Math.round(kelly*10)/10+'%');
+  document.getElementById('proj-kelly').style.color=kelly>0?'var(--info)':'var(--danger)';
+  _set('proj-kelly-d','half-Kelly: '+Math.round(kelly/2*10)/10+'%');
+  _set('proj-prob',profitProb+'%');
+  document.getElementById('proj-prob').style.color=profitProb>=60?'var(--tv-teal)':profitProb>=40?'var(--warn)':'var(--danger)';
+
+  // Monte Carlo bars
+  const maxAbs=Math.max(1,Math.abs(worst),Math.abs(p90));
+  function bw(v){return Math.max(3,Math.abs(v)/maxAbs*95);}
+  _set('proj-p10',_fmt(p10));document.getElementById('proj-p10-fill').style.width=bw(p10)+'%';document.getElementById('proj-p10-fill').style.background=p10>=0?'var(--tv-teal)':'var(--danger)';document.getElementById('proj-p10').style.color=_col(p10);
+  _set('proj-p25',_fmt(p25));document.getElementById('proj-p25-fill').style.width=bw(p25)+'%';document.getElementById('proj-p25-fill').style.background=p25>=0?'var(--tv-teal)':'var(--warn)';document.getElementById('proj-p25').style.color=p25>=0?'var(--tv-teal)':'var(--warn)';
+  _set('proj-med',_fmt(med));document.getElementById('proj-med-fill').style.width=bw(med)+'%';document.getElementById('proj-med-fill').style.background=med>=0?'var(--accent)':'var(--danger)';document.getElementById('proj-med').style.color=med>=0?'var(--accent)':'var(--danger)';
+  _set('proj-p90',_fmt(p90));document.getElementById('proj-p90-fill').style.width=bw(p90)+'%';
+  _set('proj-worst',_fmt(worst));
+  _set('proj-prob2',profitProb+'%');
+
+  // Scenario table
+  const bearWR=Math.max(0.2,wr-0.25);const bullWR=Math.min(0.9,wr+0.2);
+  const evBear=bearWR*avgWin-(1-bearWR)*avgLoss;
+  const evBull=bullWR*avgWin-(1-bullWR)*avgLoss;
+  const maxSc=Math.max(1,Math.abs(evBear*10),Math.abs(ev*10),Math.abs(evBull*10));
+  const scenarios=[
+    {lbl:'Bear',wclass:'s-bear',col:'var(--danger)',v:evBear*10,wr:bearWR},
+    {lbl:'Base',wclass:'s-base',col:'var(--accent)',v:ev*10,wr:wr},
+    {lbl:'Bull',wclass:'s-bull',col:'var(--tv-teal)',v:evBull*10,wr:bullWR},
+  ];
+  document.getElementById('proj-scenarios').innerHTML=scenarios.map(s=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:9px;padding:2px 7px;border-radius:20px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.5px;white-space:nowrap;
+        background:${s.v>=0?'rgba(38,166,154,.1)':'rgba(239,83,80,.1)'};color:${s.col};border:1px solid ${s.col}40;min-width:36px;text-align:center;">${s.lbl}</span>
+      <div style="flex:1;height:6px;background:var(--panel2);border-radius:2px;overflow:hidden;">
+        <div style="width:${Math.max(2,Math.abs(s.v)/maxSc*100)}%;height:100%;background:${s.v>=0?s.col:'var(--danger)'};border-radius:2px;"></div>
+      </div>
+      <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:${_col(s.v)};min-width:68px;text-align:right;">${_fmt(s.v)}</span>
+      <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);min-width:32px;text-align:right;">${Math.round(s.wr*100)}% WR</span>
+    </div>`).join('');
+
+  // Streak exposure
+  const maxStreak=Math.max(2,Math.ceil(Math.log(0.05)/Math.log(Math.max(0.01,1-wr))));
+  const currentStreakInfo=(()=>{
+    let streak=0,type='';
+    for(let i=closed.length-1;i>=0;i--){
+      const r=closed[i].result;
+      if(i===closed.length-1){type=r;streak=1;}
+      else if(closed[i].result===type)streak++;
+      else break;
+    }
+    return{streak,type};
+  })();
+  const streakContProb=Math.round(Math.pow(currentStreakInfo.type==='WIN'?wr:1-wr,currentStreakInfo.streak)*100);
+  document.getElementById('proj-streak-rows').innerHTML=[
+    {k:'Historical max loss streak',v:maxStreak+' trades',c:'var(--danger)'},
+    {k:'Capital at risk if streak repeats',v:_fmt(-maxStreak*avgLoss),c:'var(--danger)'},
+    {k:'Current streak',v:currentStreakInfo.streak+(currentStreakInfo.type==='WIN'?' wins':' losses')+' running',c:currentStreakInfo.type==='WIN'?'var(--tv-teal)':'var(--danger)'},
+    {k:'Streak continues probability',v:streakContProb+'%',c:streakContProb>50?'var(--tv-teal)':'var(--warn)'},
+  ].map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);">
+    <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);">${r.k}</span>
+    <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:${r.c};">${r.v}</span>
+  </div>`).join('');
+
+  // Discipline edge (clean vs broken trades)
+  const cleanTrades=closed.filter(t=>!t.breaks||t.breaks.length===0);
+  const brokenTrades=closed.filter(t=>t.breaks&&t.breaks.length>0);
+  const evClean=cleanTrades.length?(cleanTrades.filter(t=>t.result==='WIN').length/cleanTrades.length*
+    (cleanTrades.filter(t=>t.result==='WIN').reduce((s,t)=>s+(t.totalPnl||0),0)/Math.max(1,cleanTrades.filter(t=>t.result==='WIN').length))-
+    (1-cleanTrades.filter(t=>t.result==='WIN').length/cleanTrades.length)*
+    Math.abs(cleanTrades.filter(t=>t.result==='LOSS').reduce((s,t)=>s+(t.totalPnl||0),0)/Math.max(1,cleanTrades.filter(t=>t.result==='LOSS').length))):null;
+  const evBroken=brokenTrades.length?(brokenTrades.filter(t=>t.result==='WIN').length/brokenTrades.length*
+    (brokenTrades.filter(t=>t.result==='WIN').reduce((s,t)=>s+(t.totalPnl||0),0)/Math.max(1,brokenTrades.filter(t=>t.result==='WIN').length))-
+    (1-brokenTrades.filter(t=>t.result==='WIN').length/brokenTrades.length)*
+    Math.abs(brokenTrades.filter(t=>t.result==='LOSS').reduce((s,t)=>s+(t.totalPnl||0),0)/Math.max(1,brokenTrades.filter(t=>t.result==='LOSS').length))):null;
+  const gap=evClean!==null&&evBroken!==null?evClean-evBroken:null;
+  document.getElementById('proj-discipline-rows').innerHTML=[
+    {k:'EV — full discipline ('+cleanTrades.length+' trades)',v:evClean!==null?_fmt(evClean):'Not enough data',c:evClean!=null?_col(evClean):'var(--muted)'},
+    {k:'EV — with rule breaks ('+brokenTrades.length+' trades)',v:evBroken!==null?_fmt(evBroken):'Not enough data',c:evBroken!=null?_col(evBroken):'var(--muted)'},
+    {k:'Cost per rule break (10T)',v:gap!==null?_fmt(-gap*10):'—',c:gap!=null&&gap>0?'var(--danger)':'var(--muted)'},
+    {k:'Discipline edge / trade',v:gap!==null?_fmt(gap):'—',c:gap!=null?_col(gap):'var(--muted)'},
+  ].map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);">
+    <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);">${r.k}</span>
+    <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:${r.c};">${r.v}</span>
+  </div>`).join('');
+
+  // Break-even rows
+  document.getElementById('proj-bewr-rows').innerHTML=[
+    {k:'Actual win rate',v:Math.round(wr*100)+'%',c:'var(--tv-teal)'},
+    {k:'Break-even win rate',v:Math.round(beWR*10)/10+'%',c:'var(--warn)'},
+    {k:'Safety margin',v:(margin>=0?'+':'')+Math.round(margin*10)/10+'%',c:margin>=10?'var(--tv-teal)':margin>=0?'var(--warn)':'var(--danger)'},
+  ].map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);">
+    <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);">${r.k}</span>
+    <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:${r.c};">${r.v}</span>
+  </div>`).join('');
+  const beLeft=Math.min(98,Math.max(2,beWR));
+  const wrLeft=Math.min(98,Math.max(2,wr*100));
+  const beFill=document.getElementById('proj-be-fill');
+  if(beFill){beFill.style.left=Math.min(beLeft,wrLeft)+'%';beFill.style.width=Math.abs(wrLeft-beLeft)+'%';beFill.style.background=margin>=0?'rgba(38,166,154,0.25)':'rgba(239,83,80,0.2)';}
+  const beM=document.getElementById('proj-be-marker');if(beM)beM.style.left=beLeft+'%';
+  const wrM=document.getElementById('proj-wr-marker');if(wrM)wrM.style.left=wrLeft+'%';
+
+  // Kelly rows
+  document.getElementById('proj-kelly-rows').innerHTML=[
+    {k:'Full Kelly (max size)',v:Math.round(kelly*10)/10+'%',c:kelly>0?'var(--info)':'var(--danger)'},
+    {k:'Half-Kelly (advised)',v:Math.round(kelly/2*10)/10+'%',c:kelly>0?'var(--tv-teal)':'var(--muted)'},
+    {k:'Quarter-Kelly (conservative)',v:Math.round(kelly/4*10)/10+'%',c:'var(--muted)'},
+  ].map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);">
+    <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);">${r.k}</span>
+    <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:${r.c};">${r.v}</span>
+  </div>`).join('');
+  const kBar=document.getElementById('proj-kelly-bar');if(kBar){kBar.style.width=Math.min(100,Math.max(0,kelly))+'%';kBar.style.background=kelly>0?'var(--info)':'var(--danger)';}
+  const kSt=document.getElementById('proj-kelly-status');if(kSt){kSt.textContent=kelly>0?'Positive edge — sizing is justified':'Negative edge — do not trade this setup';kSt.style.color=kelly>0?'var(--tv-teal)':'var(--danger)';}
+
+  // Live simulator wiring (only once)
+  if(!window._projSimInit){
+    window._projSimInit=true;
+    function simRun(){
+      const swr=parseInt(document.getElementById('sim-wr-slider').value)/100;
+      const saw=parseInt(document.getElementById('sim-aw-slider').value);
+      const sal=parseInt(document.getElementById('sim-al-slider').value);
+      document.getElementById('sim-wr-lbl').textContent=Math.round(swr*100)+'%';
+      document.getElementById('sim-aw-lbl').textContent='\u20B9'+saw;
+      document.getElementById('sim-al-lbl').textContent='\u20B9'+sal;
+      const sev=swr*saw-(1-swr)*sal;
+      const srr=saw/Math.max(1,sal);
+      const sk=Math.max(0,(swr-(1-swr)/Math.max(0.01,srr))*100);
+      const evEl=document.getElementById('sim-ev-big');if(evEl){evEl.textContent=(sev>=0?'+':'')+'\u20B9'+Math.abs(Math.round(sev)).toLocaleString('en-IN');evEl.style.color=sev>=0?'var(--tv-teal)':'var(--danger)';}
+      const n10El=document.getElementById('sim-n10-big');if(n10El){n10El.textContent=(sev*10>=0?'+':'')+'\u20B9'+Math.abs(Math.round(sev*10)).toLocaleString('en-IN');n10El.style.color=sev>=0?'var(--tv-teal)':'var(--danger)';}
+      const rrEl=document.getElementById('sim-rr-big');if(rrEl){rrEl.textContent=Math.round(srr*100)/100;rrEl.style.color=srr>=1.5?'var(--tv-teal)':srr>=1?'var(--warn)':'var(--danger)';}
+      const kEl=document.getElementById('sim-kelly-big');if(kEl){kEl.textContent=Math.round(sk*10)/10+'%';kEl.style.color=sk>0?'var(--info)':'var(--muted)';}
+      const warns=[];
+      if(sev<0)warns.push('Negative EV — this edge loses money over time.');
+      if(srr<1)warns.push('R:R below 1:1 — wins are smaller than losses.');
+      if(sk<=0)warns.push('Kelly = 0 — no mathematical edge to size into.');
+      const wb=document.getElementById('sim-warn-box');
+      if(wb){if(warns.length){wb.style.display='block';wb.textContent=warns[0];}else wb.style.display='none';}
+    }
+    ['sim-wr-slider','sim-aw-slider','sim-al-slider'].forEach(id=>{
+      const el=document.getElementById(id);if(el)el.addEventListener('input',simRun);
+    });
+    simRun();
+  }
+}
+
+
 let audioMuted=false;
 function showToast(msg,warn){const t=document.getElementById('toast');t.textContent=msg;t.className=warn?'warn-toast show':'show';setTimeout(()=>t.className='',3500);if(!audioMuted)playAlert(warn?'warn':'good');}
 function toggleMute(){audioMuted=!audioMuted;const b=document.getElementById('mute-btn');b.textContent=audioMuted?'🔇 Muted':'🔔 Sound';b.style.color=audioMuted?'var(--danger)':'var(--accent)';if(!audioMuted)playAlert('good');}
