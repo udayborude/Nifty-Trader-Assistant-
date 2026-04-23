@@ -1169,6 +1169,137 @@ svg.ring{overflow:visible;}
     </div>
   </div>
 
+  <!-- ── NEXT 10 TRADES PROJECTION ── -->
+  <div class="section-title">Next 10 Trades · PnL Projection</div>
+
+  <!-- Projection KPI Strip -->
+  <div class="kpi-strip" id="proj-kpi-strip" style="grid-template-columns:repeat(5,1fr);margin-bottom:12px;">
+    <div class="kpi green">
+      <div class="kpi-label">Exp. Value / Trade</div>
+      <div class="kpi-value" id="proj-ev" style="color:var(--tv-teal)">—</div>
+      <div class="kpi-delta" id="proj-ev-d"></div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Next 10 Expected</div>
+      <div class="kpi-value" id="proj-n10" style="color:var(--tv-teal)">—</div>
+      <div class="kpi-delta">EV × 10 trades</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-label">Break-even WR</div>
+      <div class="kpi-value" id="proj-bewr" style="color:var(--warn)">—</div>
+      <div class="kpi-delta" id="proj-bewr-d"></div>
+    </div>
+    <div class="kpi info">
+      <div class="kpi-label">Kelly Fraction</div>
+      <div class="kpi-value" id="proj-kelly" style="color:var(--info)">—</div>
+      <div class="kpi-delta" id="proj-kelly-d"></div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Profit Probability</div>
+      <div class="kpi-value" id="proj-prob" style="color:var(--tv-teal)">—</div>
+      <div class="kpi-delta">next 10-trade run</div>
+    </div>
+  </div>
+
+  <div class="row r2" style="margin-bottom:12px;">
+    <!-- Monte Carlo -->
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Monte Carlo Range · 1,000 Simulations</div>
+      <div id="proj-mc-bars">
+        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--danger);font-size:10px;">P10 (bad)</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-p10-fill" style="width:20%;background:var(--danger);"></div></div><span class="wl-bar-val" id="proj-p10" style="color:var(--danger)">—</span></div>
+        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--warn);font-size:10px;">P25</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-p25-fill" style="width:40%;background:var(--warn);"></div></div><span class="wl-bar-val" id="proj-p25" style="color:var(--warn)">—</span></div>
+        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--accent);font-size:10px;">Median</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-med-fill" style="width:60%;background:var(--accent);"></div></div><span class="wl-bar-val" id="proj-med" style="color:var(--accent)">—</span></div>
+        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--tv-teal);font-size:10px;">P90 (good)</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-p90-fill" style="width:85%;background:var(--tv-teal);"></div></div><span class="wl-bar-val" id="proj-p90" style="color:var(--tv-teal)">—</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+        <div style="text-align:center;"><div class="kpi-label">Max Loss Exp.</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--danger);" id="proj-worst">—</div></div>
+        <div style="text-align:center;"><div class="kpi-label">Profit Prob.</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--tv-teal);" id="proj-prob2">—</div></div>
+        <div style="text-align:center;"><div class="kpi-label">Simulations</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--muted);">1,000</div></div>
+      </div>
+    </div>
+
+    <!-- Scenario Table + Streak Exposure -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--tv-red);"></span>Bear / Base / Bull · 10-Trade Scenarios</div>
+      <div id="proj-scenarios"></div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+        <div class="card-title" style="border:none;padding-bottom:0;margin-bottom:8px;"><span class="dot" style="background:var(--danger);"></span>Max Loss Streak Exposure</div>
+        <div style="display:flex;flex-direction:column;gap:3px;" id="proj-streak-rows"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row r3" style="margin-bottom:12px;">
+    <!-- Clean Trade EV Lift -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--tv-teal);"></span>Discipline Edge · Clean vs Broken</div>
+      <div style="display:flex;flex-direction:column;gap:2px;" id="proj-discipline-rows"></div>
+    </div>
+
+    <!-- Break-even Analysis -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--warn);"></span>Break-even Win Rate Analysis</div>
+      <div style="display:flex;flex-direction:column;gap:2px;" id="proj-bewr-rows"></div>
+      <div style="margin-top:10px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;"><span>B/E WR</span><span>ACTUAL WR</span></div>
+        <div style="height:6px;background:var(--panel2);border-radius:3px;position:relative;overflow:visible;">
+          <div id="proj-be-fill" style="position:absolute;height:100%;background:rgba(38,166,154,0.3);border-radius:0 3px 3px 0;transition:all .5s;"></div>
+          <div id="proj-be-marker" style="position:absolute;top:-4px;width:2px;height:14px;background:var(--warn);border-radius:1px;transition:left .5s;"></div>
+          <div id="proj-wr-marker" style="position:absolute;top:-4px;width:2px;height:14px;background:var(--tv-teal);border-radius:1px;transition:left .5s;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);"><span>0%</span><span>50%</span><span>100%</span></div>
+      </div>
+    </div>
+
+    <!-- Kelly Fraction -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--info);"></span>Kelly Fraction · Optimal Sizing</div>
+      <div style="display:flex;flex-direction:column;gap:2px;" id="proj-kelly-rows"></div>
+      <div style="margin-top:10px;">
+        <div style="height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;">
+          <div id="proj-kelly-bar" style="height:100%;background:var(--info);border-radius:3px;transition:width .5s;width:0%;"></div>
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;margin-top:5px;" id="proj-kelly-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Simulator -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="card-title"><span class="dot" style="background:var(--accent2);"></span>Live Edge Simulator · Adjust Your Parameters</div>
+    <div class="row r2" style="margin-bottom:0;gap:16px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px;letter-spacing:.5px;">Win Rate</span>
+          <input type="range" id="sim-wr-slider" min="20" max="90" value="60" step="1" style="flex:1;accent-color:var(--accent);cursor:pointer;">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text);min-width:36px;" id="sim-wr-lbl">60%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px;letter-spacing:.5px;">Avg Win (₹)</span>
+          <input type="range" id="sim-aw-slider" min="100" max="3000" value="700" step="50" style="flex:1;accent-color:var(--tv-teal);cursor:pointer;">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text);min-width:52px;" id="sim-aw-lbl">₹700</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px;letter-spacing:.5px;">Avg Loss (₹)</span>
+          <input type="range" id="sim-al-slider" min="100" max="3000" value="400" step="50" style="flex:1;accent-color:var(--danger);cursor:pointer;">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text);min-width:52px;" id="sim-al-lbl">₹400</span>
+        </div>
+      </div>
+      <div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:12px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-bottom:4px;">EXPECTED VALUE / TRADE</div>
+          <div style="font-family:'Space Mono',monospace;font-size:28px;font-weight:700;" id="sim-ev-big">—</div>
+          <div style="height:1px;background:var(--border);margin:10px 0;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;">
+            <div><div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;">10T EXP.</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="sim-n10-big">—</div></div>
+            <div><div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;">R:R</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="sim-rr-big">—</div></div>
+            <div><div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;">KELLY</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="sim-kelly-big">—</div></div>
+          </div>
+        </div>
+        <div id="sim-warn-box" style="display:none;margin-top:6px;padding:8px 10px;border:1px solid rgba(239,83,80,.3);border-radius:3px;background:rgba(239,83,80,.07);font-family:'Space Mono',monospace;font-size:10px;color:var(--danger);letter-spacing:.5px;line-height:1.5;"></div>
+      </div>
+    </div>
+
   <!-- ── MENTAL STATE ANALYTICS ── -->
   <div class="section-title" id="mental-state-section">🧠 Mental State vs Performance</div>
   <div id="mental-state-analytics" style="margin-bottom:12px;">
@@ -1302,136 +1433,6 @@ svg.ring{overflow:visible;}
     </div>
   </div>
 
-  <!-- ── NEXT 10 TRADES PROJECTION ── -->
-  <div class="section-title">Next 10 Trades · PnL Projection</div>
-
-  <!-- Projection KPI Strip -->
-  <div class="kpi-strip" id="proj-kpi-strip" style="grid-template-columns:repeat(5,1fr);margin-bottom:12px;">
-    <div class="kpi green">
-      <div class="kpi-label">Exp. Value / Trade</div>
-      <div class="kpi-value" id="proj-ev" style="color:var(--tv-teal)">—</div>
-      <div class="kpi-delta" id="proj-ev-d"></div>
-    </div>
-    <div class="kpi green">
-      <div class="kpi-label">Next 10 Expected</div>
-      <div class="kpi-value" id="proj-n10" style="color:var(--tv-teal)">—</div>
-      <div class="kpi-delta">EV × 10 trades</div>
-    </div>
-    <div class="kpi warn">
-      <div class="kpi-label">Break-even WR</div>
-      <div class="kpi-value" id="proj-bewr" style="color:var(--warn)">—</div>
-      <div class="kpi-delta" id="proj-bewr-d"></div>
-    </div>
-    <div class="kpi info">
-      <div class="kpi-label">Kelly Fraction</div>
-      <div class="kpi-value" id="proj-kelly" style="color:var(--info)">—</div>
-      <div class="kpi-delta" id="proj-kelly-d"></div>
-    </div>
-    <div class="kpi green">
-      <div class="kpi-label">Profit Probability</div>
-      <div class="kpi-value" id="proj-prob" style="color:var(--tv-teal)">—</div>
-      <div class="kpi-delta">next 10-trade run</div>
-    </div>
-  </div>
-
-  <div class="row r2" style="margin-bottom:12px;">
-    <!-- Monte Carlo -->
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Monte Carlo Range · 1,000 Simulations</div>
-      <div id="proj-mc-bars">
-        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--danger);font-size:10px;">P10 (bad)</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-p10-fill" style="width:20%;background:var(--danger);"></div></div><span class="wl-bar-val" id="proj-p10" style="color:var(--danger)">—</span></div>
-        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--warn);font-size:10px;">P25</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-p25-fill" style="width:40%;background:var(--warn);"></div></div><span class="wl-bar-val" id="proj-p25" style="color:var(--warn)">—</span></div>
-        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--accent);font-size:10px;">Median</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-med-fill" style="width:60%;background:var(--accent);"></div></div><span class="wl-bar-val" id="proj-med" style="color:var(--accent)">—</span></div>
-        <div class="wl-bar-row"><span class="wl-bar-label" style="color:var(--tv-teal);font-size:10px;">P90 (good)</span><div class="wl-bar-track"><div class="wl-bar-fill" id="proj-p90-fill" style="width:85%;background:var(--tv-teal);"></div></div><span class="wl-bar-val" id="proj-p90" style="color:var(--tv-teal)">—</span></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
-        <div style="text-align:center;"><div class="kpi-label">Max Loss Exp.</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--danger);" id="proj-worst">—</div></div>
-        <div style="text-align:center;"><div class="kpi-label">Profit Prob.</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--tv-teal);" id="proj-prob2">—</div></div>
-        <div style="text-align:center;"><div class="kpi-label">Simulations</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--muted);">1,000</div></div>
-      </div>
-    </div>
-
-    <!-- Scenario Table + Streak Exposure -->
-    <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--tv-red);"></span>Bear / Base / Bull · 10-Trade Scenarios</div>
-      <div id="proj-scenarios"></div>
-      <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
-        <div class="card-title" style="border:none;padding-bottom:0;margin-bottom:8px;"><span class="dot" style="background:var(--danger);"></span>Max Loss Streak Exposure</div>
-        <div style="display:flex;flex-direction:column;gap:3px;" id="proj-streak-rows"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row r3" style="margin-bottom:12px;">
-    <!-- Clean Trade EV Lift -->
-    <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--tv-teal);"></span>Discipline Edge · Clean vs Broken</div>
-      <div style="display:flex;flex-direction:column;gap:2px;" id="proj-discipline-rows"></div>
-    </div>
-
-    <!-- Break-even Analysis -->
-    <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--warn);"></span>Break-even Win Rate Analysis</div>
-      <div style="display:flex;flex-direction:column;gap:2px;" id="proj-bewr-rows"></div>
-      <div style="margin-top:10px;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;"><span>B/E WR</span><span>ACTUAL WR</span></div>
-        <div style="height:6px;background:var(--panel2);border-radius:3px;position:relative;overflow:visible;">
-          <div id="proj-be-fill" style="position:absolute;height:100%;background:rgba(38,166,154,0.3);border-radius:0 3px 3px 0;transition:all .5s;"></div>
-          <div id="proj-be-marker" style="position:absolute;top:-4px;width:2px;height:14px;background:var(--warn);border-radius:1px;transition:left .5s;"></div>
-          <div id="proj-wr-marker" style="position:absolute;top:-4px;width:2px;height:14px;background:var(--tv-teal);border-radius:1px;transition:left .5s;"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);"><span>0%</span><span>50%</span><span>100%</span></div>
-      </div>
-    </div>
-
-    <!-- Kelly Fraction -->
-    <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--info);"></span>Kelly Fraction · Optimal Sizing</div>
-      <div style="display:flex;flex-direction:column;gap:2px;" id="proj-kelly-rows"></div>
-      <div style="margin-top:10px;">
-        <div style="height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;">
-          <div id="proj-kelly-bar" style="height:100%;background:var(--info);border-radius:3px;transition:width .5s;width:0%;"></div>
-        </div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;margin-top:5px;" id="proj-kelly-status"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Live Simulator -->
-  <div class="card" style="margin-bottom:12px;">
-    <div class="card-title"><span class="dot" style="background:var(--accent2);"></span>Live Edge Simulator · Adjust Your Parameters</div>
-    <div class="row r2" style="margin-bottom:0;gap:16px;">
-      <div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px;letter-spacing:.5px;">Win Rate</span>
-          <input type="range" id="sim-wr-slider" min="20" max="90" value="60" step="1" style="flex:1;accent-color:var(--accent);cursor:pointer;">
-          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text);min-width:36px;" id="sim-wr-lbl">60%</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px;letter-spacing:.5px;">Avg Win (₹)</span>
-          <input type="range" id="sim-aw-slider" min="100" max="3000" value="700" step="50" style="flex:1;accent-color:var(--tv-teal);cursor:pointer;">
-          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text);min-width:52px;" id="sim-aw-lbl">₹700</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px;letter-spacing:.5px;">Avg Loss (₹)</span>
-          <input type="range" id="sim-al-slider" min="100" max="3000" value="400" step="50" style="flex:1;accent-color:var(--danger);cursor:pointer;">
-          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text);min-width:52px;" id="sim-al-lbl">₹400</span>
-        </div>
-      </div>
-      <div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:12px;text-align:center;">
-          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-bottom:4px;">EXPECTED VALUE / TRADE</div>
-          <div style="font-family:'Space Mono',monospace;font-size:28px;font-weight:700;" id="sim-ev-big">—</div>
-          <div style="height:1px;background:var(--border);margin:10px 0;"></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;">
-            <div><div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;">10T EXP.</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="sim-n10-big">—</div></div>
-            <div><div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;">R:R</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="sim-rr-big">—</div></div>
-            <div><div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;">KELLY</div><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="sim-kelly-big">—</div></div>
-          </div>
-        </div>
-        <div id="sim-warn-box" style="display:none;margin-top:6px;padding:8px 10px;border:1px solid rgba(239,83,80,.3);border-radius:3px;background:rgba(239,83,80,.07);font-family:'Space Mono',monospace;font-size:10px;color:var(--danger);letter-spacing:.5px;line-height:1.5;"></div>
-      </div>
-    </div>
   </div>
 </div>
 
