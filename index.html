@@ -911,7 +911,7 @@ svg.ring{overflow:visible;}
           <circle cx="90" cy="90" r="78" fill="none" stroke="var(--border)" stroke-width="5"/>
           <circle id="breath478-arc" cx="90" cy="90" r="78" fill="none" stroke="#26a69a" stroke-width="5"
             stroke-dasharray="490" stroke-dashoffset="490" stroke-linecap="round"
-            style="transition:stroke-dashoffset 0.9s linear,stroke 0.5s ease;"/>
+            style="transition:stroke-dashoffset 0.1s linear,stroke 0.5s ease;"/>
         </svg>
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
           <div id="breath478-phase" style="font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">READY</div>
@@ -4319,72 +4319,43 @@ function playTone(freq,dur,type='sine',vol=0.4){try{const ctx=getAudioCtx();cons
 function playAlert(type){if(type==='warn'){playTone(880,0.15,'square',0.3);setTimeout(()=>playTone(660,0.25,'square',0.3),180);}else if(type==='good'){playTone(523,0.15,'sine',0.35);setTimeout(()=>playTone(659,0.15,'sine',0.35),160);setTimeout(()=>playTone(784,0.3,'sine',0.35),320);}else if(type==='danger'){[0,220,440].forEach(d=>setTimeout(()=>playTone(440,0.18,'sawtooth',0.35),d));}}
 
 // ── 4-7-8 BREATHING ───────────────────────────────
-let breath478Interval=null;
+let breath478Timer=null;
 let breath478Cycles=4;
 const CIRC478=490;
+const phases478=[{label:'INHALE',secs:4,arcDir:1},{label:'HOLD',secs:7,arcDir:0},{label:'EXHALE',secs:8,arcDir:-1}];
 
 function set478Cycles(n,btn){
   breath478Cycles=n;
-  document.querySelectorAll('#breath478-cycle-btns button').forEach(b=>{
-    b.style.borderColor='var(--border)';b.style.background='transparent';b.style.color='var(--muted)';
-  });
+  document.querySelectorAll('#breath478-cycle-btns button').forEach(b=>{b.style.borderColor='var(--border)';b.style.background='transparent';b.style.color='var(--muted)';});
   btn.style.borderColor='var(--tv-teal)';btn.style.background='rgba(38,166,154,0.15)';btn.style.color='#26a69a';
 }
 
 function start478(){
   stop478();
-  document.getElementById('breath478-done').style.display='none';
-  const arc=document.getElementById('breath478-arc');
-  const phEl=document.getElementById('breath478-phase');
-  const cnEl=document.getElementById('breath478-count');
-  const rnEl=document.getElementById('breath478-round');
-  // phases: label, secs, color, arcDir (1=fill, 0=hold full, -1=drain)
-  const phases=[
-    {label:'INHALE', secs:4, color:'var(--accent)',  arcDir:1},
-    {label:'HOLD',   secs:7, color:'var(--warn)',    arcDir:0},
-    {label:'EXHALE', secs:8, color:'#26a69a',        arcDir:-1}
-  ];
-  let pi=0, tick=0, round=1;
+  const arcEl=document.getElementById('breath478-arc'),phEl=document.getElementById('breath478-phase'),cnEl=document.getElementById('breath478-count'),rnEl=document.getElementById('breath478-round'),dnEl=document.getElementById('breath478-done');
+  dnEl.style.display='none';
+  let round=1,pi=0,tick=0,off=CIRC478;
+  arcEl.style.strokeDashoffset=CIRC478;
   const ROUNDS=breath478Cycles;
-
   function run(){
-    const p=phases[pi];
-    const prog=tick/p.secs;
-    if(p.arcDir===1) arc.style.strokeDashoffset=CIRC478*(1-prog);
-    else if(p.arcDir===-1) arc.style.strokeDashoffset=CIRC478*prog;
-    else arc.style.strokeDashoffset=0;
-    arc.style.stroke=p.color;
-    cnEl.style.color=p.color;
-    phEl.textContent=p.label;
-    cnEl.textContent=p.secs-tick;
-    rnEl.textContent='ROUND '+round+' / '+ROUNDS;
+    const p=phases478[pi];const prog=tick/p.secs;
+    if(p.arcDir===1)off=CIRC478*(1-prog);
+    else if(p.arcDir===-1)off=CIRC478*prog;
+    arcEl.style.strokeDashoffset=off;
+    arcEl.style.stroke=p.arcDir===1?'var(--accent)':p.arcDir===0?'var(--warn)':'#26a69a';
+    cnEl.style.color=p.arcDir===1?'var(--accent)':p.arcDir===0?'var(--warn)':'#26a69a';
+    phEl.textContent=p.label;cnEl.textContent=p.secs-tick;rnEl.textContent='ROUND '+round+' / '+ROUNDS;
     tick++;
-    if(tick>p.secs){
-      tick=0; pi++;
-      if(pi>=phases.length){
-        pi=0; round++;
-        if(round>ROUNDS){
-          clearInterval(breath478Interval); breath478Interval=null;
-          phEl.textContent='DONE'; cnEl.textContent='✓'; rnEl.textContent='';
-          arc.style.strokeDashoffset=0;
-          document.getElementById('breath478-done').style.display='block';
-          if(!audioMuted){playTone(440,0.2,'sine',0.3);setTimeout(()=>playTone(523,0.2,'sine',0.3),250);setTimeout(()=>playTone(659,0.4,'sine',0.3),500);}
-          return;
-        }
-      }
-    }
+    if(tick>p.secs){tick=0;pi++;if(pi>=phases478.length){pi=0;round++;if(round>ROUNDS){clearInterval(breath478Timer);breath478Timer=null;phEl.textContent='DONE';cnEl.textContent='✓';rnEl.textContent='';arcEl.style.strokeDashoffset=0;dnEl.style.display='block';if(!audioMuted){playTone(440,0.2,'sine',0.3);setTimeout(()=>playTone(523,0.2,'sine',0.3),250);setTimeout(()=>playTone(659,0.4,'sine',0.3),500);}return;}}}
   }
-  run();
-  breath478Interval=setInterval(run,1000);
+  run();breath478Timer=setInterval(run,1000);
 }
 
 function stop478(){
-  if(breath478Interval){clearInterval(breath478Interval);breath478Interval=null;}
-  const arc=document.getElementById('breath478-arc');
-  if(arc){arc.style.strokeDashoffset=CIRC478;arc.style.stroke='#26a69a';}
-  const ph=document.getElementById('breath478-phase');if(ph)ph.textContent='READY';
-  const cn=document.getElementById('breath478-count');if(cn){cn.textContent='–';cn.style.color='#26a69a';}
-  const rn=document.getElementById('breath478-round');if(rn)rn.textContent='';
+  if(breath478Timer){clearInterval(breath478Timer);breath478Timer=null;}
+  const a=document.getElementById('breath478-arc');if(a){a.style.strokeDashoffset=CIRC478;a.style.stroke='#26a69a';}
+  const ph=document.getElementById('breath478-phase'),cn=document.getElementById('breath478-count'),rn=document.getElementById('breath478-round');
+  if(ph)ph.textContent='READY';if(cn){cn.textContent='–';cn.style.color='#26a69a';}if(rn)rn.textContent='';
 }
 
 // ── SESSION TIME ALERTS ────────────────────────────
