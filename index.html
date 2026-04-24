@@ -865,6 +865,53 @@ svg.ring{overflow:visible;}
     <div class="rule-card danger">Did emotions drive any decision today?</div>
     <div style="margin-top:16px;"><button class="btn btn-accent" onclick="showToast('Session reviewed. Great work staying disciplined. 🙏',false)">Mark Session Complete</button></div>
   </div>
+
+  <!-- 4-7-8 BREATHING -->
+  <div class="card">
+    <div class="card-title">4-7-8 Breathing · Reset &amp; Decompress</div>
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+      <!-- Circle -->
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+        <div style="position:relative;width:140px;height:140px;">
+          <svg width="140" height="140" viewBox="0 0 140 140" style="position:absolute;inset:0;transform:rotate(-90deg);">
+            <circle cx="70" cy="70" r="58" fill="none" stroke="var(--border)" stroke-width="4"/>
+            <circle id="breath-arc" cx="70" cy="70" r="58" fill="none" stroke="var(--tv-blue)" stroke-width="4" stroke-linecap="round"
+              stroke-dasharray="364.4" stroke-dashoffset="364.4" style="transition:none;"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+            <div id="breath-phase" style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;">Ready</div>
+            <div id="breath-count" style="font-size:36px;font-weight:700;font-family:'Space Mono',monospace;color:var(--text);line-height:1;">·</div>
+            <div id="breath-unit" style="font-size:9px;color:var(--muted);letter-spacing:1px;">4 · 7 · 8</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;" id="breath-cycle-dots">
+          <div class="breath-cdot" style="width:7px;height:7px;border-radius:50%;background:var(--border);transition:background 0.3s;"></div>
+          <div class="breath-cdot" style="width:7px;height:7px;border-radius:50%;background:var(--border);transition:background 0.3s;"></div>
+          <div class="breath-cdot" style="width:7px;height:7px;border-radius:50%;background:var(--border);transition:background 0.3s;"></div>
+          <div class="breath-cdot" style="width:7px;height:7px;border-radius:50%;background:var(--border);transition:background 0.3s;"></div>
+        </div>
+        <button id="breath-btn" onclick="toggleBreath()" class="btn" style="margin-top:10px;width:100px;justify-content:center;font-size:11px;padding:7px 0;">Begin</button>
+      </div>
+      <!-- Phase chips + instructions -->
+      <div style="flex:1;min-width:160px;">
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="width:28px;height:28px;border-radius:50%;background:rgba(41,98,255,0.12);border:1px solid rgba(41,98,255,0.3);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--tv-blue);">4</span>
+            <div><div style="font-weight:600;color:var(--text);font-size:12px;">Inhale</div><div style="font-size:10px;color:var(--muted);">Through nose, slow and deep</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="width:28px;height:28px;border-radius:50%;background:rgba(171,71,188,0.1);border:1px solid rgba(171,71,188,0.3);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:#ab47bc;">7</span>
+            <div><div style="font-weight:600;color:var(--text);font-size:12px;">Hold</div><div style="font-size:10px;color:var(--muted);">Retain breath, stay still</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="width:28px;height:28px;border-radius:50%;background:rgba(38,166,154,0.1);border:1px solid rgba(38,166,154,0.3);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--tv-teal);">8</span>
+            <div><div style="font-weight:600;color:var(--text);font-size:12px;">Exhale</div><div style="font-size:10px;color:var(--muted);">Through mouth, release fully</div></div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);line-height:1.6;border-left:2px solid var(--border);padding-left:10px;">4 cycles · ~76 seconds<br>Activates parasympathetic calm.<br>Do this before your review.</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- JOURNAL -->
@@ -4237,6 +4284,51 @@ function renderProjection(trades){
   }
 }
 
+
+// ── 4-7-8 BREATHING ─────────────────────────────────
+(function(){
+  const PHASES=[{name:'Inhale',dur:4,color:'var(--tv-blue)'},{name:'Hold',dur:7,color:'#ab47bc'},{name:'Exhale',dur:8,color:'var(--tv-teal)'}];
+  const CIRC=364.4,CYCLES=4;
+  let running=false,rafId=null,cycleIdx=0,phaseIdx=0,phaseStart=null;
+  function dots(cur){document.querySelectorAll('.breath-cdot').forEach((d,i)=>{d.style.background=i<cur?'var(--tv-teal)':i===cur?'var(--tv-blue)':'var(--border)';});}
+  function reset(){
+    document.getElementById('breath-phase').textContent='Ready';
+    document.getElementById('breath-count').textContent='·';
+    document.getElementById('breath-unit').textContent='4 · 7 · 8';
+    document.getElementById('breath-arc').style.strokeDashoffset=CIRC;
+    document.getElementById('breath-arc').style.stroke='var(--tv-blue)';
+    document.getElementById('breath-btn').textContent='Begin';
+    dots(-1);
+  }
+  function done(){
+    document.getElementById('breath-phase').textContent='Done';
+    document.getElementById('breath-count').textContent='✓';
+    document.getElementById('breath-unit').textContent='well done';
+    document.getElementById('breath-arc').style.strokeDashoffset=CIRC;
+    document.getElementById('breath-arc').style.stroke='var(--tv-teal)';
+    document.getElementById('breath-btn').textContent='Again';
+    dots(CYCLES);
+  }
+  function tick(ts){
+    if(!running)return;
+    if(!phaseStart)phaseStart=ts;
+    const ph=PHASES[phaseIdx],elapsed=(ts-phaseStart)/1000,prog=Math.min(elapsed/ph.dur,1),rem=Math.ceil(Math.max(ph.dur-elapsed,0));
+    document.getElementById('breath-phase').textContent=ph.name;
+    document.getElementById('breath-count').textContent=rem;
+    document.getElementById('breath-unit').textContent='sec';
+    document.getElementById('breath-arc').style.stroke=ph.color;
+    document.getElementById('breath-arc').style.strokeDashoffset=CIRC*(1-prog);
+    if(prog>=1){phaseStart=ts;phaseIdx++;if(phaseIdx>=PHASES.length){phaseIdx=0;cycleIdx++;if(cycleIdx>=CYCLES){running=false;done();return;}dots(cycleIdx);}}
+    rafId=requestAnimationFrame(tick);
+  }
+  window.toggleBreath=function(){
+    if(running){running=false;cancelAnimationFrame(rafId);cycleIdx=0;phaseIdx=0;phaseStart=null;reset();return;}
+    running=true;cycleIdx=0;phaseIdx=0;phaseStart=null;
+    document.getElementById('breath-btn').textContent='Stop';
+    dots(0);
+    rafId=requestAnimationFrame(tick);
+  };
+})();
 
 let audioMuted=false;
 function showToast(msg,warn){const t=document.getElementById('toast');t.textContent=msg;t.className=warn?'warn-toast show':'show';setTimeout(()=>t.className='',3500);if(!audioMuted)playAlert(warn?'warn':'good');}
