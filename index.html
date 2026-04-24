@@ -911,7 +911,7 @@ svg.ring{overflow:visible;}
           <circle cx="90" cy="90" r="78" fill="none" stroke="var(--border)" stroke-width="5"/>
           <circle id="breath478-arc" cx="90" cy="90" r="78" fill="none" stroke="#26a69a" stroke-width="5"
             stroke-dasharray="490" stroke-dashoffset="490" stroke-linecap="round"
-            style="transition:stroke-dashoffset 0.95s linear,stroke 0.4s ease;"/>
+            style="transition:stroke-dashoffset 0.1s linear,stroke 0.6s ease;"/>
         </svg>
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
           <div id="breath478-phase" style="font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">READY</div>
@@ -4321,68 +4321,83 @@ function playAlert(type){if(type==='warn'){playTone(880,0.15,'square',0.3);setTi
 // ── 4-7-8 BREATHING ───────────────────────────────
 let breath478Timer=null;
 let breath478Cycles=4;
-const CIRC478=490;
-const phases478=[{label:'INHALE',secs:4,arcDir:1},{label:'HOLD',secs:7,arcDir:0},{label:'EXHALE',secs:8,arcDir:-1}];
+let breath478Running=false;
 
 function set478Cycles(n,btn){
   breath478Cycles=n;
-  document.querySelectorAll('#breath478-cycle-btns button').forEach(b=>{b.style.borderColor='var(--border)';b.style.background='transparent';b.style.color='var(--muted)';});
+  document.querySelectorAll('#breath478-cycle-btns button').forEach(b=>{
+    b.style.borderColor='var(--border)';b.style.background='transparent';b.style.color='var(--muted)';
+  });
   btn.style.borderColor='var(--tv-teal)';btn.style.background='rgba(38,166,154,0.15)';btn.style.color='#26a69a';
 }
 
 function start478(){
-  stop478();
-  const arcEl=document.getElementById('breath478-arc'),phEl=document.getElementById('breath478-phase'),cnEl=document.getElementById('breath478-count'),rnEl=document.getElementById('breath478-round'),dnEl=document.getElementById('breath478-done');
-  dnEl.style.display='none';
-  let round=1,pi=0,tick=0,off=CIRC478;
-  // Snap arc to empty with no transition, then re-enable smooth animation
-  arcEl.style.transition='none';
-  arcEl.style.strokeDashoffset=CIRC478;
-  arcEl.style.stroke='#26a69a';
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    arcEl.style.transition='stroke-dashoffset 0.95s linear,stroke 0.4s ease';
-  }));
-  const ROUNDS=breath478Cycles;
-  function run(){
-    const p=phases478[pi];
-    const remaining=p.secs-tick;  // counts p.secs down to 1
-    if(p.arcDir===1)off=CIRC478*(1-(tick/p.secs));   // fill
-    else if(p.arcDir===-1)off=CIRC478*(tick/p.secs); // drain
-    arcEl.style.strokeDashoffset=off;
-    arcEl.style.stroke=p.arcDir===1?'var(--accent)':p.arcDir===0?'var(--warn)':'#26a69a';
-    cnEl.style.color=p.arcDir===1?'var(--accent)':p.arcDir===0?'var(--warn)':'#26a69a';
-    phEl.textContent=p.label;cnEl.textContent=remaining;rnEl.textContent='ROUND '+round+' / '+ROUNDS;
-    tick++;
-    if(tick>=p.secs){
-      tick=0;pi++;
-      if(pi>=phases478.length){
-        pi=0;round++;
-        if(round>ROUNDS){
-          clearInterval(breath478Timer);breath478Timer=null;
-          phEl.textContent='DONE';cnEl.textContent='✓';rnEl.textContent='';
-          arcEl.style.transition='none';arcEl.style.strokeDashoffset=0;
-          dnEl.style.display='block';
-          if(!audioMuted){playTone(440,0.2,'sine',0.3);setTimeout(()=>playTone(523,0.2,'sine',0.3),250);setTimeout(()=>playTone(659,0.4,'sine',0.3),500);}
-          return;
-        }
-        // Between rounds: snap arc back to empty for a clean INHALE
-        arcEl.style.transition='none';
-        arcEl.style.strokeDashoffset=CIRC478;
-        off=CIRC478;
-        requestAnimationFrame(()=>requestAnimationFrame(()=>{
-          arcEl.style.transition='stroke-dashoffset 0.95s linear,stroke 0.4s ease';
-        }));
-      }
+  if(breath478Running)return;
+  breath478Running=true;
+  document.getElementById('breath478-done').style.display='none';
+  const arc=document.getElementById('breath478-arc');
+  const phaseEl=document.getElementById('breath478-phase');
+  const countEl=document.getElementById('breath478-count');
+  const roundEl=document.getElementById('breath478-round');
+  const totalCirc=490;
+  let cycle=0;
+  const maxCycles=breath478Cycles;
+
+  // phases: [label, duration (s), color, arc fill direction]
+  const phases=[
+    {label:'INHALE',dur:4,color:'var(--accent)',fill:1},
+    {label:'HOLD',dur:7,color:'var(--warn)',fill:0},
+    {label:'EXHALE',dur:8,color:'#26a69a',fill:-1}
+  ];
+
+  function runPhase(pi){
+    if(!breath478Running)return;
+    if(pi>=phases.length){cycle++;if(cycle>=maxCycles){finish478();return;}runPhase(0);return;}
+    const ph=phases[pi];
+    arc.style.stroke=ph.color;
+    countEl.style.color=ph.color;
+    phaseEl.textContent=ph.label;
+    roundEl.textContent='Round '+(cycle+1)+' / '+maxCycles;
+    let elapsed=0;
+    const total=ph.dur;
+    // set initial arc offset
+    if(ph.fill===1){arc.style.strokeDashoffset=totalCirc;} // will fill in
+    else if(ph.fill===0){arc.style.strokeDashoffset=0;}    // stays full during hold
+    else{arc.style.strokeDashoffset=0;}                    // will empty out
+
+    function tick(){
+      if(!breath478Running)return;
+      elapsed+=0.1;
+      const remaining=Math.max(0,total-elapsed);
+      countEl.textContent=Math.ceil(remaining)||0;
+      if(ph.fill===1){arc.style.strokeDashoffset=totalCirc*(1-elapsed/total);}
+      else if(ph.fill===-1){arc.style.strokeDashoffset=totalCirc*(elapsed/total);}
+      if(elapsed<total){breath478Timer=setTimeout(tick,100);}
+      else{runPhase(pi+1);}
     }
+    tick();
   }
-  run();breath478Timer=setInterval(run,1000);
+  runPhase(0);
 }
 
 function stop478(){
-  if(breath478Timer){clearInterval(breath478Timer);breath478Timer=null;}
-  const a=document.getElementById('breath478-arc');if(a){a.style.strokeDashoffset=CIRC478;a.style.stroke='#26a69a';}
-  const ph=document.getElementById('breath478-phase'),cn=document.getElementById('breath478-count'),rn=document.getElementById('breath478-round');
-  if(ph)ph.textContent='READY';if(cn){cn.textContent='–';cn.style.color='#26a69a';}if(rn)rn.textContent='';
+  breath478Running=false;
+  clearTimeout(breath478Timer);
+  document.getElementById('breath478-arc').style.strokeDashoffset=490;
+  document.getElementById('breath478-arc').style.stroke='#26a69a';
+  document.getElementById('breath478-phase').textContent='READY';
+  document.getElementById('breath478-count').textContent='–';
+  document.getElementById('breath478-round').textContent='';
+}
+
+function finish478(){
+  breath478Running=false;
+  document.getElementById('breath478-arc').style.strokeDashoffset=490;
+  document.getElementById('breath478-phase').textContent='DONE';
+  document.getElementById('breath478-count').textContent='✓';
+  document.getElementById('breath478-round').textContent='';
+  document.getElementById('breath478-done').style.display='block';
+  if(!audioMuted){playTone(440,0.2,'sine',0.3);setTimeout(()=>playTone(523,0.2,'sine',0.3),250);setTimeout(()=>playTone(659,0.4,'sine',0.3),500);}
 }
 
 // ── SESSION TIME ALERTS ────────────────────────────
