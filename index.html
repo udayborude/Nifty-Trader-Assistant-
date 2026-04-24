@@ -911,7 +911,7 @@ svg.ring{overflow:visible;}
           <circle cx="90" cy="90" r="78" fill="none" stroke="var(--border)" stroke-width="5"/>
           <circle id="breath478-arc" cx="90" cy="90" r="78" fill="none" stroke="#26a69a" stroke-width="5"
             stroke-dasharray="490" stroke-dashoffset="490" stroke-linecap="round"
-            style="transition:stroke-dashoffset 0.1s linear,stroke 0.6s ease;"/>
+            style="transition:stroke-dashoffset 0.9s linear,stroke 0.5s ease;"/>
         </svg>
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
           <div id="breath478-phase" style="font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">READY</div>
@@ -4319,9 +4319,9 @@ function playTone(freq,dur,type='sine',vol=0.4){try{const ctx=getAudioCtx();cons
 function playAlert(type){if(type==='warn'){playTone(880,0.15,'square',0.3);setTimeout(()=>playTone(660,0.25,'square',0.3),180);}else if(type==='good'){playTone(523,0.15,'sine',0.35);setTimeout(()=>playTone(659,0.15,'sine',0.35),160);setTimeout(()=>playTone(784,0.3,'sine',0.35),320);}else if(type==='danger'){[0,220,440].forEach(d=>setTimeout(()=>playTone(440,0.18,'sawtooth',0.35),d));}}
 
 // ── 4-7-8 BREATHING ───────────────────────────────
-let breath478Timer=null;
+let breath478Interval=null;
 let breath478Cycles=4;
-let breath478Running=false;
+const CIRC478=490;
 
 function set478Cycles(n,btn){
   breath478Cycles=n;
@@ -4332,72 +4332,59 @@ function set478Cycles(n,btn){
 }
 
 function start478(){
-  if(breath478Running)return;
-  breath478Running=true;
+  stop478();
   document.getElementById('breath478-done').style.display='none';
   const arc=document.getElementById('breath478-arc');
-  const phaseEl=document.getElementById('breath478-phase');
-  const countEl=document.getElementById('breath478-count');
-  const roundEl=document.getElementById('breath478-round');
-  const totalCirc=490;
-  let cycle=0;
-  const maxCycles=breath478Cycles;
-
-  // phases: [label, duration (s), color, arc fill direction]
+  const phEl=document.getElementById('breath478-phase');
+  const cnEl=document.getElementById('breath478-count');
+  const rnEl=document.getElementById('breath478-round');
+  // phases: label, secs, color, arcDir (1=fill, 0=hold full, -1=drain)
   const phases=[
-    {label:'INHALE',dur:4,color:'var(--accent)',fill:1},
-    {label:'HOLD',dur:7,color:'var(--warn)',fill:0},
-    {label:'EXHALE',dur:8,color:'#26a69a',fill:-1}
+    {label:'INHALE', secs:4, color:'var(--accent)',  arcDir:1},
+    {label:'HOLD',   secs:7, color:'var(--warn)',    arcDir:0},
+    {label:'EXHALE', secs:8, color:'#26a69a',        arcDir:-1}
   ];
+  let pi=0, tick=0, round=1;
+  const ROUNDS=breath478Cycles;
 
-  function runPhase(pi){
-    if(!breath478Running)return;
-    if(pi>=phases.length){cycle++;if(cycle>=maxCycles){finish478();return;}runPhase(0);return;}
-    const ph=phases[pi];
-    arc.style.stroke=ph.color;
-    countEl.style.color=ph.color;
-    phaseEl.textContent=ph.label;
-    roundEl.textContent='Round '+(cycle+1)+' / '+maxCycles;
-    let elapsed=0;
-    const total=ph.dur;
-    // set initial arc offset
-    if(ph.fill===1){arc.style.strokeDashoffset=totalCirc;} // will fill in
-    else if(ph.fill===0){arc.style.strokeDashoffset=0;}    // stays full during hold
-    else{arc.style.strokeDashoffset=0;}                    // will empty out
-
-    function tick(){
-      if(!breath478Running)return;
-      elapsed+=0.1;
-      const remaining=Math.max(0,total-elapsed);
-      countEl.textContent=Math.ceil(remaining)||0;
-      if(ph.fill===1){arc.style.strokeDashoffset=totalCirc*(1-elapsed/total);}
-      else if(ph.fill===-1){arc.style.strokeDashoffset=totalCirc*(elapsed/total);}
-      if(elapsed<total){breath478Timer=setTimeout(tick,100);}
-      else{runPhase(pi+1);}
+  function run(){
+    const p=phases[pi];
+    const prog=tick/p.secs;
+    if(p.arcDir===1) arc.style.strokeDashoffset=CIRC478*(1-prog);
+    else if(p.arcDir===-1) arc.style.strokeDashoffset=CIRC478*prog;
+    else arc.style.strokeDashoffset=0;
+    arc.style.stroke=p.color;
+    cnEl.style.color=p.color;
+    phEl.textContent=p.label;
+    cnEl.textContent=p.secs-tick;
+    rnEl.textContent='ROUND '+round+' / '+ROUNDS;
+    tick++;
+    if(tick>p.secs){
+      tick=0; pi++;
+      if(pi>=phases.length){
+        pi=0; round++;
+        if(round>ROUNDS){
+          clearInterval(breath478Interval); breath478Interval=null;
+          phEl.textContent='DONE'; cnEl.textContent='✓'; rnEl.textContent='';
+          arc.style.strokeDashoffset=0;
+          document.getElementById('breath478-done').style.display='block';
+          if(!audioMuted){playTone(440,0.2,'sine',0.3);setTimeout(()=>playTone(523,0.2,'sine',0.3),250);setTimeout(()=>playTone(659,0.4,'sine',0.3),500);}
+          return;
+        }
+      }
     }
-    tick();
   }
-  runPhase(0);
+  run();
+  breath478Interval=setInterval(run,1000);
 }
 
 function stop478(){
-  breath478Running=false;
-  clearTimeout(breath478Timer);
-  document.getElementById('breath478-arc').style.strokeDashoffset=490;
-  document.getElementById('breath478-arc').style.stroke='#26a69a';
-  document.getElementById('breath478-phase').textContent='READY';
-  document.getElementById('breath478-count').textContent='–';
-  document.getElementById('breath478-round').textContent='';
-}
-
-function finish478(){
-  breath478Running=false;
-  document.getElementById('breath478-arc').style.strokeDashoffset=490;
-  document.getElementById('breath478-phase').textContent='DONE';
-  document.getElementById('breath478-count').textContent='✓';
-  document.getElementById('breath478-round').textContent='';
-  document.getElementById('breath478-done').style.display='block';
-  if(!audioMuted){playTone(440,0.2,'sine',0.3);setTimeout(()=>playTone(523,0.2,'sine',0.3),250);setTimeout(()=>playTone(659,0.4,'sine',0.3),500);}
+  if(breath478Interval){clearInterval(breath478Interval);breath478Interval=null;}
+  const arc=document.getElementById('breath478-arc');
+  if(arc){arc.style.strokeDashoffset=CIRC478;arc.style.stroke='#26a69a';}
+  const ph=document.getElementById('breath478-phase');if(ph)ph.textContent='READY';
+  const cn=document.getElementById('breath478-count');if(cn){cn.textContent='–';cn.style.color='#26a69a';}
+  const rn=document.getElementById('breath478-round');if(rn)rn.textContent='';
 }
 
 // ── SESSION TIME ALERTS ────────────────────────────
