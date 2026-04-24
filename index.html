@@ -1222,110 +1222,6 @@ svg.ring{overflow:visible;}
     </div>
   </div>
 
-  <!-- ── ROW 4: EDGE ANALYSIS + RISK ── -->
-  <div class="section-title">Edge & Risk Analysis</div>
-  <div class="row r2" style="margin-bottom:12px;align-items:start;">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Setup Edge Breakdown</div>
-
-      <!-- KPI strip -->
-      <div class="edge-kpi-row" id="edge-kpi-row" style="display:none;">
-        <div class="edge-kpi"><div class="ek-val" id="ek-perfect-rate">—</div><div class="ek-lbl">Perfect Trade %</div></div>
-        <div class="edge-kpi"><div class="ek-val" id="ek-perfect-pnl">—</div><div class="ek-lbl">Perfect Avg P&L</div></div>
-        <div class="edge-kpi"><div class="ek-val" id="ek-avg-compliance">—</div><div class="ek-lbl">Avg Compliance</div></div>
-        <div class="edge-kpi"><div class="ek-val" id="ek-break-cost">—</div><div class="ek-lbl">Avg Break Cost</div></div>
-      </div>
-
-      <!-- Section 1: Rule Lift -->
-      <div id="edge-lift-wrap" style="display:none;">
-        <div class="edge-sec-lbl">Rule lift — with vs without</div>
-        <div id="edge-lift-list"></div>
-      </div>
-
-      <!-- Section 2: Break Cost -->
-      <div id="edge-break-wrap" style="display:none;">
-        <div class="edge-sec-lbl">Break cost — per violation</div>
-        <div id="edge-break-list"></div>
-      </div>
-
-      <!-- Auto insights -->
-      <div id="edge-insights" style="display:none;">
-        <div class="edge-sec-lbl">Auto insights</div>
-        <div id="edge-insights-list"></div>
-      </div>
-
-      <!-- Empty state -->
-      <div id="edge-empty" class="empty"><span class="empty-icon">🔬</span>Log tagged trades to see rule analytics</div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Premium Risk Meter</div>
-
-      <!-- Arc Gauge: Premium Recovery Rate -->
-      <div class="risk-arc-wrap">
-        <svg class="risk-arc-svg" width="220" height="126" viewBox="0 0 220 126">
-          <!-- Track -->
-          <path d="M18,110 A92,92 0 0,1 202,110" fill="none" stroke="var(--panel2)" stroke-width="14" stroke-linecap="round"/>
-          <!-- Zone: full-loss 0-33% -->
-          <path d="M18,110 A92,92 0 0,1 76.4,29.3" fill="none" stroke="#ef5350" stroke-width="14" stroke-linecap="butt" opacity="0.22"/>
-          <!-- Zone: partial 33-66% -->
-          <path d="M76.4,29.3 A92,92 0 0,1 143.6,29.3" fill="none" stroke="#f9a825" stroke-width="14" stroke-linecap="butt" opacity="0.22"/>
-          <!-- Zone: profit 66-100% -->
-          <path d="M143.6,29.3 A92,92 0 0,1 202,110" fill="none" stroke="#26a69a" stroke-width="14" stroke-linecap="butt" opacity="0.22"/>
-          <!-- Filled arc -->
-          <path id="arc-fill" d="" fill="none" stroke-width="14" stroke-linecap="round"/>
-          <!-- Needle -->
-          <line id="risk-needle-line" x1="110" y1="110" x2="110" y2="28" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" style="transition:transform 0.7s cubic-bezier(.4,1.6,.6,1);transform-origin:110px 110px;transform:rotate(-90deg)"/>
-          <circle cx="110" cy="110" r="5.5" fill="var(--bg)" stroke="var(--text)" stroke-width="2.5"/>
-          <!-- Centre text -->
-          <text id="arc-pct-text" x="110" y="90" text-anchor="middle" font-family="Space Mono,monospace" font-size="22" font-weight="700" fill="var(--muted)">—</text>
-          <text x="110" y="107" text-anchor="middle" font-family="Space Mono,monospace" font-size="8" fill="var(--muted)" letter-spacing="1">AVG RECOVERED</text>
-        </svg>
-        <div class="risk-zone-labels">
-          <span style="color:var(--danger);">◀ FULL LOSS</span>
-          <span style="color:var(--warn);">PARTIAL</span>
-          <span style="color:var(--tv-teal);">PROFIT ▶</span>
-        </div>
-      </div>
-
-      <!-- Badge -->
-      <div style="text-align:center;">
-        <span class="risk-score-badge" id="risk-score-badge">—</span>
-      </div>
-
-      <!-- 3-stat mini grid -->
-      <div class="risk-stat-grid" style="margin-top:14px;">
-        <div class="risk-stat"><div class="rs-val" id="rs-premium">—</div><div class="rs-lbl">Avg Premium</div></div>
-        <div class="risk-stat"><div class="rs-val" id="rs-zeroout">—</div><div class="rs-lbl">Zero-out Rate</div></div>
-        <div class="risk-stat"><div class="rs-val" id="rs-protected">—</div><div class="rs-lbl">Protected Exits</div></div>
-      </div>
-
-      <!-- Recovery bars by outcome -->
-      <div class="card-title" style="margin-top:14px;"><span class="dot"></span>Exit Recovery by Outcome</div>
-      <div id="rec-bars"></div>
-
-      <!-- Behaviour grid -->
-      <div class="card-title" style="margin-top:14px;"><span class="dot"></span>Risk Behaviour</div>
-      <div class="beh-grid">
-        <div class="beh-cell"><div class="beh-lbl">Avg Hold Time</div><div class="beh-val" id="beh-hold">—</div><div class="beh-sub" id="beh-hold-sub"></div></div>
-        <div class="beh-cell"><div class="beh-lbl">Theta Exposure</div><div class="beh-val" id="beh-theta">—</div><div class="beh-sub" id="beh-theta-sub"></div></div>
-        <div class="beh-cell"><div class="beh-lbl">Max Single Trade</div><div class="beh-val" id="beh-maxprem">—</div><div class="beh-sub" id="beh-maxprem-sub"></div></div>
-        <div class="beh-cell"><div class="beh-lbl">Best / Avg Exit</div><div class="beh-val" id="beh-ratio">—</div><div class="beh-sub" id="beh-ratio-sub"></div></div>
-      </div>
-
-      <!-- Zone guide pills -->
-      <div class="zone-pills" style="margin-top:12px;">
-        <span class="zone-pill" style="color:var(--danger);border-color:rgba(239,83,80,0.3);background:rgba(239,83,80,0.07);">0–33% · Full loss</span>
-        <span class="zone-pill" style="color:var(--warn);border-color:rgba(249,168,37,0.3);background:rgba(249,168,37,0.07);">33–66% · Partial</span>
-        <span class="zone-pill" style="color:var(--tv-teal);border-color:rgba(38,166,154,0.3);background:rgba(38,166,154,0.07);">66%+ · Profit zone</span>
-      </div>
-
-      <div class="card-title" style="margin-top:16px;"><span class="dot"></span>Drawdown Metrics</div>
-      <div id="dd-metrics"></div>
-      <div class="card-title" style="margin-top:14px;"><span class="dot"></span>CALL vs PUT Split</div>
-      <div id="type-split-bars"></div>
-    </div>
-  </div>
-
   <!-- ── NEXT 10 TRADES PROJECTION ── -->
   <div class="section-title">Next 10 Trades · PnL Projection</div>
 
@@ -1458,6 +1354,110 @@ svg.ring{overflow:visible;}
     </div>
   </div>
 </div>
+
+  <!-- ── ROW 4: EDGE ANALYSIS + RISK ── -->
+  <div class="section-title">Edge & Risk Analysis</div>
+  <div class="row r2" style="margin-bottom:12px;align-items:start;">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Setup Edge Breakdown</div>
+
+      <!-- KPI strip -->
+      <div class="edge-kpi-row" id="edge-kpi-row" style="display:none;">
+        <div class="edge-kpi"><div class="ek-val" id="ek-perfect-rate">—</div><div class="ek-lbl">Perfect Trade %</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-perfect-pnl">—</div><div class="ek-lbl">Perfect Avg P&L</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-avg-compliance">—</div><div class="ek-lbl">Avg Compliance</div></div>
+        <div class="edge-kpi"><div class="ek-val" id="ek-break-cost">—</div><div class="ek-lbl">Avg Break Cost</div></div>
+      </div>
+
+      <!-- Section 1: Rule Lift -->
+      <div id="edge-lift-wrap" style="display:none;">
+        <div class="edge-sec-lbl">Rule lift — with vs without</div>
+        <div id="edge-lift-list"></div>
+      </div>
+
+      <!-- Section 2: Break Cost -->
+      <div id="edge-break-wrap" style="display:none;">
+        <div class="edge-sec-lbl">Break cost — per violation</div>
+        <div id="edge-break-list"></div>
+      </div>
+
+      <!-- Auto insights -->
+      <div id="edge-insights" style="display:none;">
+        <div class="edge-sec-lbl">Auto insights</div>
+        <div id="edge-insights-list"></div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="edge-empty" class="empty"><span class="empty-icon">🔬</span>Log tagged trades to see rule analytics</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Premium Risk Meter</div>
+
+      <!-- Arc Gauge: Premium Recovery Rate -->
+      <div class="risk-arc-wrap">
+        <svg class="risk-arc-svg" width="220" height="126" viewBox="0 0 220 126">
+          <!-- Track -->
+          <path d="M18,110 A92,92 0 0,1 202,110" fill="none" stroke="var(--panel2)" stroke-width="14" stroke-linecap="round"/>
+          <!-- Zone: full-loss 0-33% -->
+          <path d="M18,110 A92,92 0 0,1 76.4,29.3" fill="none" stroke="#ef5350" stroke-width="14" stroke-linecap="butt" opacity="0.22"/>
+          <!-- Zone: partial 33-66% -->
+          <path d="M76.4,29.3 A92,92 0 0,1 143.6,29.3" fill="none" stroke="#f9a825" stroke-width="14" stroke-linecap="butt" opacity="0.22"/>
+          <!-- Zone: profit 66-100% -->
+          <path d="M143.6,29.3 A92,92 0 0,1 202,110" fill="none" stroke="#26a69a" stroke-width="14" stroke-linecap="butt" opacity="0.22"/>
+          <!-- Filled arc -->
+          <path id="arc-fill" d="" fill="none" stroke-width="14" stroke-linecap="round"/>
+          <!-- Needle -->
+          <line id="risk-needle-line" x1="110" y1="110" x2="110" y2="28" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" style="transition:transform 0.7s cubic-bezier(.4,1.6,.6,1);transform-origin:110px 110px;transform:rotate(-90deg)"/>
+          <circle cx="110" cy="110" r="5.5" fill="var(--bg)" stroke="var(--text)" stroke-width="2.5"/>
+          <!-- Centre text -->
+          <text id="arc-pct-text" x="110" y="90" text-anchor="middle" font-family="Space Mono,monospace" font-size="22" font-weight="700" fill="var(--muted)">—</text>
+          <text x="110" y="107" text-anchor="middle" font-family="Space Mono,monospace" font-size="8" fill="var(--muted)" letter-spacing="1">AVG RECOVERED</text>
+        </svg>
+        <div class="risk-zone-labels">
+          <span style="color:var(--danger);">◀ FULL LOSS</span>
+          <span style="color:var(--warn);">PARTIAL</span>
+          <span style="color:var(--tv-teal);">PROFIT ▶</span>
+        </div>
+      </div>
+
+      <!-- Badge -->
+      <div style="text-align:center;">
+        <span class="risk-score-badge" id="risk-score-badge">—</span>
+      </div>
+
+      <!-- 3-stat mini grid -->
+      <div class="risk-stat-grid" style="margin-top:14px;">
+        <div class="risk-stat"><div class="rs-val" id="rs-premium">—</div><div class="rs-lbl">Avg Premium</div></div>
+        <div class="risk-stat"><div class="rs-val" id="rs-zeroout">—</div><div class="rs-lbl">Zero-out Rate</div></div>
+        <div class="risk-stat"><div class="rs-val" id="rs-protected">—</div><div class="rs-lbl">Protected Exits</div></div>
+      </div>
+
+      <!-- Recovery bars by outcome -->
+      <div class="card-title" style="margin-top:14px;"><span class="dot"></span>Exit Recovery by Outcome</div>
+      <div id="rec-bars"></div>
+
+      <!-- Behaviour grid -->
+      <div class="card-title" style="margin-top:14px;"><span class="dot"></span>Risk Behaviour</div>
+      <div class="beh-grid">
+        <div class="beh-cell"><div class="beh-lbl">Avg Hold Time</div><div class="beh-val" id="beh-hold">—</div><div class="beh-sub" id="beh-hold-sub"></div></div>
+        <div class="beh-cell"><div class="beh-lbl">Theta Exposure</div><div class="beh-val" id="beh-theta">—</div><div class="beh-sub" id="beh-theta-sub"></div></div>
+        <div class="beh-cell"><div class="beh-lbl">Max Single Trade</div><div class="beh-val" id="beh-maxprem">—</div><div class="beh-sub" id="beh-maxprem-sub"></div></div>
+        <div class="beh-cell"><div class="beh-lbl">Best / Avg Exit</div><div class="beh-val" id="beh-ratio">—</div><div class="beh-sub" id="beh-ratio-sub"></div></div>
+      </div>
+
+      <!-- Zone guide pills -->
+      <div class="zone-pills" style="margin-top:12px;">
+        <span class="zone-pill" style="color:var(--danger);border-color:rgba(239,83,80,0.3);background:rgba(239,83,80,0.07);">0–33% · Full loss</span>
+        <span class="zone-pill" style="color:var(--warn);border-color:rgba(249,168,37,0.3);background:rgba(249,168,37,0.07);">33–66% · Partial</span>
+        <span class="zone-pill" style="color:var(--tv-teal);border-color:rgba(38,166,154,0.3);background:rgba(38,166,154,0.07);">66%+ · Profit zone</span>
+      </div>
+
+      <div class="card-title" style="margin-top:16px;"><span class="dot"></span>Drawdown Metrics</div>
+      <div id="dd-metrics"></div>
+      <div class="card-title" style="margin-top:14px;"><span class="dot"></span>CALL vs PUT Split</div>
+      <div id="type-split-bars"></div>
+    </div>
+  </div>
 
 <script>
 // ── ARCHITECTURE TAB ───────────────────────────────
