@@ -777,6 +777,41 @@ svg.ring{overflow:visible;}
     <div style="text-align:right;margin-top:10px;"><button class="btn btn-sm" onclick="resetPQ()">↺ Reset</button></div>
   </div>
 
+  <!-- LIQUIDITY PROFILE -->
+  <div class="card">
+    <div class="card-title">Liquidity Profile</div>
+
+    <!-- IS DOL DONE? -->
+    <div class="pq-section-lbl">Is DOL Done?</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;">
+      <div class="pq-zone-btn" id="lp-dol-yes" onclick="selectLP('dol','yes')">
+        <div style="font-size:18px;margin-bottom:4px;">✅</div>
+        YES<div style="font-size:9px;margin-top:3px;color:var(--tv-teal);">LIQUIDITY SWEPT</div>
+      </div>
+      <div class="pq-zone-btn" id="lp-dol-no" onclick="selectLP('dol','no')">
+        <div style="font-size:18px;margin-bottom:4px;">⛔</div>
+        NO<div style="font-size:9px;margin-top:3px;color:var(--danger);">DOL STILL PENDING</div>
+      </div>
+    </div>
+
+    <!-- IS MARKET STRUCTURE SHIFT? -->
+    <div class="pq-section-lbl">Is Market Structure Shift?</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;">
+      <div class="pq-zone-btn" id="lp-mss-yes" onclick="selectLP('mss','yes')">
+        <div style="font-size:18px;margin-bottom:4px;">📈</div>
+        YES<div style="font-size:9px;margin-top:3px;color:var(--tv-teal);">MSS CONFIRMED</div>
+      </div>
+      <div class="pq-zone-btn" id="lp-mss-no" onclick="selectLP('mss','no')">
+        <div style="font-size:18px;margin-bottom:4px;">📉</div>
+        NO<div style="font-size:9px;margin-top:3px;color:var(--danger);">NO MSS YET</div>
+      </div>
+    </div>
+
+    <!-- COMBINED RESULT -->
+    <div class="pq-result" id="lp-result"></div>
+    <div style="text-align:right;margin-top:10px;"><button class="btn btn-sm" onclick="resetLP()">↺ Reset</button></div>
+  </div>
+
   <div class="card">
     <div class="card-title">Three Critical Questions</div>
     <div class="question-block">
@@ -2253,6 +2288,46 @@ function resetPQ(){
   const r=document.getElementById('pq-result');
   if(r)r.style.display='none';
   document.getElementById('pq-vwap-needle').style.left='50%';
+}
+
+// ── LIQUIDITY PROFILE ──────────────────────────────
+let lpDOL=null,lpMSS=null;
+function selectLP(type,val){
+  if(type==='dol'){
+    lpDOL=val;
+    ['lp-dol-yes','lp-dol-no'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='pq-zone-btn';});
+    const sel=document.getElementById('lp-dol-'+val);
+    if(sel)sel.className='pq-zone-btn '+(val==='yes'?'pq-selected-above':'pq-selected-below');
+  } else {
+    lpMSS=val;
+    ['lp-mss-yes','lp-mss-no'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='pq-zone-btn';});
+    const sel=document.getElementById('lp-mss-'+val);
+    if(sel)sel.className='pq-zone-btn '+(val==='yes'?'pq-selected-above':'pq-selected-below');
+  }
+  evalLP();
+}
+function evalLP(){
+  const r=document.getElementById('lp-result');if(!r)return;
+  if(lpDOL===null||lpMSS===null){r.style.display='none';return;}
+  r.style.display='block';
+  if(lpDOL==='yes'&&lpMSS==='yes'){
+    r.style.background='rgba(38,166,154,0.08)';r.style.borderColor='rgba(38,166,154,0.4)';r.style.color='var(--tv-teal)';
+    r.innerHTML='✅ LIQUIDITY PROFILE CONFIRMED<br><span style="font-size:10px;opacity:0.7;">DOL swept + MSS confirmed. Setup is valid to proceed.</span>';
+  } else if(lpDOL==='yes'&&lpMSS==='no'){
+    r.style.background='rgba(249,168,37,0.08)';r.style.borderColor='rgba(249,168,37,0.35)';r.style.color='var(--warn)';
+    r.innerHTML='⚠️ WAIT FOR MSS<br><span style="font-size:10px;opacity:0.7;">DOL is done but market structure has not shifted yet. Patience.</span>';
+  } else if(lpDOL==='no'&&lpMSS==='yes'){
+    r.style.background='rgba(249,168,37,0.08)';r.style.borderColor='rgba(249,168,37,0.35)';r.style.color='var(--warn)';
+    r.innerHTML='⚠️ DOL STILL PENDING<br><span style="font-size:10px;opacity:0.7;">MSS confirmed but DOL not swept yet. Entry is premature.</span>';
+  } else {
+    r.style.background='rgba(239,83,80,0.08)';r.style.borderColor='rgba(239,83,80,0.35)';r.style.color='var(--danger)';
+    r.innerHTML='🔴 NOT READY<br><span style="font-size:10px;opacity:0.7;">Neither DOL swept nor MSS confirmed. Stand aside.</span>';
+  }
+}
+function resetLP(){
+  lpDOL=null;lpMSS=null;
+  ['lp-dol-yes','lp-dol-no','lp-mss-yes','lp-mss-no'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='pq-zone-btn';});
+  const r=document.getElementById('lp-result');if(r)r.style.display='none';
 }
 
 let q1=null,q2=null,q3=null;
