@@ -719,6 +719,34 @@ svg.ring{overflow:visible;}
     </div>
   </div>
   <div class="card">
+    <div class="card-title">Market Analysis Flow</div>
+    <svg width="100%" viewBox="0 0 680 190" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible;">
+      <defs>
+        <marker id="flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <!-- connecting lines -->
+      <line x1="207" y1="85" x2="293" y2="85" stroke="var(--muted)" stroke-width="0.8" opacity="0.4" marker-end="url(#flow-arrow)"/>
+      <line x1="407" y1="85" x2="493" y2="85" stroke="var(--muted)" stroke-width="0.8" opacity="0.4" marker-end="url(#flow-arrow)"/>
+      <!-- circle 1 -->
+      <circle cx="150" cy="85" r="54" fill="var(--panel2)" stroke="var(--border)" stroke-width="1"/>
+      <text x="150" y="78" text-anchor="middle" font-family="'Trebuchet MS',Arial,sans-serif" font-size="13" font-weight="700" fill="var(--text)">Daily</text>
+      <text x="150" y="96" text-anchor="middle" font-family="'Trebuchet MS',Arial,sans-serif" font-size="13" font-weight="700" fill="var(--text)">chart</text>
+      <text x="150" y="155" text-anchor="middle" font-family="'Trebuchet MS',Arial,sans-serif" font-size="10" fill="var(--muted)">HTF trend · Bias · S/R</text>
+      <!-- circle 2 -->
+      <circle cx="350" cy="85" r="54" fill="var(--panel2)" stroke="var(--border)" stroke-width="1"/>
+      <text x="350" y="78" text-anchor="middle" font-family="'Trebuchet MS',Arial,sans-serif" font-size="13" font-weight="700" fill="var(--text)">Range</text>
+      <text x="350" y="96" text-anchor="middle" font-family="'Trebuchet MS',Arial,sans-serif" font-size="13" font-weight="700" fill="var(--text)">mapping</text>
+      <text x="350" y="155" text-anchor="middle" font-family="'Trebuchet MS',Arial,sans-serif" font-size="10" fill="var(--muted)">PDH/PDL · OR · VWAP</text>
+      <!-- circle 3 -->
+      <circle cx="550" cy="85" r="54" fill="var(--panel2)" stroke="var(--border)" stroke-width="1"/>
+      <text x="550" y="78" text-anchor="middle" font-family="'Trebuchet MS',Arial,sans-serif" font-size="13" font-weight="700" fill="var(--text)">Liquidity</text>
+      <text x="550" y="96" text-anchor="middle" font-family="'Trebuchet MS',Arial,sans-serif" font-size="13" font-weight="700" fill="var(--text)">profile</text>
+      <text x="550" y="155" text-anchor="middle" font-family="'Trebuchet MS',Arial,sans-serif" font-size="10" fill="var(--muted)">DOL · EQH/EQL · Sweeps</text>
+    </svg>
+  </div>
+  <div class="card">
     <div class="card-title">Pullback Quality Assessment</div>
 
     <!-- PREMIUM / DISCOUNT -->
