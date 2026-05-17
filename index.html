@@ -759,19 +759,6 @@ svg.ring{overflow:visible;}
       </div>
     </div>
 
-    <!-- OPTIONS PREMIUM LIQUIDITY -->
-    <div class="pq-section-lbl" style="margin-top:4px;">Will options premium take buyside liquidity?</div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;">
-      <div class="pq-zone-btn" id="pq-liq-yes" onclick="selectPQ('liq','yes')">
-        <div style="font-size:16px;margin-bottom:3px;">⚡</div>
-        YES<div style="font-size:9px;margin-top:3px;color:var(--accent);">(NO OVERHEAD RESISTANCE)</div>
-      </div>
-      <div class="pq-zone-btn" id="pq-liq-no" onclick="selectPQ('liq','no')">
-        <div style="font-size:16px;margin-bottom:3px;">🧱</div>
-        NO<div style="font-size:9px;margin-top:3px;color:var(--danger);">(OVERHEAD RESISTANCE)</div>
-      </div>
-    </div>
-
     <!-- COMBINED SIGNAL -->
     <div class="pq-result" id="pq-result"></div>
     <div style="text-align:right;margin-top:10px;"><button class="btn btn-sm" onclick="resetPQ()">↺ Reset</button></div>
@@ -2158,7 +2145,7 @@ runBreath();
 // ── TWO QUESTIONS ──────────────────────────────────
 
 // ── PULLBACK QUALITY ASSESSMENT ─────────────────────
-let pqPD=null, pqVWAP=null, pqLIQ=null;
+let pqPD=null, pqVWAP=null;
 
 function selectPQ(type, val){
   if(type==='pd'){
@@ -2177,14 +2164,8 @@ function selectPQ(type, val){
     const needlePos={above:'80%',atvwap:'50%',below:'20%'};
     document.getElementById('pq-'+val).classList.add(clsMap[val]);
     document.getElementById('pq-vwap-needle').style.left=needlePos[val];
-  } else if(type==='liq'){
-    pqLIQ=val;
-    ['pq-liq-yes','pq-liq-no'].forEach(id=>{
-      document.getElementById(id).className='pq-zone-btn';
-    });
-    document.getElementById('pq-liq-'+val).classList.add(val==='yes'?'pq-selected-discount':'pq-selected-premium');
   }
-  if(pqPD && pqVWAP && pqLIQ) evalPQResult();
+  if(pqPD && pqVWAP) evalPQResult();
 }
 
 function evalPQResult(){
@@ -2226,20 +2207,13 @@ function evalPQResult(){
 
   const key=pqPD+'-'+pqVWAP;
   const c=combos[key]||{col:'var(--muted)',bg:'rgba(54,60,78,.4)',bc:'rgba(54,60,78,.6)',icon:'⬜',title:'UNKNOWN',msg:'Select both options to see analysis.'};
-  // Liquidity confirmation layer
-  let liqNote='';
-  if(pqLIQ==='yes'){
-    liqNote='<br><span style="color:var(--accent);font-size:10px;">⚡ No overhead resistance — premium can move freely. Buyside liquidity will be taken. Extra Hold.</span>';
-  } else if(pqLIQ==='no'){
-    liqNote='<br><span style="color:var(--danger);font-size:10px;">🧱 Overhead resistance present — premium will struggle to move. Book early Profits.</span>';
-  }
   el.style.background=c.bg;el.style.borderColor=c.bc;el.style.color=c.col;
-  el.innerHTML=c.icon+' <strong>'+c.title+'</strong><br><span style="opacity:.8;font-size:10px;">'+c.msg+'</span>'+liqNote;
+  el.innerHTML=c.icon+' <strong>'+c.title+'</strong><br><span style="opacity:.8;font-size:10px;">'+c.msg+'</span>';
 }
 
 function resetPQ(){
-  pqPD=null;pqVWAP=null;pqLIQ=null;
-  ['pq-discount','pq-fair','pq-premium','pq-above','pq-atvwap','pq-below','pq-liq-yes','pq-liq-no'].forEach(id=>{
+  pqPD=null;pqVWAP=null;
+  ['pq-discount','pq-fair','pq-premium','pq-above','pq-atvwap','pq-below'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.className='pq-zone-btn';
   });
