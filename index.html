@@ -59,6 +59,15 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 .belief-text{font-size:13px;line-height:1.5;color:var(--text);font-weight:600;}
 .belief-sub{font-size:11px;color:var(--muted);margin-top:2px;font-weight:400;line-height:1.4;}
 .belief-item.checked .belief-text{color:var(--muted);text-decoration:line-through;}
+.contract-intro{font-size:12px;line-height:1.7;color:var(--muted);font-style:italic;margin-bottom:6px;}
+.contract-item{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
+.contract-num{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--tv-blue);color:var(--tv-blue);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.contract-text{font-size:13px;line-height:1.5;color:var(--text);font-weight:600;}
+.contract-sub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;font-weight:400;}
+.contract-peace{margin-top:14px;padding:12px 14px;background:var(--panel2);border-left:3px solid var(--tv-teal);font-size:12px;line-height:1.7;color:var(--text);font-weight:500;}
+.contract-sign{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+.contract-sign-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
+.contract-sign.signed .contract-sign-label{color:var(--tv-teal);}
 .check-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;}
 .check-item:last-child{border-bottom:none;}
 .check-box{width:16px;height:16px;border:1.5px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;font-size:10px;}
@@ -553,6 +562,21 @@ svg.ring{overflow:visible;}
     <div class="belief-item" onclick="toggleBelief(this)"><div class="belief-check">✓</div><div><div class="belief-text">I look for the previous day range and opening range for directional bias</div><div class="belief-sub">PDR and ORB define the battlefield. Know them before the bell.</div></div></div>
     <div class="progress-bar"><div class="progress-fill" id="belief-progress" style="width:0%"></div></div>
     <div class="progress-label" id="belief-label">0 / 8 beliefs acknowledged</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Contract With Future Self</div>
+    <div class="contract-intro">I am the trader at the start of this session. I make this promise to the trader I will be at the close.</div>
+    <div class="contract-item"><div class="contract-num">1</div><div><div class="contract-text">I will follow price direction.</div><div class="contract-sub">Price leads, my opinion follows. No predicting, no fighting the tape.</div></div></div>
+    <div class="contract-item"><div class="contract-num">2</div><div><div class="contract-text">I will wait for the pullback.</div><div class="contract-sub">No chasing. The market will bring my entry to me.</div></div></div>
+    <div class="contract-item"><div class="contract-num">3</div><div><div class="contract-text">I will calculate the probability.</div><div class="contract-sub">No probability, no trade.</div></div></div>
+    <div class="contract-item"><div class="contract-num">4</div><div><div class="contract-text">I will enter with a fixed stop loss.</div><div class="contract-sub">Decided before entry. Never moved, never widened.</div></div></div>
+    <div class="contract-item"><div class="contract-num">5</div><div><div class="contract-text">I will follow my daily loss limit.</div><div class="contract-sub">When it is hit, I am done for the day. No revenge, no exceptions.</div></div></div>
+    <div class="contract-item"><div class="contract-num">6</div><div><div class="contract-text">I will be mindful of intraday P&amp;L fluctuation.</div><div class="contract-sub">Swings in P&amp;L are noise, not signals. They do not change my decisions.</div></div></div>
+    <div class="contract-peace">At the end of this session I will be at peace with myself, because I followed my rules, whatever the P&amp;L says.</div>
+    <div class="contract-sign" id="contract-sign">
+      <span class="contract-sign-label" id="contract-sign-label">NOT SIGNED</span>
+      <button class="btn btn-sm" id="contract-sign-btn" onclick="signContract()">✍️ I commit</button>
+    </div>
   </div>
   <div class="card">
     <div class="card-title">Temperature Check · Pre-Session</div>
@@ -1946,6 +1970,7 @@ function switchTab(name,btn){
 }
 
 // ── BELIEFS ────────────────────────────────────────
+function signContract(){const box=document.getElementById('contract-sign');const lbl=document.getElementById('contract-sign-label');const btn=document.getElementById('contract-sign-btn');const signed=box.classList.toggle('signed');if(signed){const t=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});lbl.textContent='SIGNED · '+t;btn.textContent='↺ Undo';showToast('✅ Contract signed. Trade your rules.',false);}else{lbl.textContent='NOT SIGNED';btn.textContent='✍️ I commit';}}
 function toggleBelief(el){el.classList.toggle('checked');const items=document.querySelectorAll('.belief-item');const checked=document.querySelectorAll('.belief-item.checked').length;const pct=Math.round((checked/items.length)*100);document.getElementById('belief-progress').style.width=pct+'%';document.getElementById('belief-label').textContent=`${checked} / ${items.length} beliefs acknowledged`;if(checked===items.length)showToast('✅ All beliefs aligned. You are ready.',false);}
 
 // ── TEMP CHECK ─────────────────────────────────────
